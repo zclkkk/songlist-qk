@@ -28,7 +28,7 @@ type SongRow = {
   title: string;
   artist: string;
   language: string;
-  status: SongStatus;
+  status: string;
   tags: string[] | null;
   is_public: boolean;
 };
@@ -39,7 +39,7 @@ type RequestRow = {
   artist: string;
   message: string;
   requester_name: string | null;
-  status: RequestStatus;
+  status: string;
   matched_song_id: string | null;
   created_at: string;
 };
@@ -54,6 +54,22 @@ const cloneSong = (song: Song): Song => ({
 const cloneRequest = (item: SongRequest): SongRequest => ({
   ...item
 });
+
+const parseSongStatus = (status: string): SongStatus => {
+  if (songStatusOptions.includes(status as SongStatus)) {
+    return status as SongStatus;
+  }
+
+  throw new Error(`Invalid song status from database: ${status}`);
+};
+
+const parseRequestStatus = (status: string): RequestStatus => {
+  if (requestStatusOptions.includes(status as RequestStatus)) {
+    return status as RequestStatus;
+  }
+
+  throw new Error(`Invalid request status from database: ${status}`);
+};
 
 const getBackendMode = (): BackendMode =>
   publicEnv.PUBLIC_SUPABASE_URL && publicEnv.PUBLIC_SUPABASE_ANON_KEY && privateEnv.SUPABASE_SERVICE_ROLE_KEY
@@ -78,7 +94,7 @@ const mapSongRow = (row: SongRow): Song => ({
   title: row.title,
   artist: row.artist,
   language: row.language,
-  status: songStatusOptions.includes(row.status) ? row.status : 'ready',
+  status: parseSongStatus(row.status),
   tags: row.tags ?? [],
   isPublic: row.is_public
 });
@@ -89,7 +105,7 @@ const mapRequestRow = (row: RequestRow): SongRequest => ({
   artist: row.artist,
   message: row.message,
   requesterName: row.requester_name,
-  status: requestStatusOptions.includes(row.status) ? row.status : 'pending',
+  status: parseRequestStatus(row.status),
   matchedSongId: row.matched_song_id,
   createdAt: row.created_at
 });
