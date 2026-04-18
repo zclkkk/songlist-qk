@@ -116,6 +116,11 @@ const buildStats = (songs: Song[], requests: SongRequest[]): CatalogStats => ({
   pendingRequests: requests.filter((item) => item.status === 'pending').length
 });
 
+const buildCatalogMetadata = (songs: Song[]) => ({
+  tags: sortStrings(songs.flatMap((song) => song.tags)),
+  languages: sortStrings(songs.map((song) => song.language))
+});
+
 const listSongs = async (): Promise<Song[]> => {
   const supabase = getSupabaseAdmin();
 
@@ -154,26 +159,16 @@ const listRequests = async (): Promise<SongRequest[]> => {
   return ((data as RequestRow[] | null) ?? []).map(mapRequestRow);
 };
 
-export const getCatalogMetadata = async (): Promise<{ tags: string[]; languages: string[] }> => {
-  const songs = await listSongs();
-
-  return {
-    tags: sortStrings(songs.flatMap((song) => song.tags)),
-    languages: sortStrings(songs.map((song) => song.language))
-  };
-};
-
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
   const songs = (await listSongs()).filter((song) => song.isPublic);
   const requests = await listRequests();
-  const tags = sortStrings(songs.flatMap((song) => song.tags));
-  const languages = sortStrings(songs.map((song) => song.language));
+  const metadata = buildCatalogMetadata(songs);
 
   return {
     streamer: streamerProfile,
     songs,
-    tags,
-    languages,
+    tags: metadata.tags,
+    languages: metadata.languages,
     statuses: songStatusOptions,
     stats: buildStats(songs, requests),
     backendMode: getBackendMode()
@@ -183,13 +178,14 @@ export const getPublicCatalog = async (): Promise<PublicCatalog> => {
 export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
   const songs = await listSongs();
   const requests = await listRequests();
+  const metadata = buildCatalogMetadata(songs);
 
   return {
     streamer: streamerProfile,
     songs,
     requests,
-    tags: sortStrings(songs.flatMap((song) => song.tags)),
-    languages: sortStrings(songs.map((song) => song.language)),
+    tags: metadata.tags,
+    languages: metadata.languages,
     overview: buildStats(songs, requests),
     backendMode: getBackendMode()
   };
