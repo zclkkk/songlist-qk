@@ -13,20 +13,20 @@
   const coverImage =
     'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1740&auto=format&fit=crop';
   const fieldClass =
-    'w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-teal-400 focus:ring-4 focus:ring-teal-100';
+    'w-full rounded-[18px] border border-[#e6e6e6] bg-white px-4 py-3 text-[#191a1b] shadow-sm outline-none transition placeholder:text-[#8a8f98] focus:border-[#7170ff] focus:ring-4 focus:ring-[#7170ff]/15';
   const selectClass =
-    'w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-100';
+    'w-full rounded-[18px] border border-[#e6e6e6] bg-white px-4 py-3 text-[#191a1b] shadow-sm outline-none transition focus:border-[#7170ff] focus:ring-4 focus:ring-[#7170ff]/15';
 
   const normalize = (value: string) => value.trim().toLowerCase();
 
   const statusClass = (status: SongStatus) => {
     switch (status) {
       case 'ready':
-        return 'border-emerald-200 bg-emerald-50 text-emerald-700';
+        return 'border-[#10b981]/30 bg-[#10b981]/10 text-[#27a644]';
       case 'learning':
-        return 'border-amber-200 bg-amber-50 text-amber-700';
+        return 'border-[#7170ff]/30 bg-[#7170ff]/10 text-[#5e6ad2]';
       case 'resting':
-        return 'border-slate-200 bg-slate-100 text-slate-600';
+        return 'border-[#d0d6e0] bg-[#f3f4f5] text-[#62666d]';
     }
   };
 
@@ -57,7 +57,7 @@
 
 <div class="space-y-8 lg:space-y-10">
   <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch xl:grid-cols-[minmax(0,1fr)_460px]">
-    <div class="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-[32px] border border-[#e6e6e6] bg-white shadow-sm">
       <div class="relative h-full min-h-[280px] lg:min-h-[360px]">
         <img
           src={coverImage}
@@ -68,27 +68,27 @@
 
         <div class="relative flex h-full min-h-[280px] flex-col justify-between p-6 lg:min-h-[360px] lg:p-10">
           <div class="flex flex-wrap items-center gap-3">
-            <span class={`inline-flex rounded-full bg-gradient-to-r px-4 py-1 text-sm font-semibold text-slate-950 ${data.catalog.streamer.accent}`}>
+            <span class={`inline-flex rounded-full px-4 py-1 text-sm font-semibold text-white ${data.catalog.streamer.accent}`}>
               {data.catalog.streamer.name}
             </span>
-            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1 text-xs text-slate-600">
+            <span class="rounded-full border border-[#e6e6e6] bg-white/85 px-3 py-1 text-xs text-[#62666d]">
               {data.catalog.stats.publicSongs} 首公开曲目
             </span>
-            <span class="rounded-full border border-slate-200 bg-white/85 px-3 py-1 text-xs text-slate-600">
+            <span class="rounded-full border border-[#e6e6e6] bg-white/85 px-3 py-1 text-xs text-[#62666d]">
               {data.catalog.stats.pendingRequests} 条待处理愿望
             </span>
             {#if data.catalog.backendMode === 'memory'}
-              <span class="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs text-rose-700">
+              <span class="rounded-full border border-[#d0d6e0] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
                 内存演示数据
               </span>
             {/if}
           </div>
 
           <div class="max-w-3xl space-y-4">
-            <h1 class="text-3xl font-semibold tracking-tight text-slate-950 lg:text-5xl">
+            <h1 class="text-3xl font-semibold tracking-tight text-[#191a1b] lg:text-5xl">
               Airi 的直播歌单
             </h1>
-            <p class="max-w-2xl text-sm leading-7 text-slate-700 lg:text-base">
+            <p class="max-w-2xl text-sm leading-7 text-[#62666d] lg:text-base">
               搜索会唱的歌，按语言、标签和状态快速筛选；想听的新歌也可以直接留在愿望单里。
             </p>
           </div>
@@ -99,7 +99,7 @@
                 href={platform.href}
                 target="_blank"
                 rel="noreferrer"
-                class="rounded-[18px] border border-slate-200 bg-white/90 px-4 py-3 text-sm font-medium text-slate-800 shadow-sm transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800"
+                class="rounded-[18px] border border-[#e6e6e6] bg-white/90 px-4 py-3 text-sm font-medium text-[#191a1b] shadow-sm transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
               >
                 前往 {platform.label}
               </a>
@@ -109,19 +109,19 @@
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm">
-      <div class="border-b border-slate-100 bg-gradient-to-br from-teal-50 via-white to-rose-50 px-6 py-6 lg:px-7">
+    <div class="overflow-hidden rounded-[32px] border border-[#e6e6e6] bg-white shadow-sm">
+      <div class="border-b border-[#e6e6e6] bg-[#f5f6f7] px-6 py-6 lg:px-7">
         <div class="flex flex-col gap-4">
-          <span class="w-fit rounded-full border border-lime-200 bg-lime-50 px-3 py-1 text-xs font-medium text-lime-800">
+          <span class="w-fit rounded-full border border-[#d0d6e0] bg-white px-3 py-1 text-xs font-medium text-[#62666d]">
             无需登录
           </span>
 
           <div>
-            <p class="text-sm font-medium text-teal-700">愿望单提交</p>
-            <h2 class="mt-2 text-2xl font-semibold leading-tight text-slate-950">
+            <p class="text-sm font-medium text-[#5e6ad2]">愿望单提交</p>
+            <h2 class="mt-2 text-2xl font-semibold leading-tight text-[#191a1b]">
               想听哪首歌？
             </h2>
-            <p class="mt-3 text-sm leading-6 text-slate-600">
+            <p class="mt-3 text-sm leading-6 text-[#62666d]">
               写下歌名、原唱和一点想法，主播之后会在后台统一处理。
             </p>
           </div>
@@ -132,13 +132,13 @@
         {#if form?.requestMessage || form?.requestError}
           <div class="space-y-3">
             {#if form?.requestMessage}
-              <div class="rounded-[20px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div class="rounded-[20px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[#27a644]">
                 {form.requestMessage}
               </div>
             {/if}
 
             {#if form?.requestError}
-              <div class="rounded-[20px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div class="rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
                 {form.requestError}
               </div>
             {/if}
@@ -146,7 +146,7 @@
         {/if}
 
         <form method="POST" class={`grid gap-5 ${form?.requestMessage || form?.requestError ? 'mt-5' : ''}`}>
-          <label class="block space-y-2 text-sm text-slate-700">
+          <label class="block space-y-2 text-sm text-[#62666d]">
             <span>歌曲名</span>
             <input
               name="songTitle"
@@ -156,7 +156,7 @@
             />
           </label>
 
-          <label class="block space-y-2 text-sm text-slate-700">
+          <label class="block space-y-2 text-sm text-[#62666d]">
             <span>原唱</span>
             <input
               name="artist"
@@ -166,7 +166,7 @@
             />
           </label>
 
-          <label class="block space-y-2 text-sm text-slate-700">
+          <label class="block space-y-2 text-sm text-[#62666d]">
             <span>留言</span>
             <textarea
               name="message"
@@ -176,7 +176,7 @@
             >{form?.requestValues?.message ?? ''}</textarea>
           </label>
 
-          <label class="block space-y-2 text-sm text-slate-700">
+          <label class="block space-y-2 text-sm text-[#62666d]">
             <span>你的昵称（可选）</span>
             <input
               name="requesterName"
@@ -188,7 +188,7 @@
 
           <button
             type="submit"
-            class="mt-1 inline-flex w-full items-center justify-center rounded-[18px] bg-gradient-to-r from-teal-400 via-lime-300 to-rose-300 px-5 py-3.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:brightness-105"
+            class="mt-1 inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
           >
             提交愿望单
           </button>
@@ -198,19 +198,19 @@
   </section>
 
   <section class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-    <aside class="h-fit rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-24">
+    <aside class="h-fit rounded-[30px] border border-[#e6e6e6] bg-white p-5 shadow-sm lg:sticky lg:top-24">
       <div class="flex items-center justify-between gap-3">
         <div>
-          <p class="text-sm font-medium text-teal-700">公开歌单</p>
-          <h2 class="mt-1 text-2xl font-semibold text-slate-950">搜索与筛选</h2>
+          <p class="text-sm font-medium text-[#5e6ad2]">公开歌单</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">搜索与筛选</h2>
         </div>
-        <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600">
+        <span class="rounded-full border border-[#e6e6e6] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
           {filteredSongs.length} / {data.catalog.songs.length}
         </span>
       </div>
 
       <div class="mt-5 space-y-4">
-        <label class="block space-y-2 text-sm text-slate-700">
+        <label class="block space-y-2 text-sm text-[#62666d]">
           <span>搜索</span>
           <input
             bind:value={query}
@@ -219,7 +219,7 @@
           />
         </label>
 
-        <label class="block space-y-2 text-sm text-slate-700">
+        <label class="block space-y-2 text-sm text-[#62666d]">
           <span>语言</span>
           <select bind:value={selectedLanguage} class={selectClass}>
             <option value="all">全部语言</option>
@@ -229,7 +229,7 @@
           </select>
         </label>
 
-        <label class="block space-y-2 text-sm text-slate-700">
+        <label class="block space-y-2 text-sm text-[#62666d]">
           <span>标签</span>
           <select bind:value={selectedTag} class={selectClass}>
             <option value="all">全部标签</option>
@@ -239,7 +239,7 @@
           </select>
         </label>
 
-        <label class="block space-y-2 text-sm text-slate-700">
+        <label class="block space-y-2 text-sm text-[#62666d]">
           <span>当前状态</span>
           <select bind:value={selectedStatus} class={selectClass}>
             <option value="all">全部状态</option>
@@ -252,8 +252,8 @@
     </aside>
 
     <div class="space-y-4">
-      <div class="hidden overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm lg:block">
-        <div class="grid grid-cols-[minmax(0,2fr)_minmax(0,1.6fr)_120px_140px_1.7fr] gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+      <div class="hidden overflow-hidden rounded-[28px] border border-[#e6e6e6] bg-white shadow-sm lg:block">
+        <div class="grid grid-cols-[minmax(0,2fr)_minmax(0,1.6fr)_120px_140px_1.7fr] gap-4 border-b border-[#e6e6e6] bg-[#f5f6f7] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#8a8f98]">
           <div>歌曲名</div>
           <div>原唱</div>
           <div>语言</div>
@@ -263,12 +263,12 @@
 
         {#if filteredSongs.length > 0}
           {#each filteredSongs as song, index}
-            <div class={`grid grid-cols-[minmax(0,2fr)_minmax(0,1.6fr)_120px_140px_1.7fr] gap-4 px-6 py-5 ${index !== filteredSongs.length - 1 ? 'border-b border-slate-100' : ''}`}>
+            <div class={`grid grid-cols-[minmax(0,2fr)_minmax(0,1.6fr)_120px_140px_1.7fr] gap-4 px-6 py-5 ${index !== filteredSongs.length - 1 ? 'border-b border-[#e6e6e6]' : ''}`}>
               <div>
-                <p class="text-base font-semibold text-slate-950">{song.title}</p>
+                <p class="text-base font-semibold text-[#191a1b]">{song.title}</p>
               </div>
-              <div class="text-sm text-slate-700">{song.artist}</div>
-              <div class="text-sm text-slate-600">{song.language}</div>
+              <div class="text-sm text-[#62666d]">{song.artist}</div>
+              <div class="text-sm text-[#62666d]">{song.language}</div>
               <div>
                 <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${statusClass(song.status)}`}>
                   {songStatusLabels[song.status]}
@@ -276,7 +276,7 @@
               </div>
               <div class="flex flex-wrap gap-2">
                 {#each song.tags as tag}
-                  <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600">
+                  <span class="rounded-full border border-[#d0d6e0] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
                     {tag}
                   </span>
                 {/each}
@@ -284,7 +284,7 @@
             </div>
           {/each}
         {:else}
-          <div class="px-6 py-16 text-center text-sm text-slate-500">
+          <div class="px-6 py-16 text-center text-sm text-[#8a8f98]">
             当前筛选下没有结果，试试放宽关键词或筛选项。
           </div>
         {/if}
@@ -293,27 +293,27 @@
       <div class="grid gap-4 lg:hidden">
         {#if filteredSongs.length > 0}
           {#each filteredSongs as song}
-            <article class="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+            <article class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
               <div class="flex items-start justify-between gap-4">
                 <div class="min-w-0">
-                  <h3 class="break-words text-lg font-semibold text-slate-950">{song.title}</h3>
-                  <p class="mt-1 text-sm text-slate-600">{song.artist}</p>
+                  <h3 class="break-words text-lg font-semibold text-[#191a1b]">{song.title}</h3>
+                  <p class="mt-1 text-sm text-[#62666d]">{song.artist}</p>
                 </div>
                 <span class={`inline-flex shrink-0 rounded-full border px-3 py-1 text-xs font-medium ${statusClass(song.status)}`}>
                   {songStatusLabels[song.status]}
                 </span>
               </div>
 
-              <div class="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+              <div class="mt-4 grid gap-3 text-sm text-[#62666d] sm:grid-cols-2">
                 <div>
-                  <p class="text-xs uppercase tracking-[0.14em] text-slate-500">语言</p>
+                  <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">语言</p>
                   <p class="mt-1">{song.language}</p>
                 </div>
                 <div>
-                  <p class="text-xs uppercase tracking-[0.14em] text-slate-500">标签</p>
+                  <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">标签</p>
                   <div class="mt-2 flex flex-wrap gap-2">
                     {#each song.tags as tag}
-                      <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600">
+                      <span class="rounded-full border border-[#d0d6e0] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
                         {tag}
                       </span>
                     {/each}
@@ -323,7 +323,7 @@
             </article>
           {/each}
         {:else}
-          <div class="rounded-[24px] border border-dashed border-slate-300 bg-white/80 px-4 py-12 text-center text-sm text-slate-500">
+          <div class="rounded-[24px] border border-dashed border-[#d0d6e0] bg-white/80 px-4 py-12 text-center text-sm text-[#8a8f98]">
             当前筛选下没有歌曲。
           </div>
         {/if}

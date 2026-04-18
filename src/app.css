@@ -2,12 +2,32 @@
 
 :root {
   color-scheme: light;
-  font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif;
-  background:
-    linear-gradient(135deg, rgba(20, 184, 166, 0.12), transparent 34%),
-    linear-gradient(225deg, rgba(244, 63, 94, 0.1), transparent 30%),
-    linear-gradient(180deg, #fbfdff 0%, #eef8f5 52%, #f8fbff 100%);
-  color: #172033;
+  --color-page: #f7f8f8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f6f7;
+  --color-surface-soft: #f3f4f5;
+  --color-border: #d0d6e0;
+  --color-border-soft: #e6e6e6;
+  --color-text: #191a1b;
+  --color-text-secondary: #62666d;
+  --color-text-muted: #8a8f98;
+  --color-brand: #5e6ad2;
+  --color-accent: #7170ff;
+  --color-accent-hover: #828fff;
+  --color-success: #10b981;
+  font-family:
+    "Inter Variable",
+    Inter,
+    "SF Pro Display",
+    -apple-system,
+    system-ui,
+    "Segoe UI",
+    "Noto Sans SC",
+    "Microsoft YaHei",
+    sans-serif;
+  font-feature-settings: "cv01", "ss03";
+  background: var(--color-page);
+  color: var(--color-text);
 }
 
 html {
@@ -18,7 +38,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background: transparent;
-  color: #172033;
+  color: var(--color-text);
 }
 
 button,
@@ -29,7 +49,7 @@ textarea {
 }
 
 ::selection {
-  background: rgba(45, 212, 191, 0.35);
+  background: rgba(113, 112, 255, 0.18);
 }
 
 select {
