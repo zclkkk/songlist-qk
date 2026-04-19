@@ -67,11 +67,6 @@
             <span class={`inline-flex rounded-full px-4 py-1 text-sm font-semibold text-white ${data.catalog.streamer.accent}`}>
               {data.catalog.streamer.name}
             </span>
-            {#if data.catalog.backendMode === 'memory'}
-              <span class="rounded-full border border-[#d0d6e0] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
-                内存演示数据
-              </span>
-            {/if}
           </div>
 
           <div class="max-w-3xl space-y-4">

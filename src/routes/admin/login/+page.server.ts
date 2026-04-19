@@ -1,19 +1,10 @@
 import { fail, redirect } from '@sveltejs/kit';
 
-import { getAuthMode, getDemoCredentials, loginAdmin, setAdminSession } from '$lib/server/auth';
+import { loginAdmin, setAdminSession } from '$lib/server/auth';
 
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions } from './$types';
 
 const readText = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
-
-export const load: PageServerLoad = async () => {
-  const authMode = getAuthMode();
-
-  return {
-    authMode,
-    demoCredentials: authMode === 'demo' ? getDemoCredentials() : null
-  };
-};
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {

@@ -3,7 +3,6 @@ export type SongStatus = (typeof songStatusOptions)[number];
 
 export const requestStatusOptions = ['pending', 'reviewing', 'planned', 'declined'] as const;
 export type RequestStatus = (typeof requestStatusOptions)[number];
-export type BackendMode = 'memory' | 'supabase';
 
 export interface Song {
   id: string;
@@ -50,7 +49,6 @@ export interface PublicCatalog {
   languages: string[];
   statuses: readonly SongStatus[];
   stats: CatalogStats;
-  backendMode: BackendMode;
 }
 
 export interface AdminDashboardData {
@@ -58,7 +56,6 @@ export interface AdminDashboardData {
   songs: Song[];
   requests: SongRequest[];
   overview: CatalogStats;
-  backendMode: BackendMode;
 }
 
 export const songStatusLabels: Record<SongStatus, string> = {

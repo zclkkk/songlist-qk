@@ -1,18 +1,16 @@
 import { env as privateEnv } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
-import type { BackendMode } from '$lib/types';
 
-export const hasSupabaseConfig = () =>
-  Boolean(
-    publicEnv.PUBLIC_SUPABASE_URL &&
-      publicEnv.PUBLIC_SUPABASE_ANON_KEY &&
-      privateEnv.SUPABASE_SERVICE_ROLE_KEY
-  );
+const requireEnv = (value: string | undefined, name: string) => {
+  if (!value) {
+    throw new Error(`${name} must be configured.`);
+  }
 
-export const getBackendMode = (): BackendMode => (hasSupabaseConfig() ? 'supabase' : 'memory');
+  return value;
+};
 
 export const getSupabaseConfig = () => ({
-  url: publicEnv.PUBLIC_SUPABASE_URL!,
-  anonKey: publicEnv.PUBLIC_SUPABASE_ANON_KEY!,
-  serviceRoleKey: privateEnv.SUPABASE_SERVICE_ROLE_KEY!
+  url: requireEnv(publicEnv.PUBLIC_SUPABASE_URL, 'PUBLIC_SUPABASE_URL'),
+  anonKey: requireEnv(publicEnv.PUBLIC_SUPABASE_ANON_KEY, 'PUBLIC_SUPABASE_ANON_KEY'),
+  serviceRoleKey: requireEnv(privateEnv.SUPABASE_SERVICE_ROLE_KEY, 'SUPABASE_SERVICE_ROLE_KEY')
 });

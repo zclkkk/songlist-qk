@@ -49,9 +49,6 @@
           <span class="rounded-full border border-[#5e6ad2]/30 bg-[#5e6ad2]/10 px-4 py-1 text-sm font-medium text-[#5e6ad2]">
             后台控制台
           </span>
-          <span class="rounded-full border border-[#e6e6e6] bg-white px-4 py-1 text-xs text-[#62666d]">
-            {data.dashboard.backendMode === 'supabase' ? 'Supabase 数据模式' : '内存演示模式'}
-          </span>
         </div>
 
         <h1 class="mt-4 text-3xl font-semibold text-[#191a1b] lg:text-4xl">管理歌曲与愿望单</h1>
@@ -104,14 +101,6 @@
         </div>
       {/if}
 
-      <div class="mt-6 rounded-[24px] border border-[#d0d6e0] bg-[#f5f6f7] p-5 text-sm text-[#62666d]">
-        <p class="font-medium text-[#191a1b]">当前数据来源</p>
-        <p class="mt-2 leading-7 text-[#62666d]">
-          {data.dashboard.backendMode === 'supabase'
-            ? '已接入 Supabase，增删改查会落到真实数据库。'
-            : '当前使用内存演示数据。你现在可以完整体验流程，刷新后数据会回到示例状态。'}
-        </p>
-      </div>
     </div>
   </section>
 

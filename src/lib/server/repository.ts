@@ -1,8 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { streamerProfile } from '$lib/config';
-import { sampleRequests, sampleSongs } from '$lib/sample-data';
-import { getBackendMode, getSupabaseConfig } from '$lib/server/env';
+import { getSupabaseConfig } from '$lib/server/env';
 import {
   type CatalogStats,
   requestStatusOptions,
@@ -15,11 +14,6 @@ import {
   type SongStatus
 } from '$lib/types';
 import { createClient } from '@supabase/supabase-js';
-
-const memoryStore = {
-  songs: sampleSongs.map((song) => ({ ...song, tags: [...song.tags] })),
-  requests: sampleRequests.map((item) => ({ ...item }))
-};
 
 type SongRow = {
   id: string;
@@ -61,10 +55,6 @@ const parseRequestStatus = (status: string): RequestStatus => {
 };
 
 const getSupabaseAdmin = () => {
-  if (getBackendMode() !== 'supabase') {
-    return null;
-  }
-
   const supabaseConfig = getSupabaseConfig();
 
   return createClient(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
@@ -113,10 +103,6 @@ const buildCatalogMetadata = (songs: Song[]) => ({
 const listSongs = async (): Promise<Song[]> => {
   const supabase = getSupabaseAdmin();
 
-  if (!supabase) {
-    return memoryStore.songs;
-  }
-
   const { data, error } = await supabase
     .from('songs')
     .select('id, title, artist, language, status, tags, is_public')
@@ -132,10 +118,6 @@ const listSongs = async (): Promise<Song[]> => {
 const listRequests = async (): Promise<SongRequest[]> => {
   const supabase = getSupabaseAdmin();
 
-  if (!supabase) {
-    return [...memoryStore.requests].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  }
-
   const { data, error } = await supabase
     .from('requests')
     .select('id, song_title, artist, message, requester_name, status, matched_song_id, created_at')
@@ -150,10 +132,6 @@ const listRequests = async (): Promise<SongRequest[]> => {
 
 const getPendingRequestCount = async (): Promise<number> => {
   const supabase = getSupabaseAdmin();
-
-  if (!supabase) {
-    return countPendingRequests(memoryStore.requests);
-  }
 
   const { count, error } = await supabase
     .from('requests')
@@ -178,8 +156,7 @@ export const getPublicCatalog = async (): Promise<PublicCatalog> => {
     tags: metadata.tags,
     languages: metadata.languages,
     statuses: songStatusOptions,
-    stats: buildStats(songs, pendingRequests),
-    backendMode: getBackendMode()
+    stats: buildStats(songs, pendingRequests)
   };
 };
 
@@ -191,8 +168,7 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
     streamer: streamerProfile,
     songs,
     requests,
-    overview: buildStats(songs, countPendingRequests(requests)),
-    backendMode: getBackendMode()
+    overview: buildStats(songs, countPendingRequests(requests))
   };
 };
 
@@ -219,11 +195,6 @@ export const createSongRequest = async ({
   };
 
   const supabase = getSupabaseAdmin();
-
-  if (!supabase) {
-    memoryStore.requests.unshift(payload);
-    return payload;
-  }
 
   const { error } = await supabase.from('requests').insert({
     id: payload.id,
@@ -272,18 +243,6 @@ export const saveSong = async ({
 
   const supabase = getSupabaseAdmin();
 
-  if (!supabase) {
-    const existingIndex = memoryStore.songs.findIndex((song) => song.id === payload.id);
-
-    if (existingIndex >= 0) {
-      memoryStore.songs[existingIndex] = payload;
-    } else {
-      memoryStore.songs.unshift(payload);
-    }
-
-    return payload;
-  }
-
   const { error } = await supabase.from('songs').upsert({
     id: payload.id,
     title: payload.title,
@@ -304,19 +263,6 @@ export const saveSong = async ({
 export const deleteSong = async (id: string) => {
   const supabase = getSupabaseAdmin();
 
-  if (!supabase) {
-    memoryStore.songs = memoryStore.songs.filter((song) => song.id !== id);
-    memoryStore.requests = memoryStore.requests.map((item) =>
-      item.matchedSongId === id
-        ? {
-            ...item,
-            matchedSongId: null
-          }
-        : item
-    );
-    return;
-  }
-
   const { error } = await supabase.from('songs').delete().eq('id', id);
 
   if (error) {
@@ -332,18 +278,6 @@ export const updateRequestStatus = async ({
   status: RequestStatus;
 }) => {
   const supabase = getSupabaseAdmin();
-
-  if (!supabase) {
-    memoryStore.requests = memoryStore.requests.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            status
-          }
-        : item
-    );
-    return;
-  }
 
   const { error } = await supabase.from('requests').update({ status }).eq('id', id);
 

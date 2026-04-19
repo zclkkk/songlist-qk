@@ -10,7 +10,6 @@
 - 愿望单提交
 - 后台歌曲管理
 - 后台愿望单状态管理
-- 未配置 Supabase 时自动回退到内存 demo 数据
 
 ## 开发
 
@@ -27,16 +26,9 @@ npm run dev
 - `PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
 - `AUTH_SECRET`
-- `ENABLE_DEMO_AUTH`
 
-未配置 Supabase 时，非生产环境会使用演示账号：
-
-- 邮箱：`admin@example.com`
-- 密码：`demo-admin`
-
-生产环境必须配置 Supabase 鉴权；只有临时演示部署才应显式设置 `ENABLE_DEMO_AUTH=true`。
+必须配置 Supabase 鉴权，并在 Supabase Auth 中创建与 `ADMIN_EMAIL` 对应的管理员账号。
 
 ## Supabase
 

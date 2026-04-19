@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ActionData, PageData } from './$types';
+  import type { ActionData } from './$types';
 
-  let { data, form }: { data: PageData; form?: ActionData } = $props();
+  let { form }: { form?: ActionData } = $props();
 </script>
 
 <svelte:head>
@@ -18,27 +18,6 @@
       </p>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
-        <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">鉴权模式</p>
-        <p class="mt-3 text-xl font-semibold text-[#191a1b]">
-          {data.authMode === 'supabase' ? 'Supabase Auth' : '演示登录'}
-        </p>
-        <p class="mt-2 text-sm leading-6 text-[#62666d]">
-          {data.authMode === 'supabase'
-            ? '已检测到 Supabase 配置，登录将走真实管理员账号。'
-            : '当前未配置 Supabase，使用本地演示账号体验后台。'}
-        </p>
-      </div>
-
-      <div class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
-        <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">当前目标</p>
-        <p class="mt-3 text-xl font-semibold text-[#191a1b]">单主播 MVP</p>
-        <p class="mt-2 text-sm leading-6 text-[#62666d]">
-          先完成轻量管理流程，再接入真实后端。
-        </p>
-      </div>
-    </div>
   </section>
 
   <section class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
@@ -46,14 +25,6 @@
       <p class="text-sm font-medium text-[#5e6ad2]">登录后台</p>
       <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">管理员身份验证</h2>
     </div>
-
-    {#if data.demoCredentials}
-      <div class="mt-5 rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 p-4 text-sm text-[#5e6ad2]">
-        <p class="font-medium">当前为演示模式</p>
-        <p class="mt-2">邮箱：{data.demoCredentials.email}</p>
-        <p class="mt-1">密码：{data.demoCredentials.password}</p>
-      </div>
-    {/if}
 
     {#if form?.message}
       <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">

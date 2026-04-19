@@ -1,26 +1,14 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import { env as privateEnv } from '$env/dynamic/private';
-import { getSupabaseConfig, hasSupabaseConfig } from '$lib/server/env';
+import { getSupabaseConfig } from '$lib/server/env';
 import { createClient } from '@supabase/supabase-js';
 import type { Cookies } from '@sveltejs/kit';
 
 const sessionCookieName = 'songboard_admin_session';
-const defaultAdminEmail = 'admin@example.com';
-const defaultAdminPassword = 'demo-admin';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 
-type AuthMode = 'demo' | 'supabase';
-
 const isProduction = () => privateEnv.NODE_ENV === 'production';
-
-const isDemoAuthEnabled = () => !isProduction() || privateEnv.ENABLE_DEMO_AUTH === 'true';
-
-const requireDemoAuthEnabled = () => {
-  if (!isDemoAuthEnabled()) {
-    throw new Error('Demo admin auth is disabled. Configure Supabase auth or set ENABLE_DEMO_AUTH=true.');
-  }
-};
 
 const getAuthSecret = () => {
   if (!privateEnv.AUTH_SECRET || privateEnv.AUTH_SECRET === 'replace-me') {
@@ -34,7 +22,13 @@ const getAuthSecret = () => {
   return privateEnv.AUTH_SECRET;
 };
 
-const getAdminEmail = () => privateEnv.ADMIN_EMAIL || defaultAdminEmail;
+const getAdminEmail = () => {
+  if (!privateEnv.ADMIN_EMAIL) {
+    throw new Error('ADMIN_EMAIL must be configured.');
+  }
+
+  return privateEnv.ADMIN_EMAIL;
+};
 
 const signValue = (value: string) => createHmac('sha256', getAuthSecret()).update(value).digest('hex');
 
@@ -42,24 +36,6 @@ const buildCookieValue = () => {
   const payload = `admin:${Date.now()}`;
   const signature = signValue(payload);
   return `${payload}.${signature}`;
-};
-
-export const getAuthMode = (): AuthMode => {
-  if (hasSupabaseConfig()) {
-    return 'supabase';
-  }
-
-  requireDemoAuthEnabled();
-  return 'demo';
-};
-
-export const getDemoCredentials = () => {
-  requireDemoAuthEnabled();
-
-  return {
-    email: getAdminEmail(),
-    password: privateEnv.ADMIN_PASSWORD || defaultAdminPassword
-  };
 };
 
 export const setAdminSession = (cookies: Cookies) => {
@@ -123,7 +99,7 @@ export const loginAdmin = async ({
 }: {
   email: string;
   password: string;
-}): Promise<{ ok: true; mode: AuthMode } | { ok: false; message: string }> => {
+}): Promise<{ ok: true } | { ok: false; message: string }> => {
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedPassword = password.trim();
 
@@ -134,56 +110,34 @@ export const loginAdmin = async ({
     };
   }
 
-  if (hasSupabaseConfig()) {
-    const adminEmail = getAdminEmail().toLowerCase();
-
-    if (normalizedEmail !== adminEmail) {
-      return {
-        ok: false,
-        message: '该账号不是管理员账号。'
-      };
-    }
-
-    const supabaseConfig = getSupabaseConfig();
-    const client = createClient(supabaseConfig.url, supabaseConfig.anonKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false
-      }
-    });
-
-    const { error } = await client.auth.signInWithPassword({
-      email: normalizedEmail,
-      password: normalizedPassword
-    });
-
-    if (error) {
-      return {
-        ok: false,
-        message: error.message || '管理员登录失败。'
-      };
-    }
-
+  if (normalizedEmail !== getAdminEmail().trim().toLowerCase()) {
     return {
-      ok: true,
-      mode: 'supabase'
+      ok: false,
+      message: '该账号不是管理员账号。'
     };
   }
 
-  const demoCredentials = getDemoCredentials();
+  const supabaseConfig = getSupabaseConfig();
+  const client = createClient(supabaseConfig.url, supabaseConfig.anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false
+    }
+  });
 
-  if (
-    normalizedEmail !== demoCredentials.email.toLowerCase() ||
-    normalizedPassword !== demoCredentials.password
-  ) {
+  const { error } = await client.auth.signInWithPassword({
+    email: normalizedEmail,
+    password: normalizedPassword
+  });
+
+  if (error) {
     return {
       ok: false,
-      message: '演示账号或密码不正确。'
+      message: error.message || '管理员登录失败。'
     };
   }
 
   return {
-    ok: true,
-    mode: 'demo'
+    ok: true
   };
 };
