@@ -47,6 +47,10 @@ export const playlistPreviewSchema = z.object({
   playlistInput: z.string().trim().min(1, '请填写网易云公开歌单链接或 ID。').max(240, '歌单链接过长。')
 });
 
+export const songPreviewSchema = z.object({
+  songInput: z.string().trim().min(1, '请填写网易云单曲链接或 ID。').max(240, '单曲链接过长。')
+});
+
 export const requestStatusSchema = z.object({
   id: z.string().trim().min(1, '请求 ID 缺失。'),
   status: z.enum(requestStatusOptions, {

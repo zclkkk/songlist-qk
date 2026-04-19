@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
 import { readText } from '$lib/server/form-utils';
-import { fetchNeteasePlaylistSongs } from '$lib/server/netease';
+import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { defaultSongLanguage } from '$lib/types';
 import {
 	deleteSong as removeSong,
@@ -12,7 +12,14 @@ import {
 	saveSong,
 	updateRequestStatus
 } from '$lib/server/repository';
-import { playlistImportSettingsSchema, playlistPreviewSchema, playlistSongImportSchema, requestStatusSchema, songSchema } from '$lib/validators';
+import {
+  playlistImportSettingsSchema,
+  playlistPreviewSchema,
+  playlistSongImportSchema,
+  requestStatusSchema,
+  songPreviewSchema,
+  songSchema
+} from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -135,6 +142,45 @@ export const actions: Actions = {
       return fail(500, {
         adminError: error instanceof Error ? error.message : '解析歌单失败。',
         playlistImport: { playlistInput: parsed.data.playlistInput }
+      });
+    }
+  },
+
+  previewSong: async ({ request }) => {
+    const formData = await request.formData();
+    const songInput = readText(formData.get('songInput'));
+    const parsed = songPreviewSchema.safeParse({
+      songInput
+    });
+
+    if (!parsed.success) {
+      return fail(400, {
+        adminError: parsed.error.issues[0]?.message ?? '导入单曲失败。',
+        songImport: { songInput }
+      });
+    }
+
+    try {
+      const song = await fetchNeteaseSong(parsed.data.songInput);
+
+      return {
+        adminMessage: '已解析 1 首歌曲，请确认后导入。',
+        playlistPreview: {
+          playlistInput: parsed.data.songInput,
+          status: 'ready',
+          songs: [
+            {
+              ...song,
+              language: defaultSongLanguage,
+              tagsInput: ''
+            }
+          ]
+        }
+      };
+    } catch (error) {
+      return fail(500, {
+        adminError: error instanceof Error ? error.message : '解析单曲失败。',
+        songImport: { songInput: parsed.data.songInput }
       });
     }
   },

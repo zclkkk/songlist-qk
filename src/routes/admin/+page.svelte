@@ -185,8 +185,27 @@
       <div class="mt-8 border-t border-[#e6e6e6] pt-7">
         <div>
           <p class="text-sm font-medium text-[#5e6ad2]">导入网易云</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">公开歌单导入</h2>
+          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">解析公开歌单或单曲</h2>
         </div>
+
+        <form method="POST" action="?/previewSong" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
+          <label class="block space-y-2 text-sm text-[#62666d]">
+            <span>单曲链接或 ID</span>
+            <input
+              name="songInput"
+              class="form-field"
+              value={form && 'songImport' in form ? form.songImport?.songInput : ''}
+              placeholder="https://music.163.com/#/song?id=..."
+            />
+          </label>
+
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-[18px] border border-[#5e6ad2] px-5 py-3 text-sm font-semibold text-[#5e6ad2] transition hover:bg-[#5e6ad2] hover:text-white"
+          >
+            解析单曲
+          </button>
+        </form>
 
         <form method="POST" action="?/previewPlaylist" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
           <label class="block space-y-2 text-sm text-[#62666d]">
@@ -368,7 +387,7 @@
       <div class="flex items-start justify-between gap-4">
         <div>
           <p class="text-sm font-medium text-[#5e6ad2]">导入网易云</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">公开歌单导入</h2>
+          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">歌曲导入</h2>
         </div>
 
         <button

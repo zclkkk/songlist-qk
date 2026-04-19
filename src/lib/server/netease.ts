@@ -1,7 +1,9 @@
 type NeteaseApi = {
   playlist_detail?: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
+  song_detail?: (params: { ids: string }) => Promise<NeteaseSongResponse>;
   default?: {
     playlist_detail?: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
+    song_detail?: (params: { ids: string }) => Promise<NeteaseSongResponse>;
   };
 };
 
@@ -24,12 +26,21 @@ type NeteasePlaylistResponse = {
   };
 };
 
+type NeteaseSongResponse = {
+  body?: {
+    code?: number;
+    songs?: NeteaseTrack[];
+  };
+};
+
 export type NeteasePlaylistSong = {
   title: string;
   artist: string;
 };
 
-const extractPlaylistId = (value: string) => {
+const getNeteaseApi = async () => (await import('@neteasecloudmusicapienhanced/api')) as NeteaseApi;
+
+const extractNeteaseId = (value: string, pathName: string, errorMessage: string) => {
   const trimmed = value.trim();
 
   if (/^\d+$/.test(trimmed)) {
@@ -42,14 +53,18 @@ const extractPlaylistId = (value: string) => {
     return idFromQuery;
   }
 
-  const idFromPath = trimmed.match(/playlist\/(\d+)/)?.[1];
+  const idFromPath = trimmed.match(new RegExp(`${pathName}/(\\d+)`))?.[1];
 
   if (idFromPath) {
     return idFromPath;
   }
 
-  throw new Error('请填写有效的网易云公开歌单链接或 ID。');
+  throw new Error(errorMessage);
 };
+
+const extractPlaylistId = (value: string) => extractNeteaseId(value, 'playlist', '请填写有效的网易云公开歌单链接或 ID。');
+
+const extractSongId = (value: string) => extractNeteaseId(value, 'song', '请填写有效的网易云单曲链接或 ID。');
 
 const getArtistName = (artist: NeteaseArtist) => (typeof artist.name === 'string' ? artist.name.trim() : '');
 
@@ -69,7 +84,7 @@ const mapTrack = (track: NeteaseTrack): NeteasePlaylistSong | null => {
 
 export const fetchNeteasePlaylistSongs = async (playlistInput: string) => {
   const playlistId = extractPlaylistId(playlistInput);
-  const api = (await import('@neteasecloudmusicapienhanced/api')) as NeteaseApi;
+  const api = await getNeteaseApi();
   const playlistDetail = api.playlist_detail ?? api.default?.playlist_detail;
 
   if (!playlistDetail) {
@@ -90,4 +105,23 @@ export const fetchNeteasePlaylistSongs = async (playlistInput: string) => {
   }
 
   return songs;
+};
+
+export const fetchNeteaseSong = async (songInput: string) => {
+  const songId = extractSongId(songInput);
+  const api = await getNeteaseApi();
+  const songDetail = api.song_detail ?? api.default?.song_detail;
+
+  if (!songDetail) {
+    throw new Error('网易云单曲解析器不可用。');
+  }
+
+  const response = await songDetail({ ids: songId });
+  const song = mapTrack(response.body?.songs?.[0] ?? {});
+
+  if (response.body?.code !== 200 || song === null) {
+    throw new Error('读取网易云单曲失败。');
+  }
+
+  return song;
 };
