@@ -6,10 +6,14 @@ import type { Actions, PageServerLoad } from './$types';
 
 const readText = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const load: PageServerLoad = async () => ({
-  authMode: getAuthMode(),
-  demoCredentials: getAuthMode() === 'demo' ? getDemoCredentials() : null
-});
+export const load: PageServerLoad = async () => {
+  const authMode = getAuthMode();
+
+  return {
+    authMode,
+    demoCredentials: authMode === 'demo' ? getDemoCredentials() : null
+  };
+};
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
