@@ -42,154 +42,65 @@
 </svelte:head>
 
 <div class="space-y-8 lg:space-y-10">
-  <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch xl:grid-cols-[minmax(0,1fr)_460px]">
-    <div class="overflow-hidden rounded-[32px] border border-[#e6e6e6] bg-white shadow-sm">
-      <div class="relative h-full min-h-[280px] lg:min-h-[360px]">
-        <img
-          src={coverImage}
-          alt="舞台麦克风和灯光"
-          class="absolute inset-0 h-full w-full object-cover"
-        />
-        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/40"></div>
+  <section class="overflow-hidden rounded-[32px] border border-[#e6e6e6] bg-white shadow-sm">
+    <div class="relative min-h-[380px]">
+      <img
+        src={coverImage}
+        alt="舞台麦克风和灯光"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/50"></div>
 
-        <div class="relative flex h-full min-h-[420px] flex-col justify-between gap-8 p-6 lg:min-h-[540px] lg:p-10">
-          <div class="flex flex-wrap items-center gap-3">
-            <span class={`inline-flex rounded-full px-4 py-1 text-sm font-semibold text-white ${data.catalog.streamer.accent}`}>
-              {data.catalog.streamer.name}
-            </span>
-          </div>
-
-          <div class="max-w-3xl space-y-4">
-            <h1 class="text-3xl font-semibold tracking-tight text-[#191a1b] lg:text-5xl">
-              {data.catalog.streamer.tagline}
-            </h1>
-            <p class="max-w-2xl text-sm leading-7 text-[#62666d] lg:text-base">
-              {data.catalog.streamer.description}
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <div class="grid gap-3 sm:grid-cols-3">
-              <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-                <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">公开曲目</p>
-                <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.catalog.stats.publicSongs}</p>
-                <p class="mt-1 text-xs text-[#62666d]">首可浏览歌曲</p>
-              </div>
-
-              <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-                <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">待处理曲目</p>
-                <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.catalog.stats.pendingRequests}</p>
-                <p class="mt-1 text-xs text-[#62666d]">条愿望单请求</p>
-              </div>
-
-              <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-                <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">标签总览</p>
-                <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.catalog.tags.length}</p>
-                <p class="mt-1 text-xs text-[#62666d]">个筛选标签</p>
-              </div>
-            </div>
-
-            <div class="grid gap-3 sm:grid-cols-3">
-              {#each data.catalog.streamer.platforms as platform}
-                <a
-                  href={platform.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  class="rounded-[18px] border border-[#e6e6e6] bg-white/90 px-4 py-3 text-sm font-medium text-[#191a1b] shadow-sm transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
-                >
-                  前往 {platform.label}
-                </a>
-              {/each}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="overflow-hidden rounded-[32px] border border-[#e6e6e6] bg-white shadow-sm">
-      <div class="border-b border-[#e6e6e6] bg-[#f5f6f7] px-6 py-6 lg:px-7">
-        <div class="flex flex-col gap-4">
-          <span class="w-fit rounded-full border border-[#d0d6e0] bg-white px-3 py-1 text-xs font-medium text-[#62666d]">
-            无需登录
+      <div class="relative flex min-h-[380px] flex-col justify-between gap-8 p-6 lg:p-10">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class={`inline-flex rounded-full px-4 py-1 text-sm font-semibold text-white ${data.catalog.streamer.accent}`}>
+            {data.catalog.streamer.name}
           </span>
+        </div>
 
-          <div>
-            <p class="text-sm font-medium text-[#5e6ad2]">愿望单提交</p>
-            <h2 class="mt-2 text-2xl font-semibold leading-tight text-[#191a1b]">
-              想听哪首歌？
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-[#62666d]">
-              写下歌名、原唱和一点想法，主播之后会在后台统一处理。
-            </p>
+        <div class="max-w-4xl space-y-4">
+          <h1 class="text-3xl font-semibold tracking-tight text-[#191a1b] lg:text-5xl">
+            {data.catalog.streamer.tagline}
+          </h1>
+          <p class="max-w-2xl text-sm leading-7 text-[#62666d] lg:text-base">
+            {data.catalog.streamer.description}
+          </p>
+        </div>
+
+        <div class="grid gap-6 border-t border-[#e6e6e6] pt-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)] lg:items-end">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">公开曲目</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{data.catalog.stats.publicSongs}</p>
+              <p class="mt-1 text-xs text-[#62666d]">首可浏览歌曲</p>
+            </div>
+
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">待处理曲目</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{data.catalog.stats.pendingRequests}</p>
+              <p class="mt-1 text-xs text-[#62666d]">条愿望单请求</p>
+            </div>
+
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">标签总览</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{data.catalog.tags.length}</p>
+              <p class="mt-1 text-xs text-[#62666d]">个筛选标签</p>
+            </div>
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {#each data.catalog.streamer.platforms as platform}
+              <a
+                href={platform.href}
+                target="_blank"
+                rel="noreferrer"
+                class="rounded-[18px] border border-[#e6e6e6] bg-white/90 px-4 py-3 text-sm font-medium text-[#191a1b] shadow-sm transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+              >
+                前往 {platform.label}
+              </a>
+            {/each}
           </div>
         </div>
-      </div>
-
-      <div class="p-6 lg:p-7">
-        {#if form?.requestMessage || form?.requestError}
-          <div class="space-y-3">
-            {#if form?.requestMessage}
-              <div class="rounded-[20px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[#27a644]">
-                {form.requestMessage}
-              </div>
-            {/if}
-
-            {#if form?.requestError}
-              <div class="rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
-                {form.requestError}
-              </div>
-            {/if}
-          </div>
-        {/if}
-
-        <form method="POST" class={`grid gap-5 ${form?.requestMessage || form?.requestError ? 'mt-5' : ''}`}>
-          <label class="block space-y-2 text-sm text-[#62666d]">
-            <span>歌曲名</span>
-            <input
-              name="songTitle"
-              value={form?.requestValues?.songTitle ?? ''}
-              class="form-field"
-              placeholder="例如：群青"
-            />
-          </label>
-
-          <label class="block space-y-2 text-sm text-[#62666d]">
-            <span>原唱</span>
-            <input
-              name="artist"
-              value={form?.requestValues?.artist ?? ''}
-              class="form-field"
-              placeholder="例如：YOASOBI"
-            />
-          </label>
-
-          <label class="block space-y-2 text-sm text-[#62666d]">
-            <span>留言</span>
-            <textarea
-              name="message"
-              rows="5"
-              class="form-field"
-              placeholder="可以说说为什么想听、适合什么场合唱。"
-            >{form?.requestValues?.message ?? ''}</textarea>
-          </label>
-
-          <label class="block space-y-2 text-sm text-[#62666d]">
-            <span>你的昵称（可选）</span>
-            <input
-              name="requesterName"
-              value={form?.requestValues?.requesterName ?? ''}
-              class="form-field"
-              placeholder="例如：夜猫子"
-            />
-          </label>
-
-          <button
-            type="submit"
-            class="mt-1 inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
-          >
-            提交愿望单
-          </button>
-        </form>
       </div>
     </div>
   </section>
@@ -301,6 +212,112 @@
           当前筛选下没有结果，试试放宽关键词或筛选项。
         </div>
       {/if}
+    </div>
+  </section>
+
+  <section class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
+    <div class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+      <div>
+        <span class="w-fit rounded-full border border-[#d0d6e0] bg-[#f5f6f7] px-3 py-1 text-xs font-medium text-[#62666d]">
+          无需登录
+        </span>
+        <p class="mt-5 text-sm font-medium text-[#5e6ad2]">愿望单提交</p>
+        <h2 class="mt-2 text-2xl font-semibold leading-tight text-[#191a1b]">想听哪首歌？</h2>
+        <p class="mt-3 text-sm leading-6 text-[#62666d]">
+          优先粘贴网易云单曲链接或 ID 解析，系统会自动填好歌名和原唱；找不到链接时再手动填写。
+        </p>
+      </div>
+
+      <div>
+        {#if form?.requestMessage || form?.requestError}
+          <div class="mb-5 space-y-3">
+            {#if form?.requestMessage}
+              <div class="rounded-[20px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[#27a644]">
+                {form.requestMessage}
+              </div>
+            {/if}
+
+            {#if form?.requestError}
+              <div class="rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
+                {form.requestError}
+              </div>
+            {/if}
+          </div>
+        {/if}
+
+        <form method="POST" action="?/submitRequest" class="grid gap-4">
+          <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px] lg:items-end">
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>网易云单曲链接或 ID</span>
+              <input
+                name="songInput"
+                value={form?.requestValues?.songInput ?? ''}
+                class="form-field"
+                placeholder="https://music.163.com/#/song?id=..."
+              />
+            </label>
+
+            <button
+              type="submit"
+              formaction="?/parseRequestSong"
+              class="inline-flex w-full items-center justify-center rounded-[18px] border border-[#5e6ad2] px-5 py-3 text-sm font-semibold text-[#5e6ad2] transition hover:bg-[#5e6ad2] hover:text-white"
+            >
+              解析单曲
+            </button>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>歌曲名</span>
+              <input
+                name="songTitle"
+                value={form?.requestValues?.songTitle ?? ''}
+                class="form-field"
+                placeholder="例如：群青"
+              />
+            </label>
+
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>原唱</span>
+              <input
+                name="artist"
+                value={form?.requestValues?.artist ?? ''}
+                class="form-field"
+                placeholder="例如：YOASOBI"
+              />
+            </label>
+
+            <label class="block space-y-2 text-sm text-[#62666d] lg:col-span-2">
+              <span>留言</span>
+              <textarea
+                name="message"
+                rows="3"
+                class="form-field"
+                placeholder="可以说说为什么想听、适合什么场合唱。"
+              >{form?.requestValues?.message ?? ''}</textarea>
+            </label>
+
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>你的昵称（可选）</span>
+              <input
+                name="requesterName"
+                value={form?.requestValues?.requesterName ?? ''}
+                class="form-field"
+                placeholder="例如：夜猫子"
+              />
+            </label>
+
+            <div class="flex items-end">
+              <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
+              >
+                提交愿望单
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </section>
 </div>
