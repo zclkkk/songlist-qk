@@ -5,16 +5,10 @@
   --color-page: #f7f8f8;
   --color-surface: #ffffff;
   --color-surface-muted: #f5f6f7;
-  --color-surface-soft: #f3f4f5;
-  --color-border: #d0d6e0;
   --color-border-soft: #e6e6e6;
   --color-text: #191a1b;
-  --color-text-secondary: #62666d;
   --color-text-muted: #8a8f98;
-  --color-brand: #5e6ad2;
   --color-accent: #7170ff;
-  --color-accent-hover: #828fff;
-  --color-success: #10b981;
   font-family:
     "Inter Variable",
     Inter,
