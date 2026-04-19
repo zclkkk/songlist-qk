@@ -111,14 +111,7 @@ export const verifyAdminSession = (cookies: Cookies) => {
     return false;
   }
 
-  let expectedSignature: string;
-
-  try {
-    expectedSignature = signValue(payload);
-  } catch {
-    return false;
-  }
-
+  const expectedSignature = signValue(payload);
   const encoder = new TextEncoder();
 
   const left = encoder.encode(signature);
