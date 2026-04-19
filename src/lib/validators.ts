@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { requestStatusOptions, songStatusOptions } from '$lib/types';
+import { requestStatusOptions, songLanguageOptions, songStatusOptions } from '$lib/types';
 
 const csvToTags = (value: string) =>
   value
@@ -20,7 +20,9 @@ export const songSchema = z.object({
   id: z.string().trim().optional(),
   title: z.string().trim().min(1, '请填写歌名。').max(120, '歌名过长。'),
   artist: z.string().trim().min(1, '请填写原唱。').max(120, '原唱名称过长。'),
-  language: z.string().trim().min(1, '请填写语言。').max(40, '语言名称过长。'),
+  language: z.enum(songLanguageOptions, {
+    errorMap: () => ({ message: '请选择有效语言。' })
+  }),
   status: z.enum(songStatusOptions, {
     errorMap: () => ({ message: '请选择有效状态。' })
   }),
@@ -29,7 +31,6 @@ export const songSchema = z.object({
 });
 
 export const playlistImportSettingsSchema = z.object({
-  language: z.string().trim().min(1, '请填写语言。').max(40, '语言名称过长。'),
   status: z.enum(songStatusOptions, {
     errorMap: () => ({ message: '请选择有效状态。' })
   }),

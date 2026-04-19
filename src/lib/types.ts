@@ -1,6 +1,10 @@
 export const songStatusOptions = ['ready', 'learning', 'resting'] as const;
 export type SongStatus = (typeof songStatusOptions)[number];
 
+export const songLanguageOptions = ['未指定', '中文', '英语', '日语', '其他'] as const;
+export type SongLanguage = (typeof songLanguageOptions)[number];
+export const defaultSongLanguage: SongLanguage = '未指定';
+
 export const requestStatusOptions = ['pending', 'reviewing', 'planned', 'declined'] as const;
 export type RequestStatus = (typeof requestStatusOptions)[number];
 
@@ -8,7 +12,7 @@ export interface Song {
   id: string;
   title: string;
   artist: string;
-  language: string;
+  language: SongLanguage;
   status: SongStatus;
   tags: string[];
   isPublic: boolean;
@@ -46,7 +50,7 @@ export interface PublicCatalog {
   streamer: StreamerProfile;
   songs: Song[];
   tags: string[];
-  languages: string[];
+  languages: readonly SongLanguage[];
   statuses: readonly SongStatus[];
   stats: CatalogStats;
 }

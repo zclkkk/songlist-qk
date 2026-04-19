@@ -5,11 +5,13 @@ import { getSupabaseConfig } from '$lib/server/env';
 import {
   type CatalogStats,
   requestStatusOptions,
+  songLanguageOptions,
   songStatusOptions,
   type AdminDashboardData,
   type PublicCatalog,
   type RequestStatus,
   type Song,
+  type SongLanguage,
   type SongRequest,
   type SongStatus
 } from '$lib/types';
@@ -54,6 +56,14 @@ const parseRequestStatus = (status: string): RequestStatus => {
   throw new Error(`Invalid request status from database: ${status}`);
 };
 
+const parseSongLanguage = (language: string): SongLanguage => {
+  if (songLanguageOptions.includes(language as SongLanguage)) {
+    return language as SongLanguage;
+  }
+
+  throw new Error(`Invalid song language from database: ${language}`);
+};
+
 const getSupabaseAdmin = () => {
   const supabaseConfig = getSupabaseConfig();
 
@@ -69,7 +79,7 @@ const mapSongRow = (row: SongRow): Song => ({
   id: row.id,
   title: row.title,
   artist: row.artist,
-  language: row.language,
+  language: parseSongLanguage(row.language),
   status: parseSongStatus(row.status),
   tags: row.tags,
   isPublic: row.is_public
@@ -97,7 +107,7 @@ const buildStats = (songs: Song[], pendingRequests: number): CatalogStats => ({
 
 const buildCatalogMetadata = (songs: Song[]) => ({
   tags: sortStrings(songs.flatMap((song) => song.tags)),
-  languages: sortStrings(songs.map((song) => song.language))
+  languages: songLanguageOptions
 });
 
 const listSongs = async (): Promise<Song[]> => {
@@ -217,7 +227,7 @@ export const importSongs = async (
   songs: Array<{
     title: string;
     artist: string;
-    language: string;
+    language: SongLanguage;
     status: SongStatus;
     tags: string[];
     isPublic: boolean;
@@ -265,7 +275,7 @@ export const saveSong = async ({
   id?: string;
   title: string;
   artist: string;
-  language: string;
+  language: SongLanguage;
   status: SongStatus;
   tags: string[];
   isPublic: boolean;

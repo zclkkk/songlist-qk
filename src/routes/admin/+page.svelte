@@ -1,8 +1,10 @@
 <script lang="ts">
   import { songStatusClasses } from '$lib/status-styles';
   import {
+    defaultSongLanguage,
     requestStatusLabels,
     requestStatusOptions,
+    songLanguageOptions,
     songStatusLabels,
     songStatusOptions,
     type RequestStatus
@@ -137,7 +139,11 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <label class="block space-y-2 text-sm text-[#62666d]">
             <span>语言</span>
-            <input name="language" class="form-field" placeholder="例如：日语" />
+            <select name="language" class="form-field">
+              {#each songLanguageOptions as language}
+                <option value={language}>{language}</option>
+              {/each}
+            </select>
           </label>
 
           <label class="block space-y-2 text-sm text-[#62666d]">
@@ -180,21 +186,14 @@
             <input name="playlistInput" class="form-field" placeholder="https://music.163.com/#/playlist?id=..." />
           </label>
 
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block space-y-2 text-sm text-[#62666d]">
-              <span>语言</span>
-              <input name="language" class="form-field" value="中文" />
-            </label>
-
-            <label class="block space-y-2 text-sm text-[#62666d]">
-              <span>状态</span>
-              <select name="status" class="form-field">
-                {#each songStatusOptions as status}
-                  <option value={status} selected={status === 'ready'}>{songStatusLabels[status]}</option>
-                {/each}
-              </select>
-            </label>
-          </div>
+          <label class="block space-y-2 text-sm text-[#62666d]">
+            <span>状态</span>
+            <select name="status" class="form-field">
+              {#each songStatusOptions as status}
+                <option value={status} selected={status === 'ready'}>{songStatusLabels[status]}</option>
+              {/each}
+            </select>
+          </label>
 
           <label class="block space-y-2 text-sm text-[#62666d]">
             <span>标签（逗号分隔）</span>
@@ -212,14 +211,13 @@
         {#if form?.playlistPreview}
           <form method="POST" action="?/importPlaylist" class="mt-6 space-y-4">
             <input type="hidden" name="playlistInput" value={form.playlistPreview.playlistInput} />
-            <input type="hidden" name="language" value={form.playlistPreview.language} />
             <input type="hidden" name="status" value={form.playlistPreview.status} />
             <input type="hidden" name="tagsInput" value={form.playlistPreview.tagsInput} />
             <input type="hidden" name="songCount" value={form.playlistPreview.songs.length} />
 
             <div class="rounded-[18px] border border-[#e6e6e6] bg-[#f5f6f7] px-4 py-3 text-sm text-[#62666d]">
               <p>
-                {form.playlistPreview.songs.length} 首待确认 · {form.playlistPreview.language} · {songStatusLabels[form.playlistPreview.status]}
+                {form.playlistPreview.songs.length} 首待确认 · {defaultSongLanguage} · {songStatusLabels[form.playlistPreview.status]}
               </p>
               {#if form.playlistPreview.tagsInput}
                 <p class="mt-1 text-xs text-[#8a8f98]">标签：{form.playlistPreview.tagsInput}</p>
@@ -314,7 +312,11 @@
 
                   <label class="block space-y-2 text-sm text-[#62666d]">
                     <span>语言</span>
-                    <input name="language" value={song.language} class="form-field-muted" />
+                    <select name="language" class="form-field-muted">
+                      {#each songLanguageOptions as language}
+                        <option value={language} selected={song.language === language}>{language}</option>
+                      {/each}
+                    </select>
                   </label>
 
                   <label class="block space-y-2 text-sm text-[#62666d]">

@@ -3,6 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { clearAdminSession } from '$lib/server/auth';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs } from '$lib/server/netease';
+import { defaultSongLanguage } from '$lib/types';
 import {
 	deleteSong as removeSong,
 	getAdminDashboardData,
@@ -103,7 +104,6 @@ export const actions: Actions = {
     const formData = await request.formData();
     const parsed = playlistPreviewSchema.safeParse({
       playlistInput: readText(formData.get('playlistInput')),
-      language: readText(formData.get('language')),
       status: readText(formData.get('status')),
       tagsInput: readText(formData.get('tagsInput'))
     });
@@ -121,7 +121,6 @@ export const actions: Actions = {
         adminMessage: `已解析 ${playlistSongs.length} 首歌曲，请勾选要导入的歌曲。`,
         playlistPreview: {
           playlistInput: parsed.data.playlistInput,
-          language: parsed.data.language,
           status: parsed.data.status,
           tagsInput: parsed.data.tagsInput.join(', '),
           songs: playlistSongs
@@ -138,7 +137,6 @@ export const actions: Actions = {
     const formData = await request.formData();
     const tagsInput = readText(formData.get('tagsInput'));
     const parsed = playlistImportSettingsSchema.safeParse({
-      language: readText(formData.get('language')),
       status: readText(formData.get('status')),
       tagsInput
     });
@@ -154,7 +152,6 @@ export const actions: Actions = {
     const selectedSongs = previewSongs.filter((_, index) => selectedIndexes.has(String(index)));
     const playlistPreview = {
       playlistInput: readText(formData.get('playlistInput')),
-      language: parsed.data.language,
       status: parsed.data.status,
       tagsInput,
       songs: previewSongs
@@ -172,7 +169,7 @@ export const actions: Actions = {
         selectedSongs.map((song) => ({
           title: song.title,
           artist: song.artist,
-          language: parsed.data.language,
+          language: defaultSongLanguage,
           status: parsed.data.status,
           tags: parsed.data.tagsInput,
           isPublic: true
