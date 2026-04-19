@@ -92,7 +92,7 @@
           <form method="POST" action="?/resetDatabase" onsubmit={confirmReset}>
             <button
               type="submit"
-              class="rounded-full border border-[#d0d6e0] px-4 py-2 text-sm text-[#62666d] transition hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+              class="button button-neutral button-small"
             >
               重置数据库
             </button>
@@ -101,7 +101,7 @@
           <form method="POST" action="?/logout">
             <button
               type="submit"
-              class="rounded-full border border-[#e6e6e6] px-4 py-2 text-sm text-[#62666d] transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+              class="button button-neutral button-small"
             >
               退出登录
             </button>
@@ -176,7 +176,7 @@
 
         <button
           type="submit"
-          class="inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
+          class="button button-primary button-full"
         >
           保存歌曲
         </button>
@@ -201,7 +201,7 @@
 
           <button
             type="submit"
-            class="inline-flex w-full items-center justify-center rounded-[18px] border border-[#5e6ad2] px-5 py-3 text-sm font-semibold text-[#5e6ad2] transition hover:bg-[#5e6ad2] hover:text-white"
+            class="button button-secondary button-full"
           >
             解析单曲
           </button>
@@ -220,7 +220,7 @@
 
           <button
             type="submit"
-            class="inline-flex w-full items-center justify-center rounded-[18px] border border-[#5e6ad2] px-5 py-3 text-sm font-semibold text-[#5e6ad2] transition hover:bg-[#5e6ad2] hover:text-white"
+            class="button button-secondary button-full"
           >
             解析歌单
           </button>
@@ -307,7 +307,7 @@
 
                   <button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-[18px] border border-[#5e6ad2] bg-[#5e6ad2] px-4 py-3 text-sm font-medium text-white transition hover:border-[#828fff] hover:bg-[#828fff] lg:col-span-2"
+                    class="button button-primary lg:col-span-2"
                   >
                     保存修改
                   </button>
@@ -317,7 +317,7 @@
                   <input type="hidden" name="id" value={song.id} />
                   <button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-[18px] border border-[#d0d6e0] bg-white px-4 py-3 text-sm font-medium text-[#62666d] transition hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+                    class="button button-neutral"
                   >
                     删除歌曲
                   </button>
@@ -367,7 +367,7 @@
                   </select>
                   <button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-[18px] border border-[#5e6ad2] bg-[#5e6ad2] px-4 py-3 text-sm font-medium text-white transition hover:border-[#828fff] hover:bg-[#828fff]"
+                    class="button button-primary"
                   >
                     更新状态
                   </button>
@@ -392,7 +392,7 @@
 
         <button
           type="button"
-          class="rounded-full border border-[#e6e6e6] px-4 py-2 text-sm text-[#62666d] transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+          class="button button-neutral button-small"
           onclick={closeImportModal}
         >
           关闭
@@ -474,7 +474,7 @@
 
         <button
           type="submit"
-          class="inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
+          class="button button-primary button-full"
         >
           导入勾选歌曲
         </button>

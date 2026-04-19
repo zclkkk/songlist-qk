@@ -32,7 +32,7 @@
       <nav class="flex flex-wrap items-center gap-2 text-sm text-[#62666d]">
         <a
           href="/"
-          class="rounded-full border border-[#e6e6e6] bg-white px-4 py-2 transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+          class="button button-neutral button-small"
         >
           公开歌单
         </a>
@@ -40,14 +40,14 @@
         {#if data.viewer.isAdmin}
           <a
             href="/admin"
-            class="rounded-full border border-[#5e6ad2] bg-[#5e6ad2] px-4 py-2 text-white transition hover:border-[#828fff] hover:bg-[#828fff]"
+            class="button button-primary button-small"
           >
             后台管理
           </a>
         {:else}
           <a
             href="/admin/login"
-            class="rounded-full border border-[#e6e6e6] bg-white px-4 py-2 transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+            class="button button-neutral button-small"
           >
             管理员登录
           </a>

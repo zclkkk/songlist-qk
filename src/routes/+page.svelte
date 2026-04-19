@@ -94,7 +94,7 @@
                 href={platform.href}
                 target="_blank"
                 rel="noreferrer"
-                class="rounded-[18px] border border-[#e6e6e6] bg-white/90 px-4 py-3 text-sm font-medium text-[#191a1b] shadow-sm transition hover:border-[#d0d6e0] hover:bg-[#f5f6f7] hover:text-[#5e6ad2]"
+                class="button button-neutral button-full"
               >
                 前往 {platform.label}
               </a>
@@ -260,7 +260,7 @@
             <button
               type="submit"
               formaction="?/parseRequestSong"
-              class="inline-flex w-full items-center justify-center rounded-[18px] border border-[#5e6ad2] px-5 py-3 text-sm font-semibold text-[#5e6ad2] transition hover:bg-[#5e6ad2] hover:text-white"
+              class="button button-secondary button-full"
             >
               解析单曲
             </button>
@@ -310,7 +310,7 @@
             <div class="flex items-end">
               <button
                 type="submit"
-                class="inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
+                class="button button-primary button-full"
               >
                 提交愿望单
               </button>

@@ -5,10 +5,13 @@
   --color-page: #f7f8f8;
   --color-surface: #ffffff;
   --color-surface-muted: #f5f6f7;
+  --color-border: #d0d6e0;
   --color-border-soft: #e6e6e6;
   --color-text: #191a1b;
+  --color-text-secondary: #62666d;
   --color-text-muted: #8a8f98;
-  --color-accent: #7170ff;
+  --color-accent: #5e6ad2;
+  --color-accent-hover: #828fff;
   font-family:
     "Inter Variable",
     Inter,
@@ -43,7 +46,7 @@ textarea {
 }
 
 ::selection {
-  background: rgba(113, 112, 255, 0.18);
+  background: rgb(94 106 210 / 0.18);
 }
 
 select {
@@ -81,11 +84,81 @@ select {
 .form-field:focus,
 .form-field-muted:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgb(113 112 255 / 0.15);
+  box-shadow: 0 0 0 4px rgb(94 106 210 / 0.15);
 }
 
 .form-field-muted:focus {
   background: var(--color-surface);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(94 106 210 / 0.18);
+}
+
+.button-primary {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.button-primary:hover {
+  border-color: var(--color-accent-hover);
+  background: var(--color-accent-hover);
+}
+
+.button-secondary {
+  border-color: var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+}
+
+.button-secondary:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+.button-neutral {
+  border-color: var(--color-border-soft);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.button-neutral:hover {
+  border-color: var(--color-border);
+  background: var(--color-surface-muted);
+  color: var(--color-accent);
+}
+
+.button-small {
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-weight: 400;
+}
+
+.button-full {
+  width: 100%;
 }
 
 img {

@@ -56,7 +56,7 @@
 
       <button
         type="submit"
-        class="inline-flex w-full items-center justify-center rounded-[18px] bg-[#5e6ad2] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#828fff]"
+        class="button button-primary button-full"
       >
         登录后台
       </button>
