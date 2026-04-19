@@ -11,9 +11,9 @@ const csvToTags = (value: string) =>
 
 export const requestSchema = z.object({
   songTitle: z.string().trim().min(1, '请填写歌曲名。').max(120, '歌曲名过长。'),
-  artist: z.string().trim().max(120, '原唱名称过长。').default(''),
+  artist: z.string().trim().max(120, '原唱名称过长。'),
   message: z.string().trim().min(1, '请填写留言。').max(300, '留言请控制在 300 字以内。'),
-  requesterName: z.string().trim().max(40, '昵称请控制在 40 字以内。').default('')
+  requesterName: z.string().trim().max(40, '昵称请控制在 40 字以内。')
 });
 
 export const songSchema = z.object({
@@ -25,7 +25,7 @@ export const songSchema = z.object({
     errorMap: () => ({ message: '请选择有效状态。' })
   }),
   tagsInput: z.string().trim().max(240, '标签内容过长。').transform(csvToTags),
-  isPublic: z.boolean().default(false)
+  isPublic: z.boolean()
 });
 
 export const requestStatusSchema = z.object({
