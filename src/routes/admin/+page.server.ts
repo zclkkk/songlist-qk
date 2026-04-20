@@ -7,7 +7,7 @@ import {
 	deleteSong as removeSong,
 	getAdminDashboardData,
 	importSongs,
-	resetDatabase as resetSongboardDatabase,
+	resetDatabase as resetSonglistDatabase,
 	saveSong,
 	updateRequestStatus
 } from '$lib/server/repository';
@@ -288,7 +288,7 @@ export const actions: Actions = {
 
   resetDatabase: async () => {
     try {
-      await resetSongboardDatabase();
+      await resetSonglistDatabase();
     } catch (error) {
       return fail(500, {
         adminError: error instanceof Error ? error.message : '重置数据库失败。'

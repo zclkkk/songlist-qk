@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-  <title>管理员登录 | VTuber Songboard</title>
+  <title>管理员登录 | QingKong Songlist</title>
 </svelte:head>
 
 <div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1fr_420px]">

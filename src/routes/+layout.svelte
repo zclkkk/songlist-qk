@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-  <title>VTuber Songboard</title>
+  <title>QingKong Songlist</title>
   <meta
     name="description"
     content="单主播 VTuber 歌单站，支持公开歌单展示、搜索筛选、愿望单提交与后台管理。"
@@ -42,7 +42,7 @@
           歌
         </span>
         <span class="flex min-w-0 flex-col">
-          <span class="text-base font-semibold">VTuber Songboard</span>
+          <span class="text-base font-semibold">QingKong Songlist</span>
           <span class="text-xs text-[#8a8f98]">单主播歌单与愿望单管理</span>
         </span>
       </a>

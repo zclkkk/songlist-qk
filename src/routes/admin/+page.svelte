@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-  <title>后台管理 | VTuber Songboard</title>
+  <title>后台管理 | QingKong Songlist</title>
 </svelte:head>
 
 <div class="space-y-8">

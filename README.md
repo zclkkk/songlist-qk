@@ -1,4 +1,4 @@
-# VTuber Songboard
+# QingKong Songlist
 
 单主播歌单站。观众在前台查歌、筛选歌曲、提交愿望单；主播在后台维护曲库、导入网易云歌曲、处理观众请求。
 
