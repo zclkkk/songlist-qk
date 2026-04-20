@@ -3,7 +3,6 @@ import { fail } from '@sveltejs/kit';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
 import { createSongRequest, getPublicCatalog } from '$lib/server/repository';
-import { defaultSongLanguage } from '$lib/types';
 import { requestSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -121,7 +120,7 @@ export const actions: Actions = {
         songInput: '',
         songTitle: '',
         artist: '',
-        language: defaultSongLanguage,
+        language: '其他',
         message: '',
         requesterName: ''
       }

@@ -1,9 +1,8 @@
 export const songStatusOptions = ['ready', 'learning', 'resting'] as const;
 export type SongStatus = (typeof songStatusOptions)[number];
 
-export const songLanguageOptions = ['未指定', '中文', '英语', '日语', '其他'] as const;
+export const songLanguageOptions = ['中文', '英语', '日语', '其他'] as const;
 export type SongLanguage = (typeof songLanguageOptions)[number];
-export const defaultSongLanguage: SongLanguage = '未指定';
 
 export const requestStatusOptions = ['pending', 'accepted', 'refused'] as const;
 export type RequestStatus = (typeof requestStatusOptions)[number];

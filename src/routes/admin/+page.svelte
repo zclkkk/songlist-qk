@@ -1,7 +1,6 @@
 <script lang="ts">
   import { songStatusClasses } from '$lib/status-styles';
   import {
-    defaultSongLanguage,
     requestDecisionOptions,
     requestStatusLabels,
     songLanguageOptions,
@@ -145,9 +144,9 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <label class="block space-y-2 text-sm text-[#62666d]">
             <span>语言</span>
-            <select name="language" class="form-field">
+            <select name="language" class="form-field" required>
               {#each songLanguageOptions as language}
-                <option value={language}>{language}</option>
+                <option value={language} selected={language === '其他'}>{language}</option>
               {/each}
             </select>
           </label>
@@ -272,7 +271,7 @@
 
                   <label class="block space-y-2 text-sm text-[#62666d]">
                     <span>语言</span>
-                    <select name="language" class="form-field-muted">
+                    <select name="language" class="form-field-muted" required>
                       {#each songLanguageOptions as language}
                         <option value={language} selected={song.language === language}>{language}</option>
                       {/each}
@@ -453,9 +452,9 @@
                   <td class="px-3 py-3 text-[#191a1b]">{song.title}</td>
                   <td class="px-3 py-3 text-[#62666d]">{song.artist}</td>
                   <td class="px-3 py-3">
-                    <select name={`songLanguage-${index}`} class="form-field-muted min-w-28">
+                    <select name={`songLanguage-${index}`} class="form-field-muted min-w-28" required>
                       {#each songLanguageOptions as language}
-                        <option value={language} selected={(song.language || defaultSongLanguage) === language}>{language}</option>
+                        <option value={language} selected={song.language === language}>{language}</option>
                       {/each}
                     </select>
                   </td>

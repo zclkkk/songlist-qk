@@ -1,6 +1,6 @@
 <script lang="ts">
   import { songStatusClasses } from '$lib/status-styles';
-  import { defaultSongLanguage, songLanguageOptions, songStatusLabels, type Song, type SongStatus } from '$lib/types';
+  import { songLanguageOptions, songStatusLabels, type Song, type SongStatus } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
 
@@ -290,9 +290,9 @@
 
             <label class="block space-y-2 text-sm text-[#62666d]">
               <span>语言</span>
-              <select name="language" class="form-field">
+              <select name="language" class="form-field" required>
                 {#each songLanguageOptions as language}
-                  <option value={language} selected={(form?.requestValues?.language ?? defaultSongLanguage) === language}>
+                  <option value={language} selected={(form?.requestValues?.language ?? '其他') === language}>
                     {language}
                   </option>
                 {/each}

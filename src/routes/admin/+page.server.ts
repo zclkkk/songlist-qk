@@ -3,7 +3,6 @@ import { fail, redirect } from '@sveltejs/kit';
 import { clearAdminSession } from '$lib/server/auth';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
-import { defaultSongLanguage } from '$lib/types';
 import {
 	deleteSong as removeSong,
 	getAdminDashboardData,
@@ -133,7 +132,7 @@ export const actions: Actions = {
           status: 'ready',
           songs: playlistSongs.map((song) => ({
             ...song,
-            language: defaultSongLanguage,
+            language: '其他',
             tagsInput: ''
           }))
         }
@@ -171,7 +170,7 @@ export const actions: Actions = {
           songs: [
             {
               ...song,
-              language: defaultSongLanguage,
+              language: '其他',
               tagsInput: ''
             }
           ]
