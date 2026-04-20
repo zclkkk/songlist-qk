@@ -3,6 +3,7 @@
   import { songStatusLabels, type Song, type SongStatus } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
+  import CustomSelect from '$lib/components/CustomSelect.svelte';
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
 
@@ -35,6 +36,21 @@
       return matchesKeyword(song, keyword) && matchesLanguage && matchesTag && matchesStatus;
     });
   });
+
+  const languageOptions = $derived([
+    { label: '全部语言', value: 'all' },
+    ...data.catalog.languages.map((l) => ({ label: l, value: l }))
+  ]);
+
+  const tagOptions = $derived([
+    { label: '全部标签', value: 'all' },
+    ...data.catalog.tags.map((t) => ({ label: t, value: t }))
+  ]);
+
+  const statusOptions = $derived([
+    { label: '全部状态', value: 'all' },
+    ...data.catalog.statuses.map((s) => ({ label: songStatusLabels[s], value: s }))
+  ]);
 </script>
 
 <svelte:head>
@@ -127,35 +143,20 @@
           />
         </label>
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
-          <span>语言</span>
-          <select bind:value={selectedLanguage} class="form-field">
-            <option value="all">全部语言</option>
-            {#each data.catalog.languages as language}
-              <option value={language}>{language}</option>
-            {/each}
-          </select>
-        </label>
+        <div class="block space-y-2 text-sm text-[#62666d]">
+          <span class="block">语言</span>
+          <CustomSelect bind:value={selectedLanguage} options={languageOptions} />
+        </div>
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
-          <span>标签</span>
-          <select bind:value={selectedTag} class="form-field">
-            <option value="all">全部标签</option>
-            {#each data.catalog.tags as tag}
-              <option value={tag}>{tag}</option>
-            {/each}
-          </select>
-        </label>
+        <div class="block space-y-2 text-sm text-[#62666d]">
+          <span class="block">标签</span>
+          <CustomSelect bind:value={selectedTag} options={tagOptions} />
+        </div>
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
-          <span>当前状态</span>
-          <select bind:value={selectedStatus} class="form-field">
-            <option value="all">全部状态</option>
-            {#each data.catalog.statuses as status}
-              <option value={status}>{songStatusLabels[status]}</option>
-            {/each}
-          </select>
-        </label>
+        <div class="block space-y-2 text-sm text-[#62666d]">
+          <span class="block">当前状态</span>
+          <CustomSelect bind:value={selectedStatus} options={statusOptions} />
+        </div>
       </div>
     </aside>
 

@@ -11,6 +11,7 @@
   } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
+  import CustomSelect from '$lib/components/CustomSelect.svelte';
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
   let importModalDismissed = $state(false);
@@ -27,6 +28,10 @@
       event.preventDefault();
     }
   };
+
+  const languageOptionsList = songLanguageOptions.map(l => ({ label: l, value: l }));
+  const statusOptionsList = songStatusOptions.map(s => ({ label: songStatusLabels[s], value: s }));
+  const requestStatusOptionsList = requestStatusOptions.map(s => ({ label: requestStatusLabels[s], value: s }));
 
   const closeImportModal = () => {
     importModalDismissed = true;
@@ -145,23 +150,15 @@
         </label>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <div class="block space-y-2 text-sm text-[#62666d]">
             <span>语言</span>
-            <select name="language" class="form-field">
-              {#each songLanguageOptions as language}
-                <option value={language}>{language}</option>
-              {/each}
-            </select>
-          </label>
+            <CustomSelect name="language" value={songLanguageOptions[0]} options={languageOptionsList} />
+          </div>
 
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <div class="block space-y-2 text-sm text-[#62666d]">
             <span>状态</span>
-            <select name="status" class="form-field">
-              {#each songStatusOptions as status}
-                <option value={status}>{songStatusLabels[status]}</option>
-              {/each}
-            </select>
-          </label>
+            <CustomSelect name="status" value={songStatusOptions[0]} options={statusOptionsList} />
+          </div>
         </div>
 
         <label class="block space-y-2 text-sm text-[#62666d]">
@@ -272,23 +269,15 @@
                     <input name="artist" value={song.artist} class="form-field-muted" />
                   </label>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <div class="block space-y-2 text-sm text-[#62666d]">
                     <span>语言</span>
-                    <select name="language" class="form-field-muted">
-                      {#each songLanguageOptions as language}
-                        <option value={language} selected={song.language === language}>{language}</option>
-                      {/each}
-                    </select>
-                  </label>
+                    <CustomSelect name="language" value={song.language} options={languageOptionsList} variant="muted" />
+                  </div>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <div class="block space-y-2 text-sm text-[#62666d]">
                     <span>状态</span>
-                    <select name="status" class="form-field-muted">
-                      {#each songStatusOptions as status}
-                        <option value={status} selected={song.status === status}>{songStatusLabels[status]}</option>
-                      {/each}
-                    </select>
-                  </label>
+                    <CustomSelect name="status" value={song.status} options={statusOptionsList} variant="muted" />
+                  </div>
 
                   <label class="block space-y-2 text-sm text-[#62666d]">
                     <span>标签</span>
@@ -360,11 +349,7 @@
 
                 <form method="POST" action="?/updateRequestStatus" class="flex w-full shrink-0 gap-3 lg:w-auto lg:min-w-[260px] lg:flex-col">
                   <input type="hidden" name="id" value={item.id} />
-                  <select name="status" class="form-field-muted">
-                    {#each requestStatusOptions as status}
-                      <option value={status} selected={item.status === status}>{requestStatusLabels[status]}</option>
-                    {/each}
-                  </select>
+                  <CustomSelect name="status" value={item.status} options={requestStatusOptionsList} variant="muted" />
                   <button
                     type="submit"
                     class="button button-primary"
@@ -409,14 +394,10 @@
         <input type="hidden" name="playlistInput" value={form.playlistPreview.playlistInput} />
         <input type="hidden" name="songCount" value={form.playlistPreview.songs.length} />
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
+        <div class="block space-y-2 text-sm text-[#62666d]">
           <span>状态</span>
-          <select name="status" class="form-field">
-            {#each songStatusOptions as status}
-              <option value={status} selected={form.playlistPreview.status === status}>{songStatusLabels[status]}</option>
-            {/each}
-          </select>
-        </label>
+          <CustomSelect name="status" value={form.playlistPreview.status} options={statusOptionsList} />
+        </div>
 
         <div class="rounded-[18px] border border-[#e6e6e6] bg-[#f5f6f7] px-4 py-3 text-sm text-[#62666d]">
           {form.playlistPreview.songs.length} 首待确认
@@ -452,11 +433,9 @@
                   <td class="px-3 py-3 text-[#191a1b]">{song.title}</td>
                   <td class="px-3 py-3 text-[#62666d]">{song.artist}</td>
                   <td class="px-3 py-3">
-                    <select name={`songLanguage-${index}`} class="form-field-muted min-w-28">
-                      {#each songLanguageOptions as language}
-                        <option value={language} selected={(song.language || defaultSongLanguage) === language}>{language}</option>
-                      {/each}
-                    </select>
+                    <div class="min-w-28">
+                      <CustomSelect name={`songLanguage-${index}`} value={song.language || defaultSongLanguage} options={languageOptionsList} variant="muted" />
+                    </div>
                   </td>
                   <td class="px-3 py-3">
                     <input
