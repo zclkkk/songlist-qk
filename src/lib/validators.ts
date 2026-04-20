@@ -13,7 +13,7 @@ export const requestSchema = z.object({
   songTitle: z.string().trim().min(1, '请填写歌曲名。').max(120, '歌曲名过长。'),
   artist: z.string().trim().max(120, '原唱名称过长。'),
   language: z.enum(songLanguageOptions, {
-    errorMap: () => ({ message: '请选择有效语言。' })
+    error: '请选择有效语言。'
   }),
   message: z.string().trim().min(1, '请填写留言。').max(300, '留言请控制在 300 字以内。'),
   requesterName: z.string().trim().max(40, '昵称请控制在 40 字以内。')
@@ -24,10 +24,10 @@ export const songSchema = z.object({
   title: z.string().trim().min(1, '请填写歌名。').max(120, '歌名过长。'),
   artist: z.string().trim().min(1, '请填写原唱。').max(120, '原唱名称过长。'),
   language: z.enum(songLanguageOptions, {
-    errorMap: () => ({ message: '请选择有效语言。' })
+    error: '请选择有效语言。'
   }),
   status: z.enum(songStatusOptions, {
-    errorMap: () => ({ message: '请选择有效状态。' })
+    error: '请选择有效状态。'
   }),
   tagsInput: z.string().trim().max(240, '标签内容过长。').transform(csvToTags),
   isPublic: z.boolean()
@@ -35,13 +35,13 @@ export const songSchema = z.object({
 
 export const playlistImportSettingsSchema = z.object({
   status: z.enum(songStatusOptions, {
-    errorMap: () => ({ message: '请选择有效状态。' })
+    error: '请选择有效状态。'
   })
 });
 
 export const playlistSongImportSchema = z.object({
   language: z.enum(songLanguageOptions, {
-    errorMap: () => ({ message: '请选择有效语言。' })
+    error: '请选择有效语言。'
   }),
   tagsInput: z.string().trim().max(240, '标签内容过长。').transform(csvToTags)
 });
@@ -57,6 +57,6 @@ export const songPreviewSchema = z.object({
 export const requestDecisionSchema = z.object({
   id: z.string().trim().min(1, '请求 ID 缺失。'),
   status: z.enum(requestDecisionOptions, {
-    errorMap: () => ({ message: '请选择 Accept 或 Refuse。' })
+    error: '请选择 Accept 或 Refuse。'
   })
 });
