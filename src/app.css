@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   color-scheme: light;
@@ -27,6 +28,22 @@
   color: var(--color-text);
 }
 
+.dark {
+  color-scheme: dark;
+  --color-page: #090b10;
+  --color-surface: #11151d;
+  --color-surface-muted: #171d27;
+  --color-border: #334155;
+  --color-border-soft: #253044;
+  --color-text: #e5e7eb;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-accent: #38bdf8;
+  --color-accent-hover: #0ea5e9;
+  background: var(--color-page);
+  color: var(--color-text);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -34,8 +51,20 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background: transparent;
+  background:
+    radial-gradient(circle at top left, rgb(94 106 210 / 0.08), transparent 32rem),
+    var(--color-page);
   color: var(--color-text);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgb(56 189 248 / 0.12), transparent 34rem),
+    radial-gradient(circle at top right, rgb(20 184 166 / 0.08), transparent 30rem),
+    var(--color-page);
 }
 
 button,
@@ -51,6 +80,10 @@ textarea {
 
 select {
   color-scheme: light;
+}
+
+.dark select {
+  color-scheme: dark;
 }
 
 .form-field,
@@ -159,6 +192,64 @@ select {
 
 .button-full {
   width: 100%;
+}
+
+.dark .bg-white {
+  background-color: var(--color-surface) !important;
+}
+
+.dark .bg-white\/90 {
+  background-color: rgb(17 21 29 / 0.9) !important;
+}
+
+.dark .bg-\[\#f5f6f7\],
+.dark .bg-\[\#f3f4f5\] {
+  background-color: var(--color-surface-muted) !important;
+}
+
+.dark .bg-\[\#5e6ad2\] {
+  background-color: var(--color-accent) !important;
+}
+
+.dark .border-\[\#e6e6e6\],
+.dark .border-\[\#d0d6e0\] {
+  border-color: var(--color-border-soft) !important;
+}
+
+.dark .text-\[\#191a1b\] {
+  color: var(--color-text) !important;
+}
+
+.dark .text-\[\#62666d\] {
+  color: var(--color-text-secondary) !important;
+}
+
+.dark .text-\[\#8a8f98\] {
+  color: var(--color-text-muted) !important;
+}
+
+.dark .text-\[\#5e6ad2\] {
+  color: var(--color-accent) !important;
+}
+
+.dark .text-\[\#27a644\] {
+  color: #34d399 !important;
+}
+
+.dark .divide-\[\#e6e6e6\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--color-border-soft) !important;
+}
+
+.dark details[open] {
+  background-color: var(--color-surface) !important;
+}
+
+.theme-hero-overlay {
+  background: linear-gradient(to right, white, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.5));
+}
+
+.dark .theme-hero-overlay {
+  background: linear-gradient(to right, rgb(17 21 29 / 0.95), rgb(17 21 29 / 0.88), rgb(17 21 29 / 0.54));
 }
 
 img {

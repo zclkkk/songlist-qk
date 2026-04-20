@@ -50,7 +50,7 @@
         alt="舞台麦克风和灯光"
         class="absolute inset-0 h-full w-full object-cover"
       />
-      <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/50"></div>
+      <div class="theme-hero-overlay absolute inset-0"></div>
 
       <div class="relative flex min-h-[380px] flex-col justify-between gap-8 p-6 lg:p-10">
         <div class="flex flex-wrap items-center gap-3">
