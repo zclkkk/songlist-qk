@@ -4,7 +4,6 @@ import { streamerProfile } from '$lib/config';
 import { getSupabaseConfig } from '$lib/server/env';
 import {
   type CatalogStats,
-  defaultSongLanguage,
   requestStatusOptions,
   songLanguageOptions,
   songStatusOptions,
@@ -33,6 +32,7 @@ type RequestRow = {
   id: string;
   song_title: string;
   artist: string;
+  language: string;
   message: string;
   requester_name: string | null;
   status: string;
@@ -91,6 +91,7 @@ const mapRequestRow = (row: RequestRow): SongRequest => ({
   id: row.id,
   songTitle: row.song_title,
   artist: row.artist,
+  language: parseSongLanguage(row.language),
   message: row.message,
   requesterName: row.requester_name,
   status: parseRequestStatus(row.status),
@@ -132,7 +133,7 @@ const listRequests = async (): Promise<SongRequest[]> => {
 
   const { data, error } = await supabase
     .from('requests')
-    .select('id, song_title, artist, message, requester_name, status, matched_song_id, created_at')
+    .select('id, song_title, artist, language, message, requester_name, status, matched_song_id, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -170,11 +171,13 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
 export const createSongRequest = async ({
   songTitle,
   artist,
+  language,
   message,
   requesterName
 }: {
   songTitle: string;
   artist: string;
+  language: SongLanguage;
   message: string;
   requesterName: string;
 }) => {
@@ -182,6 +185,7 @@ export const createSongRequest = async ({
     id: randomUUID(),
     songTitle,
     artist,
+    language,
     message,
     requesterName: requesterName || null,
     status: 'pending',
@@ -195,6 +199,7 @@ export const createSongRequest = async ({
     id: payload.id,
     song_title: payload.songTitle,
     artist: payload.artist,
+    language: payload.language,
     message: payload.message,
     requester_name: payload.requesterName,
     status: payload.status,
@@ -331,7 +336,7 @@ export const updateRequestStatus = async ({
   const supabase = getSupabaseAdmin();
   const { data: requestRow, error: requestError } = await supabase
     .from('requests')
-    .select('id, song_title, artist, message, requester_name, status, matched_song_id, created_at')
+    .select('id, song_title, artist, language, message, requester_name, status, matched_song_id, created_at')
     .eq('id', id)
     .single();
 
@@ -349,7 +354,7 @@ export const updateRequestStatus = async ({
     const song = await saveSong({
       title: request.songTitle,
       artist: request.artist,
-      language: defaultSongLanguage,
+      language: request.language,
       status: 'learning',
       tags: [],
       isPublic: true

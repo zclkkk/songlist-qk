@@ -24,6 +24,7 @@ export interface SongRequest {
   id: string;
   songTitle: string;
   artist: string;
+  language: SongLanguage;
   message: string;
   requesterName: string | null;
   status: RequestStatus;

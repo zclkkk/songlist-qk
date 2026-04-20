@@ -21,12 +21,18 @@ create table if not exists public.requests (
   id uuid primary key default gen_random_uuid(),
   song_title text not null,
   artist text not null default '',
+  language text not null,
   message text not null,
   requester_name text,
   status text not null default 'pending' check (status in ('pending', 'accepted', 'refused')),
   matched_song_id uuid references public.songs (id) on delete set null,
   created_at timestamptz not null default now()
 );
+
+alter table public.requests drop constraint if exists requests_language_check;
+alter table public.requests
+  add constraint requests_language_check
+  check (language in ('未指定', '中文', '英语', '日语', '其他'));
 
 alter table public.songs enable row level security;
 alter table public.requests enable row level security;

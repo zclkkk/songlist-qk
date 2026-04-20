@@ -349,6 +349,7 @@
                     </span>
                   </div>
                   <p class="mt-2 text-sm text-[#62666d]">原唱：{item.artist || '未填写'}</p>
+                  <p class="mt-1 text-sm text-[#62666d]">语言：{item.language}</p>
                   <p class="mt-3 text-sm leading-7 text-[#62666d]">{item.message}</p>
                   <div class="mt-4 flex flex-wrap gap-3 text-xs text-[#8a8f98]">
                     <span>提交者：{item.requesterName || '匿名'}</span>

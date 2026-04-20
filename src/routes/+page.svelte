@@ -1,6 +1,6 @@
 <script lang="ts">
   import { songStatusClasses } from '$lib/status-styles';
-  import { songStatusLabels, type Song, type SongStatus } from '$lib/types';
+  import { defaultSongLanguage, songLanguageOptions, songStatusLabels, type Song, type SongStatus } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
 
@@ -267,7 +267,7 @@
             </button>
           </div>
 
-          <div class="grid gap-4 lg:grid-cols-2">
+          <div class="grid gap-4 lg:grid-cols-3">
             <label class="block space-y-2 text-sm text-[#62666d]">
               <span>歌曲名</span>
               <input
@@ -288,7 +288,18 @@
               />
             </label>
 
-            <label class="block space-y-2 text-sm text-[#62666d] lg:col-span-2">
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>语言</span>
+              <select name="language" class="form-field">
+                {#each songLanguageOptions as language}
+                  <option value={language} selected={(form?.requestValues?.language ?? defaultSongLanguage) === language}>
+                    {language}
+                  </option>
+                {/each}
+              </select>
+            </label>
+
+            <label class="block space-y-2 text-sm text-[#62666d] lg:col-span-3">
               <span>留言</span>
               <textarea
                 name="message"
@@ -298,7 +309,7 @@
               >{form?.requestValues?.message ?? ''}</textarea>
             </label>
 
-            <label class="block space-y-2 text-sm text-[#62666d]">
+            <label class="block space-y-2 text-sm text-[#62666d] lg:col-span-2">
               <span>你的昵称（可选）</span>
               <input
                 name="requesterName"

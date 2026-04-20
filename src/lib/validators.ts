@@ -12,6 +12,9 @@ const csvToTags = (value: string) =>
 export const requestSchema = z.object({
   songTitle: z.string().trim().min(1, '请填写歌曲名。').max(120, '歌曲名过长。'),
   artist: z.string().trim().max(120, '原唱名称过长。'),
+  language: z.enum(songLanguageOptions, {
+    errorMap: () => ({ message: '请选择有效语言。' })
+  }),
   message: z.string().trim().min(1, '请填写留言。').max(300, '留言请控制在 300 字以内。'),
   requesterName: z.string().trim().max(40, '昵称请控制在 40 字以内。')
 });

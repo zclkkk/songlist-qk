@@ -3,6 +3,7 @@ import { fail } from '@sveltejs/kit';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
 import { createSongRequest, getPublicCatalog } from '$lib/server/repository';
+import { defaultSongLanguage } from '$lib/types';
 import { requestSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -14,6 +15,7 @@ const readRequestValues = (formData: FormData) => ({
   songInput: readText(formData.get('songInput')),
   songTitle: readText(formData.get('songTitle')),
   artist: readText(formData.get('artist')),
+  language: readText(formData.get('language')),
   message: readText(formData.get('message')),
   requesterName: readText(formData.get('requesterName'))
 });
@@ -119,6 +121,7 @@ export const actions: Actions = {
         songInput: '',
         songTitle: '',
         artist: '',
+        language: defaultSongLanguage,
         message: '',
         requesterName: ''
       }
