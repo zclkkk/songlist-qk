@@ -11,8 +11,9 @@
   let selectedTag = $state('all');
   let selectedStatus = $state<'all' | SongStatus>('all');
 
-  const coverImage =
-    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1740&auto=format&fit=crop';
+  const coverImage = $derived(
+    data.catalog.settings.background || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1740&auto=format&fit=crop'
+  );
 
   const normalize = (value: string) => value.trim().toLowerCase();
 
@@ -53,39 +54,42 @@
       <div class="theme-hero-overlay absolute inset-0"></div>
 
       <div class="relative flex min-h-[380px] flex-col justify-between gap-8 p-6 lg:p-10">
-        <div class="flex flex-wrap items-center gap-3">
-          <span class={`inline-flex rounded-full px-4 py-1 text-sm font-semibold text-white ${data.catalog.streamer.accent}`}>
-            {data.catalog.streamer.name}
-          </span>
-        </div>
+        <div class="flex flex-col items-center justify-center pt-8 text-center">
+          {#if data.catalog.settings.avatar}
+            <div class="h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-[#f5f6f7] shadow-sm dark:border-[#11151d] dark:bg-[#171d27]">
+              <img src={data.catalog.settings.avatar} alt="Up主头像" class="h-full w-full object-cover" />
+            </div>
+          {:else}
+            <div class="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white bg-[#5e6ad2] shadow-sm dark:border-[#11151d]">
+              <span class="text-4xl font-bold text-white">{data.catalog.streamer.name.charAt(0)}</span>
+            </div>
+          {/if}
 
-        <div class="max-w-4xl space-y-4">
-          <h1 class="text-3xl font-semibold tracking-tight text-[#191a1b] lg:text-5xl">
-            {data.catalog.streamer.tagline}
+          <div class="my-6 h-[2px] w-12 rounded-full bg-[#d0d6e0] dark:bg-[#334155]"></div>
+
+          <h1 class="text-3xl font-semibold tracking-tight text-[#191a1b] dark:text-[#e5e7eb] lg:text-4xl">
+            {data.catalog.settings.heroTitle}
           </h1>
-          <p class="max-w-2xl text-sm leading-7 text-[#62666d] lg:text-base">
-            {data.catalog.streamer.description}
-          </p>
         </div>
 
-        <div class="grid gap-6 border-t border-[#e6e6e6] pt-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)] lg:items-end">
+        <div class="grid gap-6 border-t border-[#e6e6e6] pt-5 dark:border-[#253044] lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.55fr)] lg:items-end">
           <div class="grid gap-4 sm:grid-cols-3">
-            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">公开曲目</p>
-              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{data.catalog.stats.publicSongs}</p>
-              <p class="mt-1 text-xs text-[#62666d]">首可浏览歌曲</p>
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur dark:border-[#253044] dark:bg-[#11151d]/90">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98] dark:text-[#94a3b8]">公开曲目</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b] dark:text-[#e5e7eb]">{data.catalog.stats.publicSongs}</p>
+              <p class="mt-1 text-xs text-[#62666d] dark:text-[#cbd5e1]">首可浏览歌曲</p>
             </div>
 
-            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">学习中曲目</p>
-              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{learningSongs}</p>
-              <p class="mt-1 text-xs text-[#62666d]">首正在练习</p>
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur dark:border-[#253044] dark:bg-[#11151d]/90">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98] dark:text-[#94a3b8]">学习中曲目</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b] dark:text-[#e5e7eb]">{learningSongs}</p>
+              <p class="mt-1 text-xs text-[#62666d] dark:text-[#cbd5e1]">首正在练习</p>
             </div>
 
-            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur">
-              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98]">标签总览</p>
-              <p class="mt-2 text-3xl font-semibold text-[#191a1b]">{data.catalog.tags.length}</p>
-              <p class="mt-1 text-xs text-[#62666d]">个筛选标签</p>
+            <div class="rounded-[24px] border border-[#e6e6e6] bg-white/90 p-4 shadow-sm backdrop-blur dark:border-[#253044] dark:bg-[#11151d]/90">
+              <p class="text-xs font-medium uppercase tracking-[0.14em] text-[#8a8f98] dark:text-[#94a3b8]">标签总览</p>
+              <p class="mt-2 text-3xl font-semibold text-[#191a1b] dark:text-[#e5e7eb]">{data.catalog.tags.length}</p>
+              <p class="mt-1 text-xs text-[#62666d] dark:text-[#cbd5e1]">个筛选标签</p>
             </div>
           </div>
 

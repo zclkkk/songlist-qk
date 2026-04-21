@@ -51,3 +51,35 @@ create policy "public can create requests"
     status = 'pending'
     and matched_song_id is null
   );
+
+create table if not exists public.settings (
+  key text primary key,
+  value text not null
+);
+
+alter table public.settings drop constraint if exists settings_key_check;
+alter table public.settings
+  add constraint settings_key_check
+  check (key in ('avatar_path', 'background_path', 'hero_title'));
+
+alter table public.settings enable row level security;
+
+drop policy if exists "public settings are readable" on public.settings;
+create policy "public settings are readable"
+  on public.settings
+  for select
+  using (key in ('avatar_path', 'background_path', 'hero_title'));
+
+insert into public.settings (key, value)
+values
+  ('avatar_path', ''),
+  ('background_path', ''),
+  ('hero_title', 'songlist-qk')
+on conflict (key) do nothing;
+
+insert into storage.buckets (id, name, public)
+values ('site-assets', 'site-assets', true)
+on conflict (id) do update
+set
+  name = excluded.name,
+  public = excluded.public;

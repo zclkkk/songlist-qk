@@ -48,6 +48,12 @@ export interface CatalogStats {
   pendingRequests: number;
 }
 
+export interface PageSettings {
+  avatar: string;
+  background: string;
+  heroTitle: string;
+}
+
 export interface PublicCatalog {
   streamer: StreamerProfile;
   songs: Song[];
@@ -55,6 +61,7 @@ export interface PublicCatalog {
   languages: readonly SongLanguage[];
   statuses: readonly SongStatus[];
   stats: CatalogStats;
+  settings: PageSettings;
 }
 
 export interface AdminDashboardData {
@@ -62,6 +69,7 @@ export interface AdminDashboardData {
   songs: Song[];
   requests: SongRequest[];
   overview: CatalogStats;
+  settings: PageSettings;
 }
 
 export const songStatusLabels: Record<SongStatus, string> = {

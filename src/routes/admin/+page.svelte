@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { songStatusClasses } from '$lib/status-styles';
   import {
     requestDecisionOptions,
@@ -13,7 +14,97 @@
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
   let importModalDismissed = $state(false);
+  let settingsModalOpen = $state(false);
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
+
+  let avatarPreview = $state('');
+  let backgroundPreview = $state('');
+  let heroTitleInput = $state('');
+  let avatarPreviewUrl = '';
+  let backgroundPreviewUrl = '';
+
+  const clearAvatarPreviewUrl = () => {
+    if (avatarPreviewUrl) {
+      URL.revokeObjectURL(avatarPreviewUrl);
+      avatarPreviewUrl = '';
+    }
+  };
+
+  const clearBackgroundPreviewUrl = () => {
+    if (backgroundPreviewUrl) {
+      URL.revokeObjectURL(backgroundPreviewUrl);
+      backgroundPreviewUrl = '';
+    }
+  };
+
+  const resetImagePreviews = () => {
+    avatarPreview = data.dashboard.settings.avatar;
+    backgroundPreview = data.dashboard.settings.background;
+  };
+
+  $effect(() => {
+    if (!avatarPreviewUrl) {
+      avatarPreview = data.dashboard.settings.avatar;
+    }
+
+    if (!backgroundPreviewUrl) {
+      backgroundPreview = data.dashboard.settings.background;
+    }
+  });
+
+  onDestroy(() => {
+    clearAvatarPreviewUrl();
+    clearBackgroundPreviewUrl();
+  });
+
+  const onAvatarChange = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+
+    clearAvatarPreviewUrl();
+
+    if (file) {
+      avatarPreviewUrl = URL.createObjectURL(file);
+      avatarPreview = avatarPreviewUrl;
+      return;
+    }
+
+    avatarPreview = data.dashboard.settings.avatar;
+  };
+
+  const onBackgroundChange = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+
+    clearBackgroundPreviewUrl();
+
+    if (file) {
+      backgroundPreviewUrl = URL.createObjectURL(file);
+      backgroundPreview = backgroundPreviewUrl;
+      return;
+    }
+
+    backgroundPreview = data.dashboard.settings.background;
+  };
+
+  const openSettingsModal = () => {
+    clearAvatarPreviewUrl();
+    clearBackgroundPreviewUrl();
+    resetImagePreviews();
+    heroTitleInput = data.dashboard.settings.heroTitle;
+    settingsModalOpen = true;
+  };
+
+  $effect(() => {
+    if (form && 'settingsModalOpen' in form && form.settingsModalOpen) {
+      openSettingsModal();
+    }
+  });
+
+  const closeSettingsModal = () => {
+    settingsModalOpen = false;
+    clearAvatarPreviewUrl();
+    clearBackgroundPreviewUrl();
+    resetImagePreviews();
+  };
 
   const confirmDelete = (event: SubmitEvent) => {
     if (!confirm('确认删除这首歌？')) {
@@ -86,6 +177,14 @@
           <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">管理员操作</h2>
         </div>
         <div class="flex flex-wrap items-center justify-end gap-2">
+          <button
+            type="button"
+            class="button button-neutral button-small"
+            onclick={openSettingsModal}
+          >
+            页面配置
+          </button>
+
           <form method="POST" action="?/resetDatabase" onsubmit={confirmReset}>
             <button
               type="submit"
@@ -380,6 +479,98 @@
     </div>
   </section>
 </div>
+
+{#if settingsModalOpen}
+  <div class="fixed inset-0 z-50 overflow-y-auto bg-[#191a1b]/50 px-4 py-8">
+    <section class="mx-auto max-w-3xl rounded-[24px] border border-[#e6e6e6] bg-white p-6 shadow-xl lg:p-7">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-medium text-[#5e6ad2]">外观</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">自定义页面设置</h2>
+          <p class="mt-2 text-sm text-[#62666d]">修改首页主标题、头像和背景图。</p>
+        </div>
+
+        <button
+          type="button"
+          class="button button-neutral button-small"
+          onclick={closeSettingsModal}
+        >
+          关闭
+        </button>
+      </div>
+
+      {#if adminError}
+        <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
+          {adminError}
+        </div>
+      {/if}
+
+      <form method="POST" action="?/saveProfile" enctype="multipart/form-data" class="mt-6 space-y-6">
+        <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
+          <label class="block space-y-2 text-sm text-[#62666d]">
+            <span>头像下方主标题</span>
+            <input
+              name="heroTitle"
+              class="form-field"
+              required
+              maxlength="40"
+              bind:value={heroTitleInput}
+              placeholder="例如：青空点歌台"
+            />
+          </label>
+          <p class="mt-2 text-xs text-[#8a8f98]">最多 40 字，显示在首页头像下方。</p>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>主播头像 (建议正方形，不超过 2MB)</span>
+              {#if avatarPreview}
+                <div class="mt-2 flex justify-center">
+                  <div class="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-[#f5f6f7] shadow-sm">
+                    <img src={avatarPreview} alt="头像预览" class="h-full w-full object-cover" />
+                  </div>
+                </div>
+              {/if}
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                class="form-field"
+                onchange={onAvatarChange}
+              />
+            </label>
+          </div>
+
+          <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
+            <label class="block space-y-2 text-sm text-[#62666d]">
+              <span>背景图片 (建议 1920x1080，不超过 5MB)</span>
+              {#if backgroundPreview}
+                <div class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[#e6e6e6] bg-[#f5f6f7]">
+                  <img src={backgroundPreview} alt="背景预览" class="h-full w-full object-cover" />
+                </div>
+              {/if}
+              <input
+                type="file"
+                name="background"
+                accept="image/*"
+                class="form-field"
+                onchange={onBackgroundChange}
+              />
+            </label>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="button button-primary button-full"
+        >
+          保存配置
+        </button>
+      </form>
+    </section>
+  </div>
+{/if}
 
 {#if form?.playlistPreview && !importModalDismissed}
   <div class="fixed inset-0 z-50 overflow-y-auto bg-[#191a1b]/50 px-4 py-8">

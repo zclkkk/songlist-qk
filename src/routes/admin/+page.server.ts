@@ -7,7 +7,10 @@ import {
 	deleteSong as removeSong,
 	getAdminDashboardData,
 	importSongs,
+	pageSettingsKeys,
 	resetDatabase as resetSonglistDatabase,
+	saveSetting,
+	saveSettingImage,
 	saveSong,
 	updateRequestStatus
 } from '$lib/server/repository';
@@ -303,5 +306,38 @@ export const actions: Actions = {
   logout: async ({ cookies }) => {
     clearAdminSession(cookies);
     throw redirect(303, '/admin/login');
+  },
+
+  saveProfile: async ({ request }) => {
+    const formData = await request.formData();
+    const avatarFile = formData.get('avatar') as File | null;
+    const bgFile = formData.get('background') as File | null;
+    const heroTitle = readText(formData.get('heroTitle'));
+
+    try {
+      if (!heroTitle) {
+        return fail(400, { adminError: '标题不能为空', settingsModalOpen: true });
+      }
+
+      await saveSetting(pageSettingsKeys.heroTitle, heroTitle);
+
+      if (avatarFile && avatarFile.size > 0) {
+        if (avatarFile.size > 1024 * 1024 * 2) {
+          return fail(400, { adminError: '头像文件不能超过 2MB', settingsModalOpen: true });
+        }
+        await saveSettingImage('avatar', avatarFile);
+      }
+
+      if (bgFile && bgFile.size > 0) {
+        if (bgFile.size > 1024 * 1024 * 5) {
+          return fail(400, { adminError: '背景文件不能超过 5MB', settingsModalOpen: true });
+        }
+        await saveSettingImage('background', bgFile);
+      }
+
+      return { adminMessage: '页面配置已更新。' };
+    } catch (error) {
+      return fail(500, { adminError: error instanceof Error ? error.message : '保存配置失败。', settingsModalOpen: true });
+    }
   }
 };

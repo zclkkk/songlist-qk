@@ -8,6 +8,7 @@ import {
   songLanguageOptions,
   songStatusOptions,
   type AdminDashboardData,
+  type PageSettings,
   type PublicCatalog,
   type RequestDecision,
   type RequestStatus,
@@ -40,7 +41,52 @@ type RequestRow = {
   created_at: string;
 };
 
+type SettingRow = {
+  key: string;
+  value: string;
+};
+
+const settingsAssetBucket = 'site-assets';
+
+export const pageSettingsKeys = {
+  avatarPath: 'avatar_path',
+  backgroundPath: 'background_path',
+  heroTitle: 'hero_title'
+} as const;
+
+type PageSettingKey = (typeof pageSettingsKeys)[keyof typeof pageSettingsKeys];
+
+const pageSettingsReadKeys = [pageSettingsKeys.avatarPath, pageSettingsKeys.backgroundPath, pageSettingsKeys.heroTitle] as const;
+
+const settingImageKinds = {
+  avatar: pageSettingsKeys.avatarPath,
+  background: pageSettingsKeys.backgroundPath
+} as const;
+
+type SettingImageKind = keyof typeof settingImageKinds;
+
+const imageExtensionByMimeType: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/avif': 'avif',
+  'image/svg+xml': 'svg'
+};
+
 const sortStrings = (values: Iterable<string>) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+
+const sanitizeExtension = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const resolveImageExtension = (file: File) => {
+  const extensionFromName = sanitizeExtension(file.name.split('.').pop() ?? '');
+
+  if (extensionFromName) {
+    return extensionFromName;
+  }
+
+  return imageExtensionByMimeType[file.type] ?? 'png';
+};
 
 const parseSongStatus = (status: string): SongStatus => {
   if (songStatusOptions.includes(status as SongStatus)) {
@@ -143,9 +189,102 @@ const listRequests = async (): Promise<SongRequest[]> => {
   return ((data as RequestRow[] | null) ?? []).map(mapRequestRow);
 };
 
+const listSettings = async (keys: readonly PageSettingKey[]) => {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from('settings').select('key, value').in('key', keys);
+
+  if (error) {
+    throw error;
+  }
+
+  const settings: Record<string, string> = {};
+
+  for (const row of ((data as SettingRow[] | null) ?? [])) {
+    settings[row.key] = row.value;
+  }
+
+  return settings;
+};
+
+const requireSettingValue = (settings: Record<string, string>, key: PageSettingKey) => {
+  const value = settings[key];
+
+  if (value === undefined) {
+    throw new Error(`缺少页面配置：${key}`);
+  }
+
+  return value;
+};
+
+const readSettingValue = async (key: PageSettingKey) => {
+  const settings = await listSettings([key]);
+
+  return requireSettingValue(settings, key);
+};
+
+const getAssetPublicUrl = (path: string) => {
+  if (!path) {
+    return '';
+  }
+
+  const supabase = getSupabaseAdmin();
+
+  return supabase.storage.from(settingsAssetBucket).getPublicUrl(path).data.publicUrl;
+};
+
+const mapPageSettings = (settings: Record<string, string>): PageSettings => ({
+  avatar: getAssetPublicUrl(requireSettingValue(settings, pageSettingsKeys.avatarPath)),
+  background: getAssetPublicUrl(requireSettingValue(settings, pageSettingsKeys.backgroundPath)),
+  heroTitle: requireSettingValue(settings, pageSettingsKeys.heroTitle)
+});
+
+export const getSettings = async (): Promise<PageSettings> => {
+  const settings = await listSettings(pageSettingsReadKeys);
+
+  return mapPageSettings(settings);
+};
+
+export const saveSetting = async (key: PageSettingKey, value: string) => {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from('settings').upsert({ key, value });
+  if (error) throw error;
+};
+
+export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
+  const supabase = getSupabaseAdmin();
+
+  if (!file.type.startsWith('image/')) {
+    throw new Error('仅支持图片文件。');
+  }
+
+  const settingKey = settingImageKinds[kind];
+  const existingPath = await readSettingValue(settingKey);
+  const extension = resolveImageExtension(file);
+  const objectPath = `profile/${kind}-${Date.now()}-${randomUUID()}.${extension}`;
+
+  const { error: uploadError } = await supabase.storage.from(settingsAssetBucket).upload(objectPath, file, {
+    upsert: false,
+    cacheControl: '31536000',
+    contentType: file.type || 'application/octet-stream'
+  });
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  await saveSetting(settingKey, objectPath);
+
+  if (existingPath && existingPath !== objectPath) {
+    await supabase.storage.from(settingsAssetBucket).remove([existingPath]);
+  }
+
+  return getAssetPublicUrl(objectPath);
+};
+
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
   const songs = (await listSongs()).filter((song) => song.isPublic);
   const metadata = buildCatalogMetadata(songs);
+  const settings = await getSettings();
 
   return {
     streamer: streamerProfile,
@@ -153,18 +292,20 @@ export const getPublicCatalog = async (): Promise<PublicCatalog> => {
     tags: metadata.tags,
     languages: metadata.languages,
     statuses: songStatusOptions,
-    stats: buildStats(songs, 0)
+    stats: buildStats(songs, 0),
+    settings
   };
 };
 
 export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
-  const [songs, requests] = await Promise.all([listSongs(), listRequests()]);
+  const [songs, requests, settings] = await Promise.all([listSongs(), listRequests(), getSettings()]);
 
   return {
     streamer: streamerProfile,
     songs,
     requests,
-    overview: buildStats(songs, countPendingRequests(requests))
+    overview: buildStats(songs, countPendingRequests(requests)),
+    settings
   };
 };
 
