@@ -58,6 +58,12 @@ type PageSettingKey = (typeof pageSettingsKeys)[keyof typeof pageSettingsKeys];
 
 const pageSettingsReadKeys = [pageSettingsKeys.avatarPath, pageSettingsKeys.backgroundPath, pageSettingsKeys.heroTitle] as const;
 
+const pageSettingsDefaults: Record<PageSettingKey, string> = {
+  [pageSettingsKeys.avatarPath]: '',
+  [pageSettingsKeys.backgroundPath]: '',
+  [pageSettingsKeys.heroTitle]: streamerProfile.name
+};
+
 const settingImageKinds = {
   avatar: pageSettingsKeys.avatarPath,
   background: pageSettingsKeys.backgroundPath
@@ -453,6 +459,8 @@ export const deleteSong = async (id: string) => {
 
 export const resetDatabase = async () => {
   const supabase = getSupabaseAdmin();
+  const settings = await listSettings(pageSettingsReadKeys);
+  const assetPaths = [settings[pageSettingsKeys.avatarPath], settings[pageSettingsKeys.backgroundPath]].filter(Boolean);
 
   const { error: requestsError } = await supabase.from('requests').delete().not('id', 'is', null);
 
@@ -464,6 +472,25 @@ export const resetDatabase = async () => {
 
   if (songsError) {
     throw songsError;
+  }
+
+  const { error: settingsError } = await supabase.from('settings').upsert(
+    pageSettingsReadKeys.map((key) => ({
+      key,
+      value: pageSettingsDefaults[key]
+    }))
+  );
+
+  if (settingsError) {
+    throw settingsError;
+  }
+
+  if (assetPaths.length > 0) {
+    const { error: assetsError } = await supabase.storage.from(settingsAssetBucket).remove(assetPaths);
+
+    if (assetsError) {
+      throw assetsError;
+    }
   }
 };
 

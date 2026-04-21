@@ -313,25 +313,37 @@ export const actions: Actions = {
     const avatarFile = formData.get('avatar') as File | null;
     const bgFile = formData.get('background') as File | null;
     const heroTitle = readText(formData.get('heroTitle'));
+    const hasAvatarFile = avatarFile !== null && avatarFile.size > 0;
+    const hasBackgroundFile = bgFile !== null && bgFile.size > 0;
 
     try {
       if (!heroTitle) {
         return fail(400, { adminError: '标题不能为空', settingsModalOpen: true });
       }
 
+      if (hasAvatarFile && !avatarFile.type.startsWith('image/')) {
+        return fail(400, { adminError: '仅支持图片头像。', settingsModalOpen: true });
+      }
+
+      if (hasBackgroundFile && !bgFile.type.startsWith('image/')) {
+        return fail(400, { adminError: '仅支持图片背景。', settingsModalOpen: true });
+      }
+
+      if (hasAvatarFile && avatarFile.size > 1024 * 1024 * 2) {
+        return fail(400, { adminError: '头像文件不能超过 2MB', settingsModalOpen: true });
+      }
+
+      if (hasBackgroundFile && bgFile.size > 1024 * 1024 * 5) {
+        return fail(400, { adminError: '背景文件不能超过 5MB', settingsModalOpen: true });
+      }
+
       await saveSetting(pageSettingsKeys.heroTitle, heroTitle);
 
-      if (avatarFile && avatarFile.size > 0) {
-        if (avatarFile.size > 1024 * 1024 * 2) {
-          return fail(400, { adminError: '头像文件不能超过 2MB', settingsModalOpen: true });
-        }
+      if (hasAvatarFile) {
         await saveSettingImage('avatar', avatarFile);
       }
 
-      if (bgFile && bgFile.size > 0) {
-        if (bgFile.size > 1024 * 1024 * 5) {
-          return fail(400, { adminError: '背景文件不能超过 5MB', settingsModalOpen: true });
-        }
+      if (hasBackgroundFile) {
         await saveSettingImage('background', bgFile);
       }
 
