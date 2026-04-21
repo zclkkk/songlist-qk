@@ -54,6 +54,10 @@ export const songPreviewSchema = z.object({
   songInput: z.string().trim().min(1, '请填写网易云单曲链接或 ID。').max(240, '单曲链接过长。')
 });
 
+export const pageSettingsSchema = z.object({
+  heroTitle: z.string().trim().min(1, '标题不能为空。').max(40, '标题最多 40 字。')
+});
+
 export const requestDecisionSchema = z.object({
   id: z.string().trim().min(1, '请求 ID 缺失。'),
   status: z.enum(requestDecisionOptions, {

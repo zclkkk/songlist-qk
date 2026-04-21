@@ -15,6 +15,7 @@ import {
 	updateRequestStatus
 } from '$lib/server/repository';
 import {
+  pageSettingsSchema,
   playlistImportSettingsSchema,
   playlistPreviewSchema,
   playlistSongImportSchema,
@@ -317,8 +318,15 @@ export const actions: Actions = {
     const hasBackgroundFile = bgFile !== null && bgFile.size > 0;
 
     try {
-      if (!heroTitle) {
-        return fail(400, { adminError: '标题不能为空', settingsModalOpen: true });
+      const parsedSettings = pageSettingsSchema.safeParse({
+        heroTitle
+      });
+
+      if (!parsedSettings.success) {
+        return fail(400, {
+          adminError: parsedSettings.error.issues[0]?.message ?? '保存配置失败。',
+          settingsModalOpen: true
+        });
       }
 
       if (hasAvatarFile && !avatarFile.type.startsWith('image/')) {
@@ -337,7 +345,7 @@ export const actions: Actions = {
         return fail(400, { adminError: '背景文件不能超过 5MB', settingsModalOpen: true });
       }
 
-      await saveSetting(pageSettingsKeys.heroTitle, heroTitle);
+      await saveSetting(pageSettingsKeys.heroTitle, parsedSettings.data.heroTitle);
 
       if (hasAvatarFile) {
         await saveSettingImage('avatar', avatarFile);

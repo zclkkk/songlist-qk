@@ -165,13 +165,19 @@ const buildCatalogMetadata = (songs: Song[]) => ({
   languages: songLanguageOptions
 });
 
-const listSongs = async (): Promise<Song[]> => {
+const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Promise<Song[]> => {
   const supabase = getSupabaseAdmin();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('songs')
     .select('id, title, artist, language, status, tags, is_public')
     .order('title', { ascending: true });
+
+  if (isPublic !== undefined) {
+    query = query.eq('is_public', isPublic);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw error;
@@ -288,7 +294,7 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
 };
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
-  const songs = (await listSongs()).filter((song) => song.isPublic);
+  const songs = await listSongs({ isPublic: true });
   const metadata = buildCatalogMetadata(songs);
   const settings = await getSettings();
 

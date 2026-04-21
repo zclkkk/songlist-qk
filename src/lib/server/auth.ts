@@ -109,6 +109,13 @@ export const loginAdmin = async ({
     };
   }
 
+  if (normalizedEmail !== getAdminEmail().trim().toLowerCase()) {
+    return {
+      ok: false,
+      message: '邮箱或密码错误。'
+    };
+  }
+
   const supabaseConfig = getSupabaseConfig();
   const client = createClient(supabaseConfig.url, supabaseConfig.publishableKey, {
     auth: {
@@ -122,9 +129,7 @@ export const loginAdmin = async ({
     password: normalizedPassword
   });
 
-  const isAdminEmail = normalizedEmail === getAdminEmail().trim().toLowerCase();
-
-  if (error || !isAdminEmail) {
+  if (error) {
     return {
       ok: false,
       message: '邮箱或密码错误。'
