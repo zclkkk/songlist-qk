@@ -174,7 +174,7 @@
       </div>
 
       {#if filteredSongs.length > 0}
-        <div class="divide-y divide-[#e6e6e6]">
+        <div class="divide-y divide-[var(--color-border-soft)]">
           {#each filteredSongs as song}
             <article class="grid gap-4 p-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.6fr)_120px_140px_1.7fr] lg:items-center lg:px-6">
               <div class="min-w-0">

@@ -236,10 +236,6 @@ select {
   color: #34d399 !important;
 }
 
-.dark .divide-\[\#e6e6e6\] > :not([hidden]) ~ :not([hidden]) {
-  border-color: var(--color-border-soft) !important;
-}
-
 .dark details[open] {
   background-color: var(--color-surface) !important;
 }

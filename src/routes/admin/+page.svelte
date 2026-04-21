@@ -624,7 +624,7 @@
                 <th class="px-3 py-3">标签</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#e6e6e6] bg-white">
+            <tbody class="divide-y divide-[var(--color-border-soft)] bg-white">
               {#each form.playlistPreview.songs as song, index}
                 <tr>
                   <td class="px-3 py-3 align-middle">
