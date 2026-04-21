@@ -35,7 +35,6 @@ export interface StreamerProfile {
   name: string;
   tagline: string;
   description: string;
-  accent: string;
   platforms: Array<{
     label: string;
     href: string;
