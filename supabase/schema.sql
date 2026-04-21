@@ -34,6 +34,45 @@ alter table public.requests
   add constraint requests_language_check
   check (language in ('中文', '英语', '日语', '其他'));
 
+create or replace function public.accept_song_request(request_id uuid)
+returns uuid
+language plpgsql
+set search_path = public
+as $$
+declare
+  request_row public.requests%rowtype;
+  new_song_id uuid;
+begin
+  select *
+  into request_row
+  from public.requests
+  where id = request_id
+  for update;
+
+  if not found then
+    raise exception '愿望不存在。';
+  end if;
+
+  if request_row.status <> 'pending' then
+    raise exception '这个愿望已经处理过。';
+  end if;
+
+  insert into public.songs (title, artist, language, status, tags, is_public)
+  values (request_row.song_title, request_row.artist, request_row.language, 'learning', '{}', true)
+  returning id into new_song_id;
+
+  update public.requests
+  set status = 'accepted',
+      matched_song_id = new_song_id
+  where id = request_id;
+
+  return new_song_id;
+end;
+$$;
+
+revoke all on function public.accept_song_request(uuid) from public, anon, authenticated;
+grant execute on function public.accept_song_request(uuid) to service_role;
+
 alter table public.songs enable row level security;
 alter table public.requests enable row level security;
 

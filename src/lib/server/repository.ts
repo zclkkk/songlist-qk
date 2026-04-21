@@ -525,19 +525,12 @@ export const updateRequestStatus = async ({
   }
 
   if (status === 'accepted') {
-    const song = await saveSong({
-      title: request.songTitle,
-      artist: request.artist,
-      language: request.language,
-      status: 'learning',
-      tags: [],
-      isPublic: true
+    const { error } = await supabase.rpc('accept_song_request', {
+      request_id: id
     });
 
-    const { error } = await supabase.from('requests').update({ status, matched_song_id: song.id }).eq('id', id);
-
     if (error) {
-      throw error;
+      throw new Error(error.message);
     }
 
     return;
