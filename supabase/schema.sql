@@ -116,6 +116,63 @@ values
   ('hero_title', 'songlist-qk')
 on conflict (key) do nothing;
 
+create table if not exists public.request_rate_limits (
+  client_key text primary key,
+  request_count integer not null,
+  reset_at timestamptz not null
+);
+
+alter table public.request_rate_limits enable row level security;
+
+create or replace function public.consume_request_rate_limit(
+  p_client_key text,
+  p_max_requests integer,
+  p_window_seconds integer
+)
+returns boolean
+language plpgsql
+set search_path = public
+as $$
+declare
+  current_limit public.request_rate_limits%rowtype;
+begin
+  loop
+    select *
+    into current_limit
+    from public.request_rate_limits
+    where client_key = p_client_key
+    for update;
+
+    if not found then
+      begin
+        insert into public.request_rate_limits (client_key, request_count, reset_at)
+        values (p_client_key, 1, now() + make_interval(secs => p_window_seconds));
+        return true;
+      exception
+        when unique_violation then
+          null;
+      end;
+    elsif current_limit.reset_at <= now() then
+      update public.request_rate_limits
+      set request_count = 1,
+          reset_at = now() + make_interval(secs => p_window_seconds)
+      where client_key = p_client_key;
+      return true;
+    elsif current_limit.request_count >= p_max_requests then
+      return false;
+    else
+      update public.request_rate_limits
+      set request_count = current_limit.request_count + 1
+      where client_key = p_client_key;
+      return true;
+    end if;
+  end loop;
+end;
+$$;
+
+revoke all on function public.consume_request_rate_limit(text, integer, integer) from public, anon, authenticated;
+grant execute on function public.consume_request_rate_limit(text, integer, integer) to service_role;
+
 insert into storage.buckets (id, name, public)
 values ('site-assets', 'site-assets', true)
 on conflict (id) do update

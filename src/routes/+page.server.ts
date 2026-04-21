@@ -1,14 +1,15 @@
+import { createHash } from 'node:crypto';
+
 import { fail } from '@sveltejs/kit';
 
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
-import { createSongRequest, getPublicCatalog } from '$lib/server/repository';
+import { consumeRequestRateLimit, createSongRequest, getPublicCatalog } from '$lib/server/repository';
 import { requestSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
 const requestWindowMs = 10 * 60 * 1000;
 const maxRequestsPerWindow = 5;
-const requestBuckets = new Map<string, { count: number; resetAt: number }>();
 
 const readRequestValues = (formData: FormData) => ({
   songInput: readText(formData.get('songInput')),
@@ -19,32 +20,7 @@ const readRequestValues = (formData: FormData) => ({
   requesterName: readText(formData.get('requesterName'))
 });
 
-const canSubmitRequest = (clientId: string) => {
-  const now = Date.now();
-
-  for (const [bucketClientId, bucket] of requestBuckets) {
-    if (bucket.resetAt <= now) {
-      requestBuckets.delete(bucketClientId);
-    }
-  }
-
-  const bucket = requestBuckets.get(clientId);
-
-  if (!bucket || bucket.resetAt <= now) {
-    requestBuckets.set(clientId, {
-      count: 1,
-      resetAt: now + requestWindowMs
-    });
-    return true;
-  }
-
-  if (bucket.count >= maxRequestsPerWindow) {
-    return false;
-  }
-
-  bucket.count += 1;
-  return true;
-};
+const createRateLimitKey = (clientId: string) => createHash('sha256').update(clientId).digest('hex');
 
 export const load: PageServerLoad = async () => ({
   catalog: await getPublicCatalog()
@@ -98,7 +74,13 @@ export const actions: Actions = {
       });
     }
 
-    if (!canSubmitRequest(getClientAddress())) {
+    if (
+      !(await consumeRequestRateLimit({
+        clientKey: createRateLimitKey(getClientAddress()),
+        maxRequests: maxRequestsPerWindow,
+        windowMs: requestWindowMs
+      }))
+    ) {
       return fail(429, {
         requestError: '提交过于频繁，请稍后再试。',
         requestValues: rawValues
