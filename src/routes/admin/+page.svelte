@@ -125,11 +125,11 @@
   const requestStatusClass = (status: RequestStatus) => {
     switch (status) {
       case 'pending':
-        return 'border-[#5e6ad2]/30 bg-[#5e6ad2]/10 text-[#5e6ad2]';
+        return 'border-[#5e6ad2]/30 bg-[#5e6ad2]/10 text-[var(--color-accent)]';
       case 'accepted':
-        return 'border-[#10b981]/30 bg-[#10b981]/10 text-[#27a644]';
+        return 'border-[#10b981]/30 bg-[#10b981]/10 text-[var(--color-success-text)]';
       case 'refused':
-        return 'border-[#d0d6e0] bg-[#f3f4f5] text-[#62666d]';
+        return 'border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-secondary)]';
     }
   };
 </script>
@@ -143,38 +143,38 @@
     <div class="space-y-6">
       <div>
         <div class="flex flex-wrap items-center gap-3">
-          <span class="rounded-full border border-[#5e6ad2]/30 bg-[#5e6ad2]/10 px-4 py-1 text-sm font-medium text-[#5e6ad2]">
+          <span class="rounded-full border border-[#5e6ad2]/30 bg-[#5e6ad2]/10 px-4 py-1 text-sm font-medium text-[var(--color-accent)]">
             后台控制台
           </span>
         </div>
 
-        <h1 class="mt-4 text-3xl font-semibold text-[#191a1b] lg:text-4xl">管理歌曲与愿望单</h1>
-        <p class="mt-3 max-w-3xl text-sm leading-7 text-[#62666d] lg:text-base">
+        <h1 class="mt-4 text-3xl font-semibold text-[var(--color-text)] lg:text-4xl">管理歌曲与愿望单</h1>
+        <p class="mt-3 max-w-3xl text-sm leading-7 text-[var(--color-text-secondary)] lg:text-base">
           维护公开歌单、调整歌曲状态，并处理观众提交的点歌请求。
         </p>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-3">
-        <div class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">总歌曲数</p>
-          <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.dashboard.overview.totalSongs}</p>
+        <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">总歌曲数</p>
+          <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.totalSongs}</p>
         </div>
-        <div class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">公开歌曲数</p>
-          <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.dashboard.overview.publicSongs}</p>
+        <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">公开歌曲数</p>
+          <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.publicSongs}</p>
         </div>
-        <div class="rounded-[24px] border border-[#e6e6e6] bg-white p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[#8a8f98]">待处理愿望</p>
-          <p class="mt-3 text-3xl font-semibold text-[#191a1b]">{data.dashboard.overview.pendingRequests}</p>
+        <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">待处理愿望</p>
+          <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.pendingRequests}</p>
         </div>
       </div>
     </div>
 
-    <div class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
+    <div class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
       <div class="flex items-center justify-between gap-3">
         <div>
-          <p class="text-sm font-medium text-[#5e6ad2]">会话</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">管理员操作</h2>
+          <p class="text-sm font-medium text-[var(--color-accent)]">会话</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">管理员操作</h2>
         </div>
         <div class="flex flex-wrap items-center justify-end gap-2">
           <button
@@ -206,14 +206,14 @@
       </div>
 
       {#if form?.adminMessage}
-        <div class="mt-5 rounded-[18px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[#27a644]">
+        <div class="mt-5 rounded-[18px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[var(--color-success-text)]">
           {form.adminMessage}
         </div>
       {/if}
 
       {#if adminError}
         {#if !form?.playlistPreview}
-          <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
+          <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
             {adminError}
           </div>
         {/if}
@@ -223,25 +223,25 @@
   </section>
 
   <section class="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
-    <div class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
+    <div class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
       <div>
-        <p class="text-sm font-medium text-[#5e6ad2]">新增歌曲</p>
-        <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">创建公开歌单条目</h2>
+        <p class="text-sm font-medium text-[var(--color-accent)]">新增歌曲</p>
+        <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">创建公开歌单条目</h2>
       </div>
 
       <form method="POST" action="?/saveSong" class="mt-6 space-y-4">
-        <label class="block space-y-2 text-sm text-[#62666d]">
+        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>歌曲名</span>
           <input name="title" class="form-field" placeholder="例如：祝福" />
         </label>
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
+        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>原唱</span>
           <input name="artist" class="form-field" placeholder="例如：YOASOBI" />
         </label>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>语言</span>
             <select name="language" class="form-field" required>
               {#each songLanguageOptions as language}
@@ -250,7 +250,7 @@
             </select>
           </label>
 
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>状态</span>
             <select name="status" class="form-field">
               {#each songStatusOptions as status}
@@ -260,13 +260,13 @@
           </label>
         </div>
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
+        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>标签（逗号分隔）</span>
           <input name="tagsInput" class="form-field" placeholder="例如：高能, 日语, 动画" />
         </label>
 
-        <label class="flex items-center gap-3 rounded-[18px] border border-[#e6e6e6] bg-[#f5f6f7] px-4 py-3 text-sm text-[#62666d]">
-          <input name="isPublic" type="checkbox" class="h-4 w-4 rounded border-[#d0d6e0] accent-[#5e6ad2]" checked />
+        <label class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)]">
+          <input name="isPublic" type="checkbox" class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]" checked />
           <span>公开展示到前台歌单</span>
         </label>
 
@@ -278,14 +278,14 @@
         </button>
       </form>
 
-      <div class="mt-8 border-t border-[#e6e6e6] pt-7">
+      <div class="mt-8 border-t border-[var(--color-border-soft)] pt-7">
         <div>
-          <p class="text-sm font-medium text-[#5e6ad2]">导入网易云</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">解析公开歌单或单曲</h2>
+          <p class="text-sm font-medium text-[var(--color-accent)]">导入网易云</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">解析公开歌单或单曲</h2>
         </div>
 
         <form method="POST" action="?/previewSong" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>单曲链接或 ID</span>
             <input
               name="songInput"
@@ -304,7 +304,7 @@
         </form>
 
         <form method="POST" action="?/previewPlaylist" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
-          <label class="block space-y-2 text-sm text-[#62666d]">
+          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>歌单链接或 ID</span>
             <input
               name="playlistInput"
@@ -325,30 +325,30 @@
     </div>
 
     <div class="space-y-6">
-      <section class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
+      <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <p class="text-sm font-medium text-[#5e6ad2]">歌曲列表</p>
-            <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">已录入曲目</h2>
+            <p class="text-sm font-medium text-[var(--color-accent)]">歌曲列表</p>
+            <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">已录入曲目</h2>
           </div>
-          <span class="rounded-full border border-[#e6e6e6] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
+          <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
             {data.dashboard.songs.length} 首
           </span>
         </div>
 
         <div class="mt-6 space-y-4">
           {#each data.dashboard.songs as song}
-            <details class="group rounded-[24px] border border-[#e6e6e6] bg-[#f5f6f7] p-5 open:bg-white">
+            <details class="group rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 open:bg-[var(--color-surface)]">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
                 <div class="min-w-0">
-                  <h3 class="truncate text-lg font-semibold text-[#191a1b]">{song.title}</h3>
-                  <p class="mt-1 truncate text-sm text-[#62666d]">{song.artist} · {song.language}</p>
+                  <h3 class="truncate text-lg font-semibold text-[var(--color-text)]">{song.title}</h3>
+                  <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">{song.artist} · {song.language}</p>
                 </div>
                 <div class="flex flex-wrap items-center justify-end gap-2">
                   <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${songStatusClasses[song.status]}`}>
                     {songStatusLabels[song.status]}
                   </span>
-                  <span class="rounded-full border border-[#e6e6e6] bg-white px-3 py-1 text-xs text-[#62666d]">
+                  <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
                     {song.isPublic ? '公开' : '隐藏'}
                   </span>
                 </div>
@@ -358,17 +358,17 @@
                 <form method="POST" action="?/saveSong" class="grid gap-4 lg:grid-cols-2">
                   <input type="hidden" name="id" value={song.id} />
 
-                  <label class="block space-y-2 text-sm text-[#62666d] lg:col-span-2">
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-2">
                     <span>歌曲名</span>
                     <input name="title" value={song.title} class="form-field-muted" />
                   </label>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>原唱</span>
                     <input name="artist" value={song.artist} class="form-field-muted" />
                   </label>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>语言</span>
                     <select name="language" class="form-field-muted" required>
                       {#each songLanguageOptions as language}
@@ -377,7 +377,7 @@
                     </select>
                   </label>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>状态</span>
                     <select name="status" class="form-field-muted">
                       {#each songStatusOptions as status}
@@ -386,16 +386,16 @@
                     </select>
                   </label>
 
-                  <label class="block space-y-2 text-sm text-[#62666d]">
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>标签</span>
                     <input name="tagsInput" value={song.tags.join(', ')} class="form-field-muted" />
                   </label>
 
-                  <label class="flex items-center gap-3 rounded-[18px] border border-[#e6e6e6] bg-[#f5f6f7] px-4 py-3 text-sm text-[#62666d] lg:col-span-2">
+                  <label class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)] lg:col-span-2">
                     <input
                       name="isPublic"
                       type="checkbox"
-                      class="h-4 w-4 rounded border-[#d0d6e0] accent-[#5e6ad2]"
+                      class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
                       checked={song.isPublic}
                     />
                     <span>在公开歌单展示</span>
@@ -424,32 +424,32 @@
         </div>
       </section>
 
-      <section class="rounded-[30px] border border-[#e6e6e6] bg-white p-6 shadow-sm lg:p-7">
+      <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <p class="text-sm font-medium text-[#5e6ad2]">愿望单管理</p>
-            <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">观众提交记录</h2>
+            <p class="text-sm font-medium text-[var(--color-accent)]">愿望单管理</p>
+            <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">观众提交记录</h2>
           </div>
-          <span class="rounded-full border border-[#e6e6e6] bg-[#f5f6f7] px-3 py-1 text-xs text-[#62666d]">
+          <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
             {data.dashboard.requests.length} 条
           </span>
         </div>
 
         <div class="mt-6 space-y-4">
           {#each data.dashboard.requests as item}
-            <article class="rounded-[24px] border border-[#e6e6e6] bg-[#f5f6f7] p-5">
+            <article class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5">
               <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0 flex-1">
                   <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="break-words text-lg font-semibold text-[#191a1b]">{item.songTitle}</h3>
+                    <h3 class="break-words text-lg font-semibold text-[var(--color-text)]">{item.songTitle}</h3>
                     <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${requestStatusClass(item.status)}`}>
                       {requestStatusLabels[item.status]}
                     </span>
                   </div>
-                  <p class="mt-2 text-sm text-[#62666d]">原唱：{item.artist || '未填写'}</p>
-                  <p class="mt-1 text-sm text-[#62666d]">语言：{item.language}</p>
-                  <p class="mt-3 text-sm leading-7 text-[#62666d]">{item.message}</p>
-                  <div class="mt-4 flex flex-wrap gap-3 text-xs text-[#8a8f98]">
+                  <p class="mt-2 text-sm text-[var(--color-text-secondary)]">原唱：{item.artist || '未填写'}</p>
+                  <p class="mt-1 text-sm text-[var(--color-text-secondary)]">语言：{item.language}</p>
+                  <p class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)]">{item.message}</p>
+                  <div class="mt-4 flex flex-wrap gap-3 text-xs text-[var(--color-text-muted)]">
                     <span>提交者：{item.requesterName || '匿名'}</span>
                     <span>时间：{new Date(item.createdAt).toLocaleString('zh-CN')}</span>
                   </div>
@@ -482,12 +482,12 @@
 
 {#if settingsModalOpen}
   <div class="fixed inset-0 z-50 overflow-y-auto bg-[#191a1b]/50 px-4 py-8">
-    <section class="mx-auto max-w-3xl rounded-[24px] border border-[#e6e6e6] bg-white p-6 shadow-xl lg:p-7">
+    <section class="mx-auto max-w-3xl rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-xl lg:p-7">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="text-sm font-medium text-[#5e6ad2]">外观</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">自定义页面设置</h2>
-          <p class="mt-2 text-sm text-[#62666d]">修改首页主标题、头像和背景图。</p>
+          <p class="text-sm font-medium text-[var(--color-accent)]">外观</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">自定义页面设置</h2>
+          <p class="mt-2 text-sm text-[var(--color-text-secondary)]">修改首页主标题、头像和背景图。</p>
         </div>
 
         <button
@@ -500,14 +500,14 @@
       </div>
 
       {#if adminError}
-        <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
+        <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
           {adminError}
         </div>
       {/if}
 
       <form method="POST" action="?/saveProfile" enctype="multipart/form-data" class="mt-6 space-y-6">
-        <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
-          <label class="block space-y-2 text-sm text-[#62666d]">
+        <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>头像下方主标题</span>
             <input
               name="heroTitle"
@@ -518,16 +518,16 @@
               placeholder="例如：青空点歌台"
             />
           </label>
-          <p class="mt-2 text-xs text-[#8a8f98]">最多 40 字，显示在首页头像下方。</p>
+          <p class="mt-2 text-xs text-[var(--color-text-muted)]">最多 40 字，显示在首页头像下方。</p>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-          <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
-            <label class="block space-y-2 text-sm text-[#62666d]">
+          <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
               <span>主播头像 (建议正方形，不超过 2MB)</span>
               {#if avatarPreview}
                 <div class="mt-2 flex justify-center">
-                  <div class="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-[#f5f6f7] shadow-sm">
+                  <div class="h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-avatar-ring)] bg-[var(--color-surface-muted)] shadow-sm">
                     <img src={avatarPreview} alt="头像预览" class="h-full w-full object-cover" />
                   </div>
                 </div>
@@ -542,11 +542,11 @@
             </label>
           </div>
 
-          <div class="rounded-[20px] border border-[#e6e6e6] bg-[#f5f6f7] p-4">
-            <label class="block space-y-2 text-sm text-[#62666d]">
+          <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
               <span>背景图片 (建议 1920x1080，不超过 5MB)</span>
               {#if backgroundPreview}
-                <div class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[#e6e6e6] bg-[#f5f6f7]">
+                <div class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)]">
                   <img src={backgroundPreview} alt="背景预览" class="h-full w-full object-cover" />
                 </div>
               {/if}
@@ -574,11 +574,11 @@
 
 {#if form?.playlistPreview && !importModalDismissed}
   <div class="fixed inset-0 z-50 overflow-y-auto bg-[#191a1b]/50 px-4 py-8">
-    <section class="mx-auto max-w-5xl rounded-[24px] border border-[#e6e6e6] bg-white p-6 shadow-xl lg:p-7">
+    <section class="mx-auto max-w-5xl rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-xl lg:p-7">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="text-sm font-medium text-[#5e6ad2]">导入网易云</p>
-          <h2 class="mt-1 text-2xl font-semibold text-[#191a1b]">歌曲导入</h2>
+          <p class="text-sm font-medium text-[var(--color-accent)]">导入网易云</p>
+          <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">歌曲导入</h2>
         </div>
 
         <button
@@ -591,7 +591,7 @@
       </div>
 
       {#if adminError}
-        <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[#5e6ad2]">
+        <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
           {adminError}
         </div>
       {/if}
@@ -600,7 +600,7 @@
         <input type="hidden" name="playlistInput" value={form.playlistPreview.playlistInput} />
         <input type="hidden" name="songCount" value={form.playlistPreview.songs.length} />
 
-        <label class="block space-y-2 text-sm text-[#62666d]">
+        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>状态</span>
           <select name="status" class="form-field">
             {#each songStatusOptions as status}
@@ -609,13 +609,13 @@
           </select>
         </label>
 
-        <div class="rounded-[18px] border border-[#e6e6e6] bg-[#f5f6f7] px-4 py-3 text-sm text-[#62666d]">
+        <div class="rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)]">
           {form.playlistPreview.songs.length} 首待确认
         </div>
 
-        <div class="max-h-[56vh] overflow-auto rounded-[18px] border border-[#e6e6e6]">
+        <div class="max-h-[56vh] overflow-auto rounded-[18px] border border-[var(--color-border-soft)]">
           <table class="w-full min-w-[760px] text-left text-sm">
-            <thead class="sticky top-0 bg-white text-xs uppercase tracking-[0.12em] text-[#8a8f98]">
+            <thead class="sticky top-0 bg-[var(--color-surface)] text-xs uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
               <tr>
                 <th class="w-12 px-3 py-3">选</th>
                 <th class="px-3 py-3">歌曲</th>
@@ -624,7 +624,7 @@
                 <th class="px-3 py-3">标签</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[var(--color-border-soft)] bg-white">
+            <tbody class="divide-y divide-[var(--color-border-soft)] bg-[var(--color-surface)]">
               {#each form.playlistPreview.songs as song, index}
                 <tr>
                   <td class="px-3 py-3 align-middle">
@@ -633,15 +633,15 @@
                         name="selectedSong"
                         type="checkbox"
                         value={index}
-                        class="h-4 w-4 rounded border-[#d0d6e0] accent-[#5e6ad2]"
+                        class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
                         checked
                       />
                     </div>
                     <input type="hidden" name={`songTitle-${index}`} value={song.title} />
                     <input type="hidden" name={`songArtist-${index}`} value={song.artist} />
                   </td>
-                  <td class="px-3 py-3 text-[#191a1b]">{song.title}</td>
-                  <td class="px-3 py-3 text-[#62666d]">{song.artist}</td>
+                  <td class="px-3 py-3 text-[var(--color-text)]">{song.title}</td>
+                  <td class="px-3 py-3 text-[var(--color-text-secondary)]">{song.artist}</td>
                   <td class="px-3 py-3">
                     <select name={`songLanguage-${index}`} class="form-field-muted min-w-28" required>
                       {#each songLanguageOptions as language}

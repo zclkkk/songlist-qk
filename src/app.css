@@ -5,14 +5,17 @@
   color-scheme: light;
   --color-page: #f7f8f8;
   --color-surface: #ffffff;
+  --color-surface-overlay: rgb(255 255 255 / 0.9);
   --color-surface-muted: #f5f6f7;
   --color-border: #d0d6e0;
   --color-border-soft: #e6e6e6;
+  --color-avatar-ring: #ffffff;
   --color-text: #191a1b;
   --color-text-secondary: #62666d;
   --color-text-muted: #8a8f98;
   --color-accent: #5e6ad2;
   --color-accent-hover: #828fff;
+  --color-success-text: #27a644;
   font-family:
     "Inter Variable",
     Inter,
@@ -32,14 +35,17 @@
   color-scheme: dark;
   --color-page: #090b10;
   --color-surface: #11151d;
+  --color-surface-overlay: rgb(17 21 29 / 0.9);
   --color-surface-muted: #171d27;
   --color-border: #334155;
   --color-border-soft: #253044;
+  --color-avatar-ring: #11151d;
   --color-text: #e5e7eb;
   --color-text-secondary: #cbd5e1;
   --color-text-muted: #94a3b8;
   --color-accent: #38bdf8;
   --color-accent-hover: #0ea5e9;
+  --color-success-text: #34d399;
   background: var(--color-page);
   color: var(--color-text);
 }
@@ -192,52 +198,6 @@ select {
 
 .button-full {
   width: 100%;
-}
-
-.dark .bg-white {
-  background-color: var(--color-surface) !important;
-}
-
-.dark .bg-white\/90 {
-  background-color: rgb(17 21 29 / 0.9) !important;
-}
-
-.dark .bg-\[\#f5f6f7\],
-.dark .bg-\[\#f3f4f5\] {
-  background-color: var(--color-surface-muted) !important;
-}
-
-.dark .bg-\[\#5e6ad2\] {
-  background-color: var(--color-accent) !important;
-}
-
-.dark .border-\[\#e6e6e6\],
-.dark .border-\[\#d0d6e0\] {
-  border-color: var(--color-border-soft) !important;
-}
-
-.dark .text-\[\#191a1b\] {
-  color: var(--color-text) !important;
-}
-
-.dark .text-\[\#62666d\] {
-  color: var(--color-text-secondary) !important;
-}
-
-.dark .text-\[\#8a8f98\] {
-  color: var(--color-text-muted) !important;
-}
-
-.dark .text-\[\#5e6ad2\] {
-  color: var(--color-accent) !important;
-}
-
-.dark .text-\[\#27a644\] {
-  color: #34d399 !important;
-}
-
-.dark details[open] {
-  background-color: var(--color-surface) !important;
 }
 
 .theme-hero-overlay {

@@ -35,19 +35,19 @@
     <div class="absolute right-[-16rem] top-24 h-[34rem] w-[34rem] rounded-full bg-[#14b8a6]/10 blur-[120px]"></div>
   </div>
 
-  <header class="sticky top-0 z-20 border-b border-[#e6e6e6] bg-white/90 shadow-sm backdrop-blur-xl">
+  <header class="sticky top-0 z-20 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-overlay)] shadow-sm backdrop-blur-xl">
     <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
-      <a href="/" class="flex min-w-0 items-center gap-3 text-sm font-medium text-[#191a1b]">
-        <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-[#5e6ad2] text-base font-semibold text-white shadow-sm">
+      <a href="/" class="flex min-w-0 items-center gap-3 text-sm font-medium text-[var(--color-text)]">
+        <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-[var(--color-accent)] text-base font-semibold text-white shadow-sm">
           歌
         </span>
         <span class="flex min-w-0 flex-col">
           <span class="text-base font-semibold">QingKong Songlist</span>
-          <span class="text-xs text-[#8a8f98]">单主播歌单与愿望单管理</span>
+          <span class="text-xs text-[var(--color-text-muted)]">单主播歌单与愿望单管理</span>
         </span>
       </a>
 
-      <nav class="flex flex-wrap items-center gap-2 text-sm text-[#62666d]">
+      <nav class="flex flex-wrap items-center gap-2 text-sm text-[var(--color-text-secondary)]">
         <button
           type="button"
           class="button button-neutral button-small flex items-center justify-center p-2"
