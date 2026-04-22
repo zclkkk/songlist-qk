@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions } from '$lib/types';
 
   export type RequestFormState = {
@@ -93,13 +94,12 @@
 
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>语言</span>
-            <select name="language" class="form-field" required>
-              {#each songLanguageOptions as language}
-                <option value={language} selected={(form?.requestValues?.language ?? '其他') === language}>
-                  {language}
-                </option>
-              {/each}
-            </select>
+            <Select
+              name="language"
+              required
+              value={form?.requestValues?.language ?? '其他'}
+              items={songLanguageOptions.map((v) => ({ value: v, label: v }))}
+            />
           </label>
 
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-3">

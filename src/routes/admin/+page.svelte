@@ -1,6 +1,7 @@
 <script lang="ts">
   import NeteaseImportModal from '$lib/components/admin/NeteaseImportModal.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
+  import Select from '$lib/components/ui/Select.svelte';
   import { requestStatusClasses, songStatusClasses } from '$lib/status-styles';
   import {
     requestDecisionOptions,
@@ -11,6 +12,10 @@
   } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
+
+  const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
+  const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
+  const decisionItems = requestDecisionOptions.map((s) => ({ value: s, label: requestStatusLabels[s] }));
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
   let importModalDismissed = $state(false);
@@ -136,20 +141,12 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>语言</span>
-            <select name="language" class="form-field" required>
-              {#each songLanguageOptions as language}
-                <option value={language} selected={language === '其他'}>{language}</option>
-              {/each}
-            </select>
+            <Select name="language" required value="其他" items={languageItems} />
           </label>
 
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>状态</span>
-            <select name="status" class="form-field">
-              {#each songStatusOptions as status}
-                <option value={status}>{songStatusLabels[status]}</option>
-              {/each}
-            </select>
+            <Select name="status" value="ready" items={statusItems} />
           </label>
         </div>
 
@@ -277,20 +274,18 @@
 
                   <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>语言</span>
-                    <select name="language" class="form-field-muted" required>
-                      {#each songLanguageOptions as language}
-                        <option value={language} selected={song.language === language}>{language}</option>
-                      {/each}
-                    </select>
+                    <Select
+                      name="language"
+                      required
+                      value={song.language}
+                      items={languageItems}
+                      triggerClass="form-field-muted"
+                    />
                   </label>
 
                   <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                     <span>状态</span>
-                    <select name="status" class="form-field-muted">
-                      {#each songStatusOptions as status}
-                        <option value={status} selected={song.status === status}>{songStatusLabels[status]}</option>
-                      {/each}
-                    </select>
+                    <Select name="status" value={song.status} items={statusItems} triggerClass="form-field-muted" />
                   </label>
 
                   <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
@@ -369,11 +364,7 @@
                     class="flex w-full shrink-0 gap-3 lg:w-auto lg:min-w-[260px] lg:flex-col"
                   >
                     <input type="hidden" name="id" value={item.id} />
-                    <select name="status" class="form-field-muted">
-                      {#each requestDecisionOptions as status}
-                        <option value={status}>{requestStatusLabels[status]}</option>
-                      {/each}
-                    </select>
+                    <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />
                     <button type="submit" class="button button-primary"> 处理愿望 </button>
                   </form>
                 {/if}

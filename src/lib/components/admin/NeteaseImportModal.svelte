@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
 
   export type PlaylistPreview = {
@@ -50,11 +51,11 @@
 
       <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
         <span>状态</span>
-        <select name="status" class="form-field">
-          {#each songStatusOptions as status}
-            <option value={status} selected={preview.status === status}>{songStatusLabels[status]}</option>
-          {/each}
-        </select>
+        <Select
+          name="status"
+          value={preview.status}
+          items={songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }))}
+        />
       </label>
 
       <div
@@ -95,11 +96,13 @@
                 <td class="px-3 py-3 text-[var(--color-text)]">{song.title}</td>
                 <td class="px-3 py-3 text-[var(--color-text-secondary)]">{song.artist}</td>
                 <td class="px-3 py-3">
-                  <select name={`songLanguage-${index}`} class="form-field-muted min-w-28" required>
-                    {#each songLanguageOptions as language}
-                      <option value={language} selected={song.language === language}>{language}</option>
-                    {/each}
-                  </select>
+                  <Select
+                    name={`songLanguage-${index}`}
+                    required
+                    value={song.language}
+                    items={songLanguageOptions.map((v) => ({ value: v, label: v }))}
+                    triggerClass="form-field-muted min-w-28"
+                  />
                 </td>
                 <td class="px-3 py-3">
                   <input

@@ -2,6 +2,7 @@
   import Hero from '$lib/components/public/Hero.svelte';
   import RequestForm from '$lib/components/public/RequestForm.svelte';
   import SongTable from '$lib/components/public/SongTable.svelte';
+  import Select from '$lib/components/ui/Select.svelte';
   import {
     songLanguageOptions,
     songStatusLabels,
@@ -74,32 +75,32 @@
 
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>语言</span>
-          <select bind:value={selectedLanguage} class="form-field">
-            <option value="all">全部语言</option>
-            {#each songLanguageOptions as language}
-              <option value={language}>{language}</option>
-            {/each}
-          </select>
+          <Select
+            bind:value={selectedLanguage}
+            items={[{ value: 'all', label: '全部语言' }, ...songLanguageOptions.map((v) => ({ value: v, label: v }))]}
+          />
         </label>
 
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>标签</span>
-          <select bind:value={selectedTag} class="form-field">
-            <option value="all">全部标签</option>
-            {#each data.catalog.tags as tag}
-              <option value={tag}>{tag}</option>
-            {/each}
-          </select>
+          <Select
+            bind:value={selectedTag}
+            items={[
+              { value: 'all', label: '全部标签' },
+              ...data.catalog.tags.map((tag) => ({ value: tag, label: tag }))
+            ]}
+          />
         </label>
 
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>当前状态</span>
-          <select bind:value={selectedStatus} class="form-field">
-            <option value="all">全部状态</option>
-            {#each songStatusOptions as status}
-              <option value={status}>{songStatusLabels[status]}</option>
-            {/each}
-          </select>
+          <Select
+            bind:value={selectedStatus}
+            items={[
+              { value: 'all', label: '全部状态' },
+              ...songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }))
+            ]}
+          />
         </label>
       </div>
     </aside>
