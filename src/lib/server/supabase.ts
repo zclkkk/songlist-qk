@@ -1,13 +1,16 @@
-import { getSupabaseConfig } from '$lib/server/env';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
-let supabaseAdmin: ReturnType<typeof createClient> | undefined;
+import type { Database } from '$lib/server/database';
+import { getSupabaseConfig } from '$lib/server/env';
+
+let supabaseAdmin: SupabaseClient<Database> | undefined;
 
 export const getSupabaseAdmin = () => {
   if (!supabaseAdmin) {
     const supabaseConfig = getSupabaseConfig();
 
-    supabaseAdmin = createClient(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
+    supabaseAdmin = createClient<Database>(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
       auth: {
         persistSession: false,
         autoRefreshToken: false
