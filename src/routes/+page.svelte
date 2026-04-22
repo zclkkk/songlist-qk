@@ -1,6 +1,6 @@
 <script lang="ts">
   import { songStatusClasses } from '$lib/status-styles';
-  import { songLanguageOptions, songStatusLabels, type Song, type SongStatus } from '$lib/types';
+  import { songLanguageOptions, songStatusLabels, songStatusOptions, type Song, type SongStatus } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
 
@@ -136,7 +136,7 @@
           <span>语言</span>
           <select bind:value={selectedLanguage} class="form-field">
             <option value="all">全部语言</option>
-            {#each data.catalog.languages as language}
+            {#each songLanguageOptions as language}
               <option value={language}>{language}</option>
             {/each}
           </select>
@@ -156,7 +156,7 @@
           <span>当前状态</span>
           <select bind:value={selectedStatus} class="form-field">
             <option value="all">全部状态</option>
-            {#each data.catalog.statuses as status}
+            {#each songStatusOptions as status}
               <option value={status}>{songStatusLabels[status]}</option>
             {/each}
           </select>

@@ -165,10 +165,7 @@ const buildStats = (songs: Song[], pendingRequests: number): CatalogStats => ({
   pendingRequests
 });
 
-const buildCatalogMetadata = (songs: Song[]) => ({
-  tags: sortStrings(songs.flatMap((song) => song.tags)),
-  languages: songLanguageOptions
-});
+const collectTags = (songs: Song[]) => sortStrings(songs.flatMap((song) => song.tags));
 
 const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Promise<Song[]> => {
   const supabase = getSupabaseAdmin();
@@ -300,15 +297,12 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
   const songs = await listSongs({ isPublic: true });
-  const metadata = buildCatalogMetadata(songs);
   const settings = await getSettings();
 
   return {
     streamer: streamerProfile,
     songs,
-    tags: metadata.tags,
-    languages: metadata.languages,
-    statuses: songStatusOptions,
+    tags: collectTags(songs),
     stats: buildStats(songs, 0),
     settings
   };

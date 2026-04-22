@@ -57,8 +57,6 @@ export interface PublicCatalog {
   streamer: StreamerProfile;
   songs: Song[];
   tags: string[];
-  languages: readonly SongLanguage[];
-  statuses: readonly SongStatus[];
   stats: CatalogStats;
   settings: PageSettings;
 }
