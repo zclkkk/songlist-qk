@@ -492,21 +492,6 @@ export const updateRequestStatus = async ({
   status: RequestDecision;
 }) => {
   const supabase = getSupabaseAdmin();
-  const { data: requestRow, error: requestError } = await supabase
-    .from('requests')
-    .select('id, song_title, artist, language, message, requester_name, status, matched_song_id, created_at')
-    .eq('id', id)
-    .single();
-
-  if (requestError) {
-    throw requestError;
-  }
-
-  const request = mapRequestRow(requestRow as RequestRow);
-
-  if (request.status !== 'pending') {
-    throw new Error('这个愿望已经处理过。');
-  }
 
   if (status === 'accepted') {
     const { error } = await supabase.rpc('accept_song_request', {
@@ -520,9 +505,17 @@ export const updateRequestStatus = async ({
     return;
   }
 
-  const { error } = await supabase.from('requests').update({ status }).eq('id', id);
+  const { count, error } = await supabase
+    .from('requests')
+    .update({ status }, { count: 'exact' })
+    .eq('id', id)
+    .eq('status', 'pending');
 
   if (error) {
     throw error;
+  }
+
+  if (count === 0) {
+    throw new Error('这个愿望已经处理过。');
   }
 };
