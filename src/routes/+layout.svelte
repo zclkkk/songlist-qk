@@ -7,7 +7,7 @@
 
   import type { LayoutData } from './$types';
 
-  let { data, children } = $props<{ data: LayoutData; children: Snippet }>();
+  let { data, children }: { data: LayoutData; children: Snippet } = $props();
   let isDark = $state(false);
 
   onMount(() => {

@@ -2,14 +2,15 @@ import { createHash } from 'node:crypto';
 
 import { fail } from '@sveltejs/kit';
 
+import { getPublicCatalog } from '$lib/server/catalog';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
-import { getPublicCatalog } from '$lib/server/catalog';
 import { consumeRequestRateLimit } from '$lib/server/rate-limit';
 import { createSongRequest } from '$lib/server/requests';
 import { requestSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
+
 const requestWindowMs = 10 * 60 * 1000;
 const maxRequestsPerWindow = 5;
 
@@ -99,15 +100,7 @@ export const actions: Actions = {
     }
 
     return {
-      requestMessage: '愿望已提交，主播稍后会在后台处理。',
-      requestValues: {
-        songInput: '',
-        songTitle: '',
-        artist: '',
-        language: '其他',
-        message: '',
-        requesterName: ''
-      }
+      requestMessage: '愿望已提交，主播稍后会在后台处理。'
     };
   }
 };

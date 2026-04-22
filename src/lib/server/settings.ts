@@ -111,7 +111,10 @@ export const getSettings = async (): Promise<PageSettings> => {
 export const saveSetting = async (key: PageSettingKey, value: string) => {
   const supabase = getSupabaseAdmin();
   const { error } = await supabase.from('settings').upsert({ key, value });
-  if (error) throw error;
+
+  if (error) {
+    throw error;
+  }
 };
 
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
