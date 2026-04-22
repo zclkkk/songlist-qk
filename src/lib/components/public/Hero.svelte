@@ -40,7 +40,7 @@
         <div class="grid gap-4 sm:grid-cols-3">
           <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-overlay)] p-4 shadow-sm backdrop-blur">
             <p class="text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-text-muted)]">公开曲目</p>
-            <p class="mt-2 text-3xl font-semibold text-[var(--color-text)]">{catalog.stats.publicSongs}</p>
+            <p class="mt-2 text-3xl font-semibold text-[var(--color-text)]">{catalog.songs.length}</p>
             <p class="mt-1 text-xs text-[var(--color-text-secondary)]">首可浏览歌曲</p>
           </div>
 

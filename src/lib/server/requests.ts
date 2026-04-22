@@ -58,7 +58,7 @@ export const createSongRequest = async ({
   artist: string;
   language: SongLanguage;
   message: string;
-  requesterName: string;
+  requesterName: string | null;
 }) => {
   const supabase = getSupabaseAdmin();
 
@@ -67,7 +67,7 @@ export const createSongRequest = async ({
     artist,
     language,
     message,
-    requester_name: requesterName || null
+    requester_name: requesterName
   });
 
   if (error) {

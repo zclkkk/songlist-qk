@@ -23,6 +23,6 @@ export const actions: Actions = {
     }
 
     setAdminSession(cookies);
-    throw redirect(303, '/admin');
+    redirect(303, '/admin');
   }
 };

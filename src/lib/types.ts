@@ -57,7 +57,6 @@ export interface PublicCatalog {
   streamer: StreamerProfile;
   songs: Song[];
   tags: string[];
-  stats: CatalogStats;
   settings: PageSettings;
 }
 
@@ -76,7 +75,7 @@ export const songStatusLabels: Record<SongStatus, string> = {
 };
 
 export const requestStatusLabels: Record<RequestStatus, string> = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  refused: 'Refused'
+  pending: '待处理',
+  accepted: '已接受',
+  refused: '已拒绝'
 };

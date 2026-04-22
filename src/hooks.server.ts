@@ -10,11 +10,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   const isLoginPage = pathname === '/admin/login';
 
   if (isAdminArea && !isLoginPage && !event.locals.isAdmin) {
-    throw redirect(303, '/admin/login');
+    redirect(303, '/admin/login');
   }
 
   if (isLoginPage && event.locals.isAdmin) {
-    throw redirect(303, '/admin');
+    redirect(303, '/admin');
   }
 
   return resolve(event);

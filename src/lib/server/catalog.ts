@@ -10,18 +10,7 @@ import {
   settingsAssetBucket
 } from '$lib/server/settings';
 import { getSupabaseAdmin } from '$lib/server/supabase';
-import {
-  type AdminDashboardData,
-  type CatalogStats,
-  type PublicCatalog,
-  type Song
-} from '$lib/types';
-
-const buildStats = (songs: Song[], pendingRequests: number): CatalogStats => ({
-  totalSongs: songs.length,
-  publicSongs: songs.filter((song) => song.isPublic).length,
-  pendingRequests
-});
+import { type AdminDashboardData, type PublicCatalog } from '$lib/types';
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
   const songs = await listSongs({ isPublic: true });
@@ -31,7 +20,6 @@ export const getPublicCatalog = async (): Promise<PublicCatalog> => {
     streamer: streamerProfile,
     songs,
     tags: collectTags(songs),
-    stats: buildStats(songs, 0),
     settings
   };
 };
@@ -43,7 +31,11 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
     streamer: streamerProfile,
     songs,
     requests,
-    overview: buildStats(songs, countPendingRequests(requests)),
+    overview: {
+      totalSongs: songs.length,
+      publicSongs: songs.filter((song) => song.isPublic).length,
+      pendingRequests: countPendingRequests(requests)
+    },
     settings
   };
 };

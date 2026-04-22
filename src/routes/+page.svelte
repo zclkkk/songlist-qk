@@ -2,15 +2,22 @@
   import Hero from '$lib/components/public/Hero.svelte';
   import RequestForm from '$lib/components/public/RequestForm.svelte';
   import SongTable from '$lib/components/public/SongTable.svelte';
-  import { songLanguageOptions, songStatusLabels, songStatusOptions, type Song, type SongStatus } from '$lib/types';
+  import {
+    songLanguageOptions,
+    songStatusLabels,
+    songStatusOptions,
+    type Song,
+    type SongLanguage,
+    type SongStatus
+  } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
 
   let query = $state('');
-  let selectedLanguage = $state('all');
-  let selectedTag = $state('all');
+  let selectedLanguage = $state<'all' | SongLanguage>('all');
+  let selectedTag = $state<string>('all');
   let selectedStatus = $state<'all' | SongStatus>('all');
 
   const normalize = (value: string) => value.trim().toLowerCase();

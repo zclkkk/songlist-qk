@@ -16,11 +16,19 @@ export const requestSchema = z.object({
     error: '请选择有效语言。'
   }),
   message: z.string().trim().min(1, '请填写留言。').max(300, '留言请控制在 300 字以内。'),
-  requesterName: z.string().trim().max(40, '昵称请控制在 40 字以内。')
+  requesterName: z
+    .string()
+    .trim()
+    .max(40, '昵称请控制在 40 字以内。')
+    .transform((value) => value || null)
 });
 
 export const songSchema = z.object({
-  id: z.string().trim().optional(),
+  id: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => value || undefined),
   title: z.string().trim().min(1, '请填写歌名。').max(120, '歌名过长。'),
   artist: z.string().trim().min(1, '请填写原唱。').max(120, '原唱名称过长。'),
   language: z.enum(songLanguageOptions, {

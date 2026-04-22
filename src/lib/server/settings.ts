@@ -129,7 +129,7 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const { error: uploadError } = await supabase.storage.from(settingsAssetBucket).upload(objectPath, file, {
     upsert: false,
     cacheControl: '31536000',
-    contentType: file.type || 'application/octet-stream'
+    contentType: file.type
   });
 
   if (uploadError) {
@@ -139,7 +139,11 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   await saveSetting(settingKey, objectPath);
 
   if (existingPath && existingPath !== objectPath) {
-    await supabase.storage.from(settingsAssetBucket).remove([existingPath]);
+    const { error: removeError } = await supabase.storage.from(settingsAssetBucket).remove([existingPath]);
+
+    if (removeError) {
+      throw removeError;
+    }
   }
 
   return getAssetPublicUrl(objectPath);

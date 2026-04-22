@@ -14,8 +14,7 @@
   } = $props();
 
   const createImagePreview = (getDefault: () => string) => {
-    let preview = $state(getDefault());
-    let objectUrl = '';
+    let objectUrl = $state('');
 
     const clear = () => {
       if (objectUrl) {
@@ -25,25 +24,16 @@
     };
 
     const onChange = (e: Event) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
       clear();
+      const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         objectUrl = URL.createObjectURL(file);
-        preview = objectUrl;
-      } else {
-        preview = getDefault();
       }
     };
 
-    $effect(() => {
-      if (!objectUrl) {
-        preview = getDefault();
-      }
-    });
-
     return {
       get preview() {
-        return preview;
+        return objectUrl || getDefault();
       },
       onChange,
       clear

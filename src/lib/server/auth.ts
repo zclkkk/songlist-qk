@@ -11,11 +11,7 @@ const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 
 const getAuthSecret = () => {
   if (!privateEnv.AUTH_SECRET || privateEnv.AUTH_SECRET === 'replace-me') {
-    if (!dev) {
-      throw new Error('AUTH_SECRET must be configured in production.');
-    }
-
-    return 'songboard-local-secret';
+    throw new Error('AUTH_SECRET must be configured.');
   }
 
   return privateEnv.AUTH_SECRET;

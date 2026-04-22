@@ -1,10 +1,6 @@
 type NeteaseApi = {
-  playlist_detail?: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
-  song_detail?: (params: { ids: string }) => Promise<NeteaseSongResponse>;
-  default?: {
-    playlist_detail?: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
-    song_detail?: (params: { ids: string }) => Promise<NeteaseSongResponse>;
-  };
+  playlist_detail: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
+  song_detail: (params: { ids: string }) => Promise<NeteaseSongResponse>;
 };
 
 type NeteaseArtist = {
@@ -85,13 +81,7 @@ const mapTrack = (track: NeteaseTrack): NeteasePlaylistSong | null => {
 export const fetchNeteasePlaylistSongs = async (playlistInput: string) => {
   const playlistId = extractPlaylistId(playlistInput);
   const api = await getNeteaseApi();
-  const playlistDetail = api.playlist_detail ?? api.default?.playlist_detail;
-
-  if (!playlistDetail) {
-    throw new Error('网易云歌单解析器不可用。');
-  }
-
-  const response = await playlistDetail({ id: playlistId });
+  const response = await api.playlist_detail({ id: playlistId });
   const tracks = response.body?.playlist?.tracks;
 
   if (response.body?.code !== 200 || !Array.isArray(tracks)) {
@@ -110,16 +100,16 @@ export const fetchNeteasePlaylistSongs = async (playlistInput: string) => {
 export const fetchNeteaseSong = async (songInput: string) => {
   const songId = extractSongId(songInput);
   const api = await getNeteaseApi();
-  const songDetail = api.song_detail ?? api.default?.song_detail;
+  const response = await api.song_detail({ ids: songId });
+  const track = response.body?.songs?.[0];
 
-  if (!songDetail) {
-    throw new Error('网易云单曲解析器不可用。');
+  if (response.body?.code !== 200 || !track) {
+    throw new Error('读取网易云单曲失败。');
   }
 
-  const response = await songDetail({ ids: songId });
-  const song = mapTrack(response.body?.songs?.[0] ?? {});
+  const song = mapTrack(track);
 
-  if (response.body?.code !== 200 || song === null) {
+  if (!song) {
     throw new Error('读取网易云单曲失败。');
   }
 
