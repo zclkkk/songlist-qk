@@ -8,31 +8,21 @@
   <title>管理员登录 | QingKong Songlist</title>
 </svelte:head>
 
-<div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1fr_420px]">
-  <section class="space-y-6">
-    <div>
-      <p class="text-sm font-medium text-[var(--color-accent)]">后台入口</p>
-      <h1 class="mt-3 text-3xl font-semibold text-[var(--color-text)] lg:text-5xl">主播后台管理</h1>
-      <p class="mt-4 max-w-2xl text-sm leading-7 text-[var(--color-text-secondary)] lg:text-base">
-        维护公开歌单、处理观众愿望单，并统一管理歌曲状态。
-      </p>
-    </div>
-  </section>
-
-  <section
-    class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
-  >
-    <div>
-      <p class="text-sm font-medium text-[var(--color-accent)]">登录后台</p>
-      <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">管理员身份验证</h2>
+<div class="flex min-h-[70vh] items-center justify-center">
+  <section class="request-card w-full max-w-md">
+    <div class="flex flex-col items-center text-center">
+      <div
+        class="inline-flex h-12 w-12 items-center justify-center rounded-[14px] bg-[var(--color-accent)] text-base font-semibold text-white shadow-sm"
+      >
+        歌
+      </div>
+      <p class="mt-4 text-xs font-semibold tracking-[0.14em] text-[var(--color-accent)] uppercase">后台入口</p>
+      <h1 class="mt-2 text-2xl font-semibold text-[var(--color-text)]">管理员登录</h1>
+      <p class="mt-2 text-sm text-[var(--color-text-secondary)]">输入邮箱和密码进入后台管理</p>
     </div>
 
     {#if form?.message}
-      <div
-        class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]"
-      >
-        {form.message}
-      </div>
+      <div class="alert alert-danger mt-6">{form.message}</div>
     {/if}
 
     <form method="POST" class="mt-6 space-y-4">
@@ -52,7 +42,7 @@
         <input name="password" type="password" class="form-field" placeholder="请输入管理员密码" />
       </label>
 
-      <button type="submit" class="button button-primary button-full"> 登录后台 </button>
+      <button type="submit" class="button button-primary button-lg button-full mt-2"> 登录后台 </button>
     </form>
   </section>
 </div>
