@@ -69,7 +69,7 @@
           公开歌单
         </a>
 
-        {#if data.viewer.isAdmin}
+        {#if data.isAdmin}
           <a
             href="/admin"
             class="button button-primary button-small"

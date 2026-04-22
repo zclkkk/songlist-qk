@@ -1,13 +1,12 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { songStatusClasses } from '$lib/status-styles';
+  import { requestStatusClasses, songStatusClasses } from '$lib/status-styles';
   import {
     requestDecisionOptions,
     requestStatusLabels,
     songLanguageOptions,
     songStatusLabels,
-    songStatusOptions,
-    type RequestStatus
+    songStatusOptions
   } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
@@ -103,16 +102,6 @@
     importModalDismissed = true;
   };
 
-  const requestStatusClass = (status: RequestStatus) => {
-    switch (status) {
-      case 'pending':
-        return 'border-[#5e6ad2]/30 bg-[#5e6ad2]/10 text-[var(--color-accent)]';
-      case 'accepted':
-        return 'border-[#10b981]/30 bg-[#10b981]/10 text-[var(--color-success-text)]';
-      case 'refused':
-        return 'border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-secondary)]';
-    }
-  };
 </script>
 
 <svelte:head>
@@ -423,7 +412,7 @@
                 <div class="min-w-0 flex-1">
                   <div class="flex flex-wrap items-center gap-2">
                     <h3 class="break-words text-lg font-semibold text-[var(--color-text)]">{item.songTitle}</h3>
-                    <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${requestStatusClass(item.status)}`}>
+                    <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${requestStatusClasses[item.status]}`}>
                       {requestStatusLabels[item.status]}
                     </span>
                   </div>

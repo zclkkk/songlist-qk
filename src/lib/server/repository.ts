@@ -56,7 +56,7 @@ export const pageSettingsKeys = {
 
 type PageSettingKey = (typeof pageSettingsKeys)[keyof typeof pageSettingsKeys];
 
-const pageSettingsReadKeys = [pageSettingsKeys.avatarPath, pageSettingsKeys.backgroundPath, pageSettingsKeys.heroTitle] as const;
+const pageSettingsReadKeys = Object.values(pageSettingsKeys) as PageSettingKey[];
 
 const pageSettingsDefaults: Record<PageSettingKey, string> = {
   [pageSettingsKeys.avatarPath]: '',
@@ -90,31 +90,12 @@ const resolveImageExtension = (file: File) => {
     return extensionFromName;
   }
 
-  return imageExtensionByMimeType[file.type] ?? 'png';
+  return imageExtensionByMimeType[file.type] ?? 'bin';
 };
 
-const parseSongStatus = (status: string): SongStatus => {
-  if (songStatusOptions.includes(status as SongStatus)) {
-    return status as SongStatus;
-  }
-
-  throw new Error(`Invalid song status from database: ${status}`);
-};
-
-const parseRequestStatus = (status: string): RequestStatus => {
-  if (requestStatusOptions.includes(status as RequestStatus)) {
-    return status as RequestStatus;
-  }
-
-  throw new Error(`Invalid request status from database: ${status}`);
-};
-
-const parseSongLanguage = (language: string): SongLanguage => {
-  if (songLanguageOptions.includes(language as SongLanguage)) {
-    return language as SongLanguage;
-  }
-
-  throw new Error(`Invalid song language from database: ${language}`);
+const parseEnum = <T extends string>(value: string, options: readonly T[], label: string): T => {
+  if (options.includes(value as T)) return value as T;
+  throw new Error(`Invalid ${label}: ${value}`);
 };
 
 let supabaseAdmin: ReturnType<typeof createClient> | undefined;
@@ -138,8 +119,8 @@ const mapSongRow = (row: SongRow): Song => ({
   id: row.id,
   title: row.title,
   artist: row.artist,
-  language: parseSongLanguage(row.language),
-  status: parseSongStatus(row.status),
+  language: parseEnum(row.language, songLanguageOptions, 'song language'),
+  status: parseEnum(row.status, songStatusOptions, 'song status'),
   tags: row.tags,
   isPublic: row.is_public
 });
@@ -148,10 +129,10 @@ const mapRequestRow = (row: RequestRow): SongRequest => ({
   id: row.id,
   songTitle: row.song_title,
   artist: row.artist,
-  language: parseSongLanguage(row.language),
+  language: parseEnum(row.language, songLanguageOptions, 'song language'),
   message: row.message,
   requesterName: row.requester_name,
-  status: parseRequestStatus(row.status),
+  status: parseEnum(row.status, requestStatusOptions, 'request status'),
   matchedSongId: row.matched_song_id,
   createdAt: row.created_at
 });
@@ -185,7 +166,7 @@ const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Promise<Son
     throw error;
   }
 
-  return ((data as SongRow[] | null) ?? []).map(mapSongRow);
+  return (data as SongRow[]).map(mapSongRow);
 };
 
 const listRequests = async (): Promise<SongRequest[]> => {
@@ -200,7 +181,7 @@ const listRequests = async (): Promise<SongRequest[]> => {
     throw error;
   }
 
-  return ((data as RequestRow[] | null) ?? []).map(mapRequestRow);
+  return (data as RequestRow[]).map(mapRequestRow);
 };
 
 const listSettings = async (keys: readonly PageSettingKey[]) => {
@@ -213,27 +194,20 @@ const listSettings = async (keys: readonly PageSettingKey[]) => {
 
   const settings: Record<string, string> = {};
 
-  for (const row of ((data as SettingRow[] | null) ?? [])) {
+  for (const row of (data as SettingRow[])) {
     settings[row.key] = row.value;
   }
 
   return settings;
 };
 
-const requireSettingValue = (settings: Record<string, string>, key: PageSettingKey) => {
-  const value = settings[key];
-
-  if (value === undefined) {
-    throw new Error(`缺少页面配置：${key}`);
-  }
-
-  return value;
-};
+const getSettingValue = (settings: Record<string, string>, key: PageSettingKey) =>
+  settings[key] ?? pageSettingsDefaults[key];
 
 const readSettingValue = async (key: PageSettingKey) => {
   const settings = await listSettings([key]);
 
-  return requireSettingValue(settings, key);
+  return getSettingValue(settings, key);
 };
 
 const getAssetPublicUrl = (path: string) => {
@@ -247,9 +221,9 @@ const getAssetPublicUrl = (path: string) => {
 };
 
 const mapPageSettings = (settings: Record<string, string>): PageSettings => ({
-  avatar: getAssetPublicUrl(requireSettingValue(settings, pageSettingsKeys.avatarPath)),
-  background: getAssetPublicUrl(requireSettingValue(settings, pageSettingsKeys.backgroundPath)),
-  heroTitle: requireSettingValue(settings, pageSettingsKeys.heroTitle)
+  avatar: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.avatarPath)),
+  background: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.backgroundPath)),
+  heroTitle: getSettingValue(settings, pageSettingsKeys.heroTitle)
 });
 
 export const getSettings = async (): Promise<PageSettings> => {

@@ -5,9 +5,7 @@ declare global {
     }
 
     interface PageData {
-      viewer?: {
-        isAdmin: boolean;
-      };
+      isAdmin: boolean;
     }
   }
 }
