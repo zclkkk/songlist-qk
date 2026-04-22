@@ -16,6 +16,11 @@
   --color-accent: #5e6ad2;
   --color-accent-hover: #828fff;
   --color-success-text: #27a644;
+  --color-success-border: rgb(16 185 129 / 0.3);
+  --color-success-bg: rgb(16 185 129 / 0.1);
+  --color-danger: #dc2626;
+  --color-danger-border: rgb(220 38 38 / 0.3);
+  --color-danger-bg: rgb(220 38 38 / 0.1);
   --color-accent-glow: rgb(94 106 210 / 0.35);
   --color-accent-glow-strong: rgb(94 106 210 / 0.5);
   font-family:
@@ -48,6 +53,11 @@
   --color-accent: #38bdf8;
   --color-accent-hover: #0ea5e9;
   --color-success-text: #34d399;
+  --color-success-border: rgb(52 211 153 / 0.35);
+  --color-success-bg: rgb(52 211 153 / 0.12);
+  --color-danger: #f87171;
+  --color-danger-border: rgb(248 113 113 / 0.35);
+  --color-danger-bg: rgb(248 113 113 / 0.12);
   --color-accent-glow: rgb(56 189 248 / 0.35);
   --color-accent-glow-strong: rgb(56 189 248 / 0.5);
   background: var(--color-page);
@@ -585,6 +595,70 @@ select {
   padding: 4rem 1.5rem;
   color: var(--color-text-muted);
   text-align: center;
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.alert-success {
+  border-color: var(--color-success-border);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.alert-danger {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.request-card {
+  border-radius: 28px;
+  border: 1px solid var(--color-border-soft);
+  background: var(--color-surface);
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+@media (min-width: 1024px) {
+  .request-card {
+    padding: 1.75rem;
+  }
+}
+
+.netease-block {
+  border-radius: 18px;
+  border: 1px solid var(--color-border-soft);
+  background: var(--color-surface-muted);
+  padding: 1rem 1.25rem;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.feature-list svg {
+  flex-shrink: 0;
+  color: var(--color-accent);
 }
 
 img {
