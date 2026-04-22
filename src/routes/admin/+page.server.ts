@@ -329,14 +329,6 @@ export const actions: Actions = {
         });
       }
 
-      if (hasAvatarFile && !avatarFile.type.startsWith('image/')) {
-        return fail(400, { adminError: '仅支持图片头像。', settingsModalOpen: true });
-      }
-
-      if (hasBackgroundFile && !bgFile.type.startsWith('image/')) {
-        return fail(400, { adminError: '仅支持图片背景。', settingsModalOpen: true });
-      }
-
       if (hasAvatarFile && avatarFile.size > 1024 * 1024 * 2) {
         return fail(400, { adminError: '头像文件不能超过 2MB', settingsModalOpen: true });
       }

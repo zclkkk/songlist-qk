@@ -76,8 +76,7 @@ const imageExtensionByMimeType: Record<string, string> = {
   'image/png': 'png',
   'image/webp': 'webp',
   'image/gif': 'gif',
-  'image/avif': 'avif',
-  'image/svg+xml': 'svg'
+  'image/avif': 'avif'
 };
 
 const sortStrings = (values: Iterable<string>) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
@@ -271,8 +270,8 @@ export const saveSetting = async (key: PageSettingKey, value: string) => {
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const supabase = getSupabaseAdmin();
 
-  if (!file.type.startsWith('image/')) {
-    throw new Error('仅支持图片文件。');
+  if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+    throw new Error('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
   }
 
   const settingKey = settingImageKinds[kind];
