@@ -1,19 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
+import { getAdminDashboardData, resetDatabase as resetSonglistDatabase } from '$lib/server/catalog';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
-import {
-	deleteSong as removeSong,
-	getAdminDashboardData,
-	importSongs,
-	pageSettingsKeys,
-	resetDatabase as resetSonglistDatabase,
-	saveSetting,
-	saveSettingImage,
-	saveSong,
-	updateRequestStatus
-} from '$lib/server/repository';
+import { updateRequestStatus } from '$lib/server/requests';
+import { pageSettingsKeys, saveSetting, saveSettingImage } from '$lib/server/settings';
+import { deleteSong as removeSong, importSongs, saveSong } from '$lib/server/songs';
 import {
   pageSettingsSchema,
   playlistImportSettingsSchema,

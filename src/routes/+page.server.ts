@@ -4,7 +4,9 @@ import { fail } from '@sveltejs/kit';
 
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
-import { consumeRequestRateLimit, createSongRequest, getPublicCatalog } from '$lib/server/repository';
+import { getPublicCatalog } from '$lib/server/catalog';
+import { consumeRequestRateLimit } from '$lib/server/rate-limit';
+import { createSongRequest } from '$lib/server/requests';
 import { requestSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
