@@ -118,15 +118,21 @@ const parseSongLanguage = (language: string): SongLanguage => {
   throw new Error(`Invalid song language from database: ${language}`);
 };
 
-const getSupabaseAdmin = () => {
-  const supabaseConfig = getSupabaseConfig();
+let supabaseAdmin: ReturnType<typeof createClient> | undefined;
 
-  return createClient(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false
-    }
-  });
+const getSupabaseAdmin = () => {
+  if (!supabaseAdmin) {
+    const supabaseConfig = getSupabaseConfig();
+
+    supabaseAdmin = createClient(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false
+      }
+    });
+  }
+
+  return supabaseAdmin;
 };
 
 const mapSongRow = (row: SongRow): Song => ({
