@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",
@@ -17,6 +18,8 @@
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^25.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
@@ -30,5 +33,8 @@
     "@neteasecloudmusicapienhanced/api": "^4.32.0",
     "@supabase/supabase-js": "^2.104.0",
     "zod": "^4.3.6"
+  },
+  "lint-staged": {
+    "*.{js,ts,svelte,css,html,json,md}": "prettier --write"
   }
 }
