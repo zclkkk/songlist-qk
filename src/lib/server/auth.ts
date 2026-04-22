@@ -21,14 +21,6 @@ const getAuthSecret = () => {
   return privateEnv.AUTH_SECRET;
 };
 
-const getAdminEmail = () => {
-  if (!privateEnv.ADMIN_EMAIL) {
-    throw new Error('ADMIN_EMAIL must be configured.');
-  }
-
-  return privateEnv.ADMIN_EMAIL;
-};
-
 const signValue = (value: string) => createHmac('sha256', getAuthSecret()).update(value).digest('hex');
 
 const buildCookieValue = () => {
@@ -106,13 +98,6 @@ export const loginAdmin = async ({
     return {
       ok: false,
       message: '请填写邮箱和密码。'
-    };
-  }
-
-  if (normalizedEmail !== getAdminEmail().trim().toLowerCase()) {
-    return {
-      ok: false,
-      message: '邮箱或密码错误。'
     };
   }
 

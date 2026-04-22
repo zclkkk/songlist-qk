@@ -75,7 +75,6 @@ Copy-Item .env.example .env
 PUBLIC_SUPABASE_URL=
 PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-ADMIN_EMAIL=admin@example.com
 AUTH_SECRET=replace-me
 ```
 
@@ -83,8 +82,7 @@ AUTH_SECRET=replace-me
 
 - `PUBLIC_SUPABASE_URL` 和 `PUBLIC_SUPABASE_PUBLISHABLE_KEY` 来自 Supabase 项目的 API 设置。
 - `SUPABASE_SERVICE_ROLE_KEY` 只允许在服务端使用，不要暴露到浏览器。
-- `ADMIN_EMAIL` 必须匹配一个 Supabase Auth 用户邮箱。
-- 后台登录密码就是这个 Supabase Auth 用户的密码。
+- 后台登录直接走 Supabase Auth：**Supabase 项目里任意一个 Auth 用户都可以登录后台**。请只在 Supabase Auth 中创建你信任的管理员用户。
 - `AUTH_SECRET` 用于签名本地管理员 session cookie。生产环境必须换成真实随机密钥。
 
 ## Supabase
@@ -104,7 +102,7 @@ supabase/schema.sql
   - 公开用户只能读取 `is_public = true` 的歌曲
   - 公开用户只能插入 `pending` 状态的愿望单
 
-在 Supabase Auth 中创建一个邮箱等于 `ADMIN_EMAIL` 的管理员用户。
+在 Supabase Auth 中创建至少一个管理员用户，他们的邮箱和密码就是后台登录凭证。
 
 ## 开发
 
