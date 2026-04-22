@@ -51,13 +51,17 @@
   <Hero catalog={data.catalog} />
 
   <section class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-    <aside class="h-fit rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm lg:sticky lg:top-24">
+    <aside
+      class="h-fit rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm lg:sticky lg:top-24"
+    >
       <div class="flex items-center justify-between gap-3">
         <div>
           <p class="text-sm font-medium text-[var(--color-accent)]">公开歌单</p>
           <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">搜索与筛选</h2>
         </div>
-        <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
+        <span
+          class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
+        >
           {filteredSongs.length} / {data.catalog.songs.length}
         </span>
       </div>
@@ -65,11 +69,7 @@
       <div class="mt-5 space-y-4">
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>搜索</span>
-          <input
-            bind:value={query}
-            class="form-field"
-            placeholder="按歌名、原唱、标签搜索"
-          />
+          <input bind:value={query} class="form-field" placeholder="按歌名、原唱、标签搜索" />
         </label>
 
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">

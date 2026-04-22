@@ -1,12 +1,6 @@
 import { parseEnum } from '$lib/server/form-utils';
 import { getSupabaseAdmin } from '$lib/server/supabase';
-import {
-  songLanguageOptions,
-  songStatusOptions,
-  type Song,
-  type SongLanguage,
-  type SongStatus
-} from '$lib/types';
+import { songLanguageOptions, songStatusOptions, type Song, type SongLanguage, type SongStatus } from '$lib/types';
 
 type SongRow = {
   id: string;
@@ -18,8 +12,7 @@ type SongRow = {
   is_public: boolean;
 };
 
-const sortStrings = (values: Iterable<string>) =>
-  Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+const sortStrings = (values: Iterable<string>) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 
 const mapSongRow = (row: SongRow): Song => ({
   id: row.id,

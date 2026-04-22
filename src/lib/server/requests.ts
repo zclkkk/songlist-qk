@@ -75,13 +75,7 @@ export const createSongRequest = async ({
   }
 };
 
-export const updateRequestStatus = async ({
-  id,
-  status
-}: {
-  id: string;
-  status: RequestDecision;
-}) => {
+export const updateRequestStatus = async ({ id, status }: { id: string; status: RequestDecision }) => {
   const supabase = getSupabaseAdmin();
 
   if (status === 'accepted') {

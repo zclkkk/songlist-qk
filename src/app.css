@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
@@ -17,16 +17,16 @@
   --color-accent-hover: #828fff;
   --color-success-text: #27a644;
   font-family:
-    "Inter Variable",
+    'Inter Variable',
     Inter,
-    "SF Pro Display",
+    'SF Pro Display',
     -apple-system,
     system-ui,
-    "Segoe UI",
-    "Noto Sans SC",
-    "Microsoft YaHei",
+    'Segoe UI',
+    'Noto Sans SC',
+    'Microsoft YaHei',
     sans-serif;
-  font-feature-settings: "cv01", "ss03";
+  font-feature-settings: 'cv01', 'ss03';
   background: var(--color-page);
   color: var(--color-text);
 }
@@ -57,9 +57,7 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at top left, rgb(94 106 210 / 0.08), transparent 32rem),
-    var(--color-page);
+  background: radial-gradient(circle at top left, rgb(94 106 210 / 0.08), transparent 32rem), var(--color-page);
   color: var(--color-text);
   transition:
     background-color 150ms ease,
@@ -69,8 +67,7 @@ body {
 .dark body {
   background:
     radial-gradient(circle at top left, rgb(56 189 248 / 0.12), transparent 34rem),
-    radial-gradient(circle at top right, rgb(20 184 166 / 0.08), transparent 30rem),
-    var(--color-page);
+    radial-gradient(circle at top right, rgb(20 184 166 / 0.08), transparent 30rem), var(--color-page);
 }
 
 button,

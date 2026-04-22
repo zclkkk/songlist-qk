@@ -52,7 +52,9 @@
 </script>
 
 <div class="fixed inset-0 z-50 overflow-y-auto bg-[#191a1b]/50 px-4 py-8">
-  <section class="mx-auto max-w-3xl rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-xl lg:p-7">
+  <section
+    class="mx-auto max-w-3xl rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-xl lg:p-7"
+  >
     <div class="flex items-start justify-between gap-4">
       <div>
         <p class="text-sm font-medium text-[var(--color-accent)]">外观</p>
@@ -60,17 +62,13 @@
         <p class="mt-2 text-sm text-[var(--color-text-secondary)]">修改首页主标题、头像和背景图。</p>
       </div>
 
-      <button
-        type="button"
-        class="button button-neutral button-small"
-        onclick={onClose}
-      >
-        关闭
-      </button>
+      <button type="button" class="button button-neutral button-small" onclick={onClose}> 关闭 </button>
     </div>
 
     {#if adminError}
-      <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
+      <div
+        class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]"
+      >
         {adminError}
       </div>
     {/if}
@@ -97,18 +95,14 @@
             <span>主播头像 (建议正方形，不超过 2MB)</span>
             {#if avatarPreview.preview}
               <div class="mt-2 flex justify-center">
-                <div class="h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-avatar-ring)] bg-[var(--color-surface-muted)] shadow-sm">
+                <div
+                  class="h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-avatar-ring)] bg-[var(--color-surface-muted)] shadow-sm"
+                >
                   <img src={avatarPreview.preview} alt="头像预览" class="h-full w-full object-cover" />
                 </div>
               </div>
             {/if}
-            <input
-              type="file"
-              name="avatar"
-              accept="image/*"
-              class="form-field"
-              onchange={avatarPreview.onChange}
-            />
+            <input type="file" name="avatar" accept="image/*" class="form-field" onchange={avatarPreview.onChange} />
           </label>
         </div>
 
@@ -116,7 +110,9 @@
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>背景图片 (建议 1920x1080，不超过 5MB)</span>
             {#if backgroundPreview.preview}
-              <div class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)]">
+              <div
+                class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)]"
+              >
                 <img src={backgroundPreview.preview} alt="背景预览" class="h-full w-full object-cover" />
               </div>
             {/if}
@@ -131,12 +127,7 @@
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="button button-primary button-full"
-      >
-        保存配置
-      </button>
+      <button type="submit" class="button button-primary button-full"> 保存配置 </button>
     </form>
   </section>
 </div>

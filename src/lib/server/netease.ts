@@ -58,7 +58,8 @@ const extractNeteaseId = (value: string, pathName: string, errorMessage: string)
   throw new Error(errorMessage);
 };
 
-const extractPlaylistId = (value: string) => extractNeteaseId(value, 'playlist', '请填写有效的网易云公开歌单链接或 ID。');
+const extractPlaylistId = (value: string) =>
+  extractNeteaseId(value, 'playlist', '请填写有效的网易云公开歌单链接或 ID。');
 
 const extractSongId = (value: string) => extractNeteaseId(value, 'song', '请填写有效的网易云单曲链接或 ID。');
 

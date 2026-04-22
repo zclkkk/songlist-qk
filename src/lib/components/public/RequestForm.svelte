@@ -20,11 +20,13 @@
 <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
   <div class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
     <div>
-      <span class="w-fit rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs font-medium text-[var(--color-text-secondary)]">
+      <span
+        class="w-fit rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs font-medium text-[var(--color-text-secondary)]"
+      >
         无需登录
       </span>
       <p class="mt-5 text-sm font-medium text-[var(--color-accent)]">愿望单提交</p>
-      <h2 class="mt-2 text-2xl font-semibold leading-tight text-[var(--color-text)]">想听哪首歌？</h2>
+      <h2 class="mt-2 text-2xl leading-tight font-semibold text-[var(--color-text)]">想听哪首歌？</h2>
       <p class="mt-3 text-sm leading-7 text-[var(--color-text-secondary)]">
         优先粘贴网易云单曲链接或 ID 解析，系统会自动填好歌名和原唱；找不到链接时再手动填写。
       </p>
@@ -34,13 +36,17 @@
       {#if form?.requestMessage || form?.requestError}
         <div class="mb-5 space-y-3">
           {#if form?.requestMessage}
-            <div class="rounded-[20px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[var(--color-success-text)]">
+            <div
+              class="rounded-[20px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[var(--color-success-text)]"
+            >
               {form.requestMessage}
             </div>
           {/if}
 
           {#if form?.requestError}
-            <div class="rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
+            <div
+              class="rounded-[20px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]"
+            >
               {form.requestError}
             </div>
           {/if}
@@ -59,11 +65,7 @@
             />
           </label>
 
-          <button
-            type="submit"
-            formaction="?/parseRequestSong"
-            class="button button-secondary button-full"
-          >
+          <button type="submit" formaction="?/parseRequestSong" class="button button-secondary button-full">
             解析单曲
           </button>
         </div>
@@ -102,12 +104,9 @@
 
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-3">
             <span>留言</span>
-            <textarea
-              name="message"
-              rows="3"
-              class="form-field"
-              placeholder="可以说说为什么想听、适合什么场合唱。"
-            >{form?.requestValues?.message ?? ''}</textarea>
+            <textarea name="message" rows="3" class="form-field" placeholder="可以说说为什么想听、适合什么场合唱。"
+              >{form?.requestValues?.message ?? ''}</textarea
+            >
           </label>
 
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-2">
@@ -121,12 +120,7 @@
           </label>
 
           <div class="flex items-end">
-            <button
-              type="submit"
-              class="button button-primary button-full"
-            >
-              提交愿望单
-            </button>
+            <button type="submit" class="button button-primary button-full"> 提交愿望单 </button>
           </div>
         </div>
       </form>

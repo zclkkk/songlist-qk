@@ -45,7 +45,9 @@
     <div class="space-y-6">
       <div>
         <div class="flex flex-wrap items-center gap-3">
-          <span class="rounded-full border border-[#5e6ad2]/30 bg-[#5e6ad2]/10 px-4 py-1 text-sm font-medium text-[var(--color-accent)]">
+          <span
+            class="rounded-full border border-[#5e6ad2]/30 bg-[#5e6ad2]/10 px-4 py-1 text-sm font-medium text-[var(--color-accent)]"
+          >
             后台控制台
           </span>
         </div>
@@ -58,15 +60,15 @@
 
       <div class="grid gap-4 sm:grid-cols-3">
         <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">总歌曲数</p>
+          <p class="text-xs tracking-[0.14em] text-[var(--color-text-muted)] uppercase">总歌曲数</p>
           <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.totalSongs}</p>
         </div>
         <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">公开歌曲数</p>
+          <p class="text-xs tracking-[0.14em] text-[var(--color-text-muted)] uppercase">公开歌曲数</p>
           <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.publicSongs}</p>
         </div>
         <div class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-5 shadow-sm">
-          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-text-muted)]">待处理愿望</p>
+          <p class="text-xs tracking-[0.14em] text-[var(--color-text-muted)] uppercase">待处理愿望</p>
           <p class="mt-3 text-3xl font-semibold text-[var(--color-text)]">{data.dashboard.overview.pendingRequests}</p>
         </div>
       </div>
@@ -79,48 +81,37 @@
           <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">管理员操作</h2>
         </div>
         <div class="flex flex-wrap items-center justify-end gap-2">
-          <button
-            type="button"
-            class="button button-neutral button-small"
-            onclick={() => (settingsModalOpen = true)}
-          >
+          <button type="button" class="button button-neutral button-small" onclick={() => (settingsModalOpen = true)}>
             页面配置
           </button>
 
           <form method="POST" action="?/resetDatabase" onsubmit={confirmReset}>
-            <button
-              type="submit"
-              class="button button-neutral button-small"
-            >
-              重置数据库
-            </button>
+            <button type="submit" class="button button-neutral button-small"> 重置数据库 </button>
           </form>
 
           <form method="POST" action="?/logout">
-            <button
-              type="submit"
-              class="button button-neutral button-small"
-            >
-              退出登录
-            </button>
+            <button type="submit" class="button button-neutral button-small"> 退出登录 </button>
           </form>
         </div>
       </div>
 
       {#if form?.adminMessage}
-        <div class="mt-5 rounded-[18px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[var(--color-success-text)]">
+        <div
+          class="mt-5 rounded-[18px] border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 text-sm text-[var(--color-success-text)]"
+        >
           {form.adminMessage}
         </div>
       {/if}
 
       {#if adminError}
         {#if !form?.playlistPreview}
-          <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
+          <div
+            class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]"
+          >
             {adminError}
           </div>
         {/if}
       {/if}
-
     </div>
   </section>
 
@@ -167,17 +158,19 @@
           <input name="tagsInput" class="form-field" placeholder="例如：高能, 日语, 动画" />
         </label>
 
-        <label class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)]">
-          <input name="isPublic" type="checkbox" class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]" checked />
+        <label
+          class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
+        >
+          <input
+            name="isPublic"
+            type="checkbox"
+            class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+            checked
+          />
           <span>公开展示到前台歌单</span>
         </label>
 
-        <button
-          type="submit"
-          class="button button-primary button-full"
-        >
-          保存歌曲
-        </button>
+        <button type="submit" class="button button-primary button-full"> 保存歌曲 </button>
       </form>
 
       <div class="mt-8 border-t border-[var(--color-border-soft)] pt-7">
@@ -186,7 +179,12 @@
           <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">解析公开歌单或单曲</h2>
         </div>
 
-        <form method="POST" action="?/previewSong" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
+        <form
+          method="POST"
+          action="?/previewSong"
+          class="mt-6 space-y-4"
+          onsubmit={() => (importModalDismissed = false)}
+        >
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>单曲链接或 ID</span>
             <input
@@ -197,15 +195,15 @@
             />
           </label>
 
-          <button
-            type="submit"
-            class="button button-secondary button-full"
-          >
-            解析单曲
-          </button>
+          <button type="submit" class="button button-secondary button-full"> 解析单曲 </button>
         </form>
 
-        <form method="POST" action="?/previewPlaylist" class="mt-6 space-y-4" onsubmit={() => (importModalDismissed = false)}>
+        <form
+          method="POST"
+          action="?/previewPlaylist"
+          class="mt-6 space-y-4"
+          onsubmit={() => (importModalDismissed = false)}
+        >
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>歌单链接或 ID</span>
             <input
@@ -216,41 +214,48 @@
             />
           </label>
 
-          <button
-            type="submit"
-            class="button button-secondary button-full"
-          >
-            解析歌单
-          </button>
+          <button type="submit" class="button button-secondary button-full"> 解析歌单 </button>
         </form>
       </div>
     </div>
 
     <div class="space-y-6">
-      <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+      <section
+        class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
+      >
         <div class="flex items-center justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-[var(--color-accent)]">歌曲列表</p>
             <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">已录入曲目</h2>
           </div>
-          <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
+          <span
+            class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
+          >
             {data.dashboard.songs.length} 首
           </span>
         </div>
 
         <div class="mt-6 space-y-4">
           {#each data.dashboard.songs as song}
-            <details class="group rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 open:bg-[var(--color-surface)]">
+            <details
+              class="group rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 open:bg-[var(--color-surface)]"
+            >
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
                 <div class="min-w-0">
                   <h3 class="truncate text-lg font-semibold text-[var(--color-text)]">{song.title}</h3>
-                  <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">{song.artist} · {song.language}</p>
+                  <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">
+                    {song.artist} · {song.language}
+                  </p>
                 </div>
                 <div class="flex flex-wrap items-center justify-end gap-2">
-                  <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${songStatusClasses[song.status]}`}>
+                  <span
+                    class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${songStatusClasses[song.status]}`}
+                  >
                     {songStatusLabels[song.status]}
                   </span>
-                  <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
+                  <span
+                    class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
+                  >
                     {song.isPublic ? '公开' : '隐藏'}
                   </span>
                 </div>
@@ -293,7 +298,9 @@
                     <input name="tagsInput" value={song.tags.join(', ')} class="form-field-muted" />
                   </label>
 
-                  <label class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)] lg:col-span-2">
+                  <label
+                    class="flex items-center gap-3 rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)] lg:col-span-2"
+                  >
                     <input
                       name="isPublic"
                       type="checkbox"
@@ -303,22 +310,12 @@
                     <span>在公开歌单展示</span>
                   </label>
 
-                  <button
-                    type="submit"
-                    class="button button-primary lg:col-span-2"
-                  >
-                    保存修改
-                  </button>
+                  <button type="submit" class="button button-primary lg:col-span-2"> 保存修改 </button>
                 </form>
 
                 <form method="POST" action="?/deleteSong" class="flex flex-col justify-end" onsubmit={confirmDelete}>
                   <input type="hidden" name="id" value={song.id} />
-                  <button
-                    type="submit"
-                    class="button button-neutral"
-                  >
-                    删除歌曲
-                  </button>
+                  <button type="submit" class="button button-neutral"> 删除歌曲 </button>
                 </form>
               </div>
             </details>
@@ -326,25 +323,33 @@
         </div>
       </section>
 
-      <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+      <section
+        class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
+      >
         <div class="flex items-center justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-[var(--color-accent)]">愿望单管理</p>
             <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">观众提交记录</h2>
           </div>
-          <span class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]">
+          <span
+            class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
+          >
             {data.dashboard.requests.length} 条
           </span>
         </div>
 
         <div class="mt-6 space-y-4">
           {#each data.dashboard.requests as item}
-            <article class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5">
+            <article
+              class="rounded-[24px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5"
+            >
               <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0 flex-1">
                   <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="break-words text-lg font-semibold text-[var(--color-text)]">{item.songTitle}</h3>
-                    <span class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${requestStatusClasses[item.status]}`}>
+                    <h3 class="text-lg font-semibold break-words text-[var(--color-text)]">{item.songTitle}</h3>
+                    <span
+                      class={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${requestStatusClasses[item.status]}`}
+                    >
                       {requestStatusLabels[item.status]}
                     </span>
                   </div>
@@ -358,19 +363,18 @@
                 </div>
 
                 {#if item.status === 'pending'}
-                  <form method="POST" action="?/updateRequestStatus" class="flex w-full shrink-0 gap-3 lg:w-auto lg:min-w-[260px] lg:flex-col">
+                  <form
+                    method="POST"
+                    action="?/updateRequestStatus"
+                    class="flex w-full shrink-0 gap-3 lg:w-auto lg:min-w-[260px] lg:flex-col"
+                  >
                     <input type="hidden" name="id" value={item.id} />
                     <select name="status" class="form-field-muted">
                       {#each requestDecisionOptions as status}
                         <option value={status}>{requestStatusLabels[status]}</option>
                       {/each}
                     </select>
-                    <button
-                      type="submit"
-                      class="button button-primary"
-                    >
-                      处理愿望
-                    </button>
+                    <button type="submit" class="button button-primary"> 处理愿望 </button>
                   </form>
                 {/if}
               </div>
@@ -383,17 +387,9 @@
 </div>
 
 {#if settingsModalOpen}
-  <SettingsModal
-    settings={data.dashboard.settings}
-    {adminError}
-    onClose={() => (settingsModalOpen = false)}
-  />
+  <SettingsModal settings={data.dashboard.settings} {adminError} onClose={() => (settingsModalOpen = false)} />
 {/if}
 
 {#if form?.playlistPreview && !importModalDismissed}
-  <NeteaseImportModal
-    preview={form.playlistPreview}
-    {adminError}
-    onClose={() => (importModalDismissed = true)}
-  />
+  <NeteaseImportModal preview={form.playlistPreview} {adminError} onClose={() => (importModalDismissed = true)} />
 {/if}

@@ -17,17 +17,20 @@
         维护公开歌单、处理观众愿望单，并统一管理歌曲状态。
       </p>
     </div>
-
   </section>
 
-  <section class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+  <section
+    class="rounded-[30px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
+  >
     <div>
       <p class="text-sm font-medium text-[var(--color-accent)]">登录后台</p>
       <h2 class="mt-1 text-2xl font-semibold text-[var(--color-text)]">管理员身份验证</h2>
     </div>
 
     {#if form?.message}
-      <div class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]">
+      <div
+        class="mt-5 rounded-[18px] border border-[#7170ff]/30 bg-[#7170ff]/10 px-4 py-3 text-sm text-[var(--color-accent)]"
+      >
         {form.message}
       </div>
     {/if}
@@ -46,20 +49,10 @@
 
       <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
         <span>密码</span>
-        <input
-          name="password"
-          type="password"
-          class="form-field"
-          placeholder="请输入管理员密码"
-        />
+        <input name="password" type="password" class="form-field" placeholder="请输入管理员密码" />
       </label>
 
-      <button
-        type="submit"
-        class="button button-primary button-full"
-      >
-        登录后台
-      </button>
+      <button type="submit" class="button button-primary button-full"> 登录后台 </button>
     </form>
   </section>
 </div>
