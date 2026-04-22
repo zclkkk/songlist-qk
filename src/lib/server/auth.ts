@@ -92,9 +92,8 @@ export const loginAdmin = async ({
   password: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> => {
   const normalizedEmail = email.trim().toLowerCase();
-  const normalizedPassword = password.trim();
 
-  if (!normalizedEmail || !normalizedPassword) {
+  if (!normalizedEmail || !password) {
     return {
       ok: false,
       message: '请填写邮箱和密码。'
@@ -111,7 +110,7 @@ export const loginAdmin = async ({
 
   const { error } = await client.auth.signInWithPassword({
     email: normalizedEmail,
-    password: normalizedPassword
+    password
   });
 
   if (error) {
