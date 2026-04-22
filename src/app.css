@@ -770,6 +770,26 @@ select {
   color: white;
 }
 
+.song-chevron {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform 200ms ease;
+}
+
+details[open] > summary .song-chevron {
+  transform: rotate(180deg);
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-soft);
+}
+
 img {
   max-width: 100%;
   display: block;
