@@ -235,24 +235,17 @@ export const actions: Actions = {
         title: song.title,
         artist: song.artist,
         language: parsedSong.data.language,
-        tags: parsedSong.data.tagsInput
+        status: parsed.data.status,
+        tags: parsedSong.data.tagsInput,
+        isPublic: true
       });
     }
 
     try {
-      const importedSongs = await importSongs(
-        songsToImport.map((song) => ({
-          title: song.title,
-          artist: song.artist,
-          language: song.language,
-          status: parsed.data.status,
-          tags: song.tags,
-          isPublic: true
-        }))
-      );
+      const importedCount = await importSongs(songsToImport);
 
       return {
-        adminMessage: `已从网易云导入 ${importedSongs.length} 首歌曲。`
+        adminMessage: `已从网易云导入 ${importedCount} 首歌曲。`
       };
     } catch (error) {
       return fail(500, {

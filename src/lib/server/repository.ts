@@ -339,37 +339,19 @@ export const createSongRequest = async ({
   message: string;
   requesterName: string;
 }) => {
-  const payload: SongRequest = {
-    id: randomUUID(),
-    songTitle,
-    artist,
-    language,
-    message,
-    requesterName: requesterName || null,
-    status: 'pending',
-    matchedSongId: null,
-    createdAt: new Date().toISOString()
-  };
-
   const supabase = getSupabaseAdmin();
 
   const { error } = await supabase.from('requests').insert({
-    id: payload.id,
-    song_title: payload.songTitle,
-    artist: payload.artist,
-    language: payload.language,
-    message: payload.message,
-    requester_name: payload.requesterName,
-    status: payload.status,
-    matched_song_id: payload.matchedSongId,
-    created_at: payload.createdAt
+    song_title: songTitle,
+    artist,
+    language,
+    message,
+    requester_name: requesterName || null
   });
 
   if (error) {
     throw error;
   }
-
-  return payload;
 };
 
 export const consumeRequestRateLimit = async ({
@@ -405,25 +387,15 @@ export const importSongs = async (
     isPublic: boolean;
   }>
 ) => {
-  const payloads: Song[] = songs.map((song) => ({
-    id: randomUUID(),
-    title: song.title,
-    artist: song.artist,
-    language: song.language,
-    status: song.status,
-    tags: sortStrings(song.tags),
-    isPublic: song.isPublic
-  }));
   const supabase = getSupabaseAdmin();
 
   const { error } = await supabase.from('songs').insert(
-    payloads.map((song) => ({
-      id: song.id,
+    songs.map((song) => ({
       title: song.title,
       artist: song.artist,
       language: song.language,
       status: song.status,
-      tags: song.tags,
+      tags: sortStrings(song.tags),
       is_public: song.isPublic
     }))
   );
@@ -432,7 +404,7 @@ export const importSongs = async (
     throw error;
   }
 
-  return payloads;
+  return songs.length;
 };
 
 export const saveSong = async ({
@@ -452,33 +424,23 @@ export const saveSong = async ({
   tags: string[];
   isPublic: boolean;
 }) => {
-  const payload: Song = {
-    id: id || randomUUID(),
+  const supabase = getSupabaseAdmin();
+  const row = {
     title,
     artist,
     language,
     status,
     tags: sortStrings(tags),
-    isPublic
+    is_public: isPublic
   };
 
-  const supabase = getSupabaseAdmin();
-
-  const { error } = await supabase.from('songs').upsert({
-    id: payload.id,
-    title: payload.title,
-    artist: payload.artist,
-    language: payload.language,
-    status: payload.status,
-    tags: payload.tags,
-    is_public: payload.isPublic
-  });
+  const { error } = id
+    ? await supabase.from('songs').update(row).eq('id', id)
+    : await supabase.from('songs').insert(row);
 
   if (error) {
     throw error;
   }
-
-  return payload;
 };
 
 export const deleteSong = async (id: string) => {
