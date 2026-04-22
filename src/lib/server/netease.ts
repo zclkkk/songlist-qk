@@ -34,7 +34,8 @@ export type NeteasePlaylistSong = {
   artist: string;
 };
 
-const getNeteaseApi = async () => (await import('@neteasecloudmusicapienhanced/api')) as NeteaseApi;
+const getNeteaseApi = async () =>
+  ((await import('@neteasecloudmusicapienhanced/api')) as { default: NeteaseApi }).default;
 
 const extractNeteaseId = (value: string, pathName: string, errorMessage: string) => {
   const trimmed = value.trim();
