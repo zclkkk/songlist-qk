@@ -17,78 +17,60 @@
   let settingsModalOpen = $state(false);
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
 
-  let avatarPreview = $state('');
-  let backgroundPreview = $state('');
   let heroTitleInput = $state('');
-  let avatarPreviewUrl = '';
-  let backgroundPreviewUrl = '';
 
-  const clearAvatarPreviewUrl = () => {
-    if (avatarPreviewUrl) {
-      URL.revokeObjectURL(avatarPreviewUrl);
-      avatarPreviewUrl = '';
-    }
+  const createImagePreview = (getDefault: () => string) => {
+    let preview = $state('');
+    let objectUrl = '';
+
+    const clear = () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = '';
+      }
+    };
+
+    const reset = () => {
+      clear();
+      preview = getDefault();
+    };
+
+    const onChange = (e: Event) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      clear();
+      if (file) {
+        objectUrl = URL.createObjectURL(file);
+        preview = objectUrl;
+      } else {
+        preview = getDefault();
+      }
+    };
+
+    $effect(() => {
+      if (!objectUrl) {
+        preview = getDefault();
+      }
+    });
+
+    return {
+      get preview() { return preview; },
+      onChange,
+      reset,
+      clear
+    };
   };
 
-  const clearBackgroundPreviewUrl = () => {
-    if (backgroundPreviewUrl) {
-      URL.revokeObjectURL(backgroundPreviewUrl);
-      backgroundPreviewUrl = '';
-    }
-  };
-
-  const resetImagePreviews = () => {
-    avatarPreview = data.dashboard.settings.avatar;
-    backgroundPreview = data.dashboard.settings.background;
-  };
-
-  $effect(() => {
-    if (!avatarPreviewUrl) {
-      avatarPreview = data.dashboard.settings.avatar;
-    }
-
-    if (!backgroundPreviewUrl) {
-      backgroundPreview = data.dashboard.settings.background;
-    }
-  });
+  const avatarPreview = createImagePreview(() => data.dashboard.settings.avatar);
+  const backgroundPreview = createImagePreview(() => data.dashboard.settings.background);
 
   onDestroy(() => {
-    clearAvatarPreviewUrl();
-    clearBackgroundPreviewUrl();
+    avatarPreview.clear();
+    backgroundPreview.clear();
   });
 
-  const onAvatarChange = (e: Event) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-
-    clearAvatarPreviewUrl();
-
-    if (file) {
-      avatarPreviewUrl = URL.createObjectURL(file);
-      avatarPreview = avatarPreviewUrl;
-      return;
-    }
-
-    avatarPreview = data.dashboard.settings.avatar;
-  };
-
-  const onBackgroundChange = (e: Event) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-
-    clearBackgroundPreviewUrl();
-
-    if (file) {
-      backgroundPreviewUrl = URL.createObjectURL(file);
-      backgroundPreview = backgroundPreviewUrl;
-      return;
-    }
-
-    backgroundPreview = data.dashboard.settings.background;
-  };
-
   const openSettingsModal = () => {
-    clearAvatarPreviewUrl();
-    clearBackgroundPreviewUrl();
-    resetImagePreviews();
+    avatarPreview.reset();
+    backgroundPreview.reset();
     heroTitleInput = data.dashboard.settings.heroTitle;
     settingsModalOpen = true;
   };
@@ -101,9 +83,8 @@
 
   const closeSettingsModal = () => {
     settingsModalOpen = false;
-    clearAvatarPreviewUrl();
-    clearBackgroundPreviewUrl();
-    resetImagePreviews();
+    avatarPreview.reset();
+    backgroundPreview.reset();
   };
 
   const confirmDelete = (event: SubmitEvent) => {
@@ -525,10 +506,10 @@
           <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
             <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
               <span>主播头像 (建议正方形，不超过 2MB)</span>
-              {#if avatarPreview}
+              {#if avatarPreview.preview}
                 <div class="mt-2 flex justify-center">
                   <div class="h-24 w-24 overflow-hidden rounded-full border-4 border-[var(--color-avatar-ring)] bg-[var(--color-surface-muted)] shadow-sm">
-                    <img src={avatarPreview} alt="头像预览" class="h-full w-full object-cover" />
+                    <img src={avatarPreview.preview} alt="头像预览" class="h-full w-full object-cover" />
                   </div>
                 </div>
               {/if}
@@ -537,7 +518,7 @@
                 name="avatar"
                 accept="image/*"
                 class="form-field"
-                onchange={onAvatarChange}
+                onchange={avatarPreview.onChange}
               />
             </label>
           </div>
@@ -545,9 +526,9 @@
           <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
             <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
               <span>背景图片 (建议 1920x1080，不超过 5MB)</span>
-              {#if backgroundPreview}
+              {#if backgroundPreview.preview}
                 <div class="mt-2 h-36 w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)]">
-                  <img src={backgroundPreview} alt="背景预览" class="h-full w-full object-cover" />
+                  <img src={backgroundPreview.preview} alt="背景预览" class="h-full w-full object-cover" />
                 </div>
               {/if}
               <input
@@ -555,7 +536,7 @@
                 name="background"
                 accept="image/*"
                 class="form-field"
-                onchange={onBackgroundChange}
+                onchange={backgroundPreview.onChange}
               />
             </label>
           </div>
