@@ -103,7 +103,7 @@
                   <input
                     name={`songTagsInput-${index}`}
                     class="form-field-muted min-w-48"
-                    value={song.tagsInput ?? ''}
+                    value={song.tagsInput}
                     placeholder="例如：网易云导入"
                   />
                 </td>

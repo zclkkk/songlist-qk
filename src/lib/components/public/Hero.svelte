@@ -3,22 +3,19 @@
 
   let { catalog }: { catalog: PublicCatalog } = $props();
 
-  const coverImage = $derived(
-    catalog.settings.background ||
-      'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1740&auto=format&fit=crop'
-  );
-
   const learningSongs = $derived(catalog.songs.filter((song) => song.status === 'learning').length);
 </script>
 
 <section class="overflow-hidden rounded-[32px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] shadow-sm">
   <div class="relative min-h-[380px]">
-    <img
-      src={coverImage}
-      alt="舞台麦克风和灯光"
-      class="absolute inset-0 h-full w-full object-cover"
-    />
-    <div class="theme-hero-overlay absolute inset-0"></div>
+    {#if catalog.settings.background}
+      <img
+        src={catalog.settings.background}
+        alt="舞台麦克风和灯光"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div class="theme-hero-overlay absolute inset-0"></div>
+    {/if}
 
     <div class="relative flex min-h-[380px] flex-col justify-between gap-8 p-6 lg:p-10">
       <div class="flex flex-col items-center justify-center pt-8 text-center">

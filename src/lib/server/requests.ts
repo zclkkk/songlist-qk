@@ -1,3 +1,4 @@
+import { parseEnum } from '$lib/server/form-utils';
 import { getSupabaseAdmin } from '$lib/server/supabase';
 import {
   requestStatusOptions,
@@ -17,11 +18,6 @@ type RequestRow = {
   status: string;
   matched_song_id: string | null;
   created_at: string;
-};
-
-const parseEnum = <T extends string>(value: string, options: readonly T[], label: string): T => {
-  if (options.includes(value as T)) return value as T;
-  throw new Error(`Invalid ${label}: ${value}`);
 };
 
 const mapRequestRow = (row: RequestRow): SongRequest => ({

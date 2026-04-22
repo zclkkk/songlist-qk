@@ -57,7 +57,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        adminError: parsed.error.issues[0]?.message ?? '保存歌曲失败。'
+        adminError: parsed.error.issues[0].message
       });
     }
 
@@ -73,7 +73,7 @@ export const actions: Actions = {
       });
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '保存歌曲失败。'
+        adminError: (error as Error).message
       });
     }
 
@@ -96,7 +96,7 @@ export const actions: Actions = {
       await removeSong(id);
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '删除歌曲失败。'
+        adminError: (error as Error).message
       });
     }
 
@@ -114,7 +114,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        adminError: parsed.error.issues[0]?.message ?? '导入歌单失败。',
+        adminError: parsed.error.issues[0].message,
         playlistImport: { playlistInput }
       });
     }
@@ -136,7 +136,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '解析歌单失败。',
+        adminError: (error as Error).message,
         playlistImport: { playlistInput: parsed.data.playlistInput }
       });
     }
@@ -151,7 +151,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        adminError: parsed.error.issues[0]?.message ?? '导入单曲失败。',
+        adminError: parsed.error.issues[0].message,
         songImport: { songInput }
       });
     }
@@ -175,7 +175,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '解析单曲失败。',
+        adminError: (error as Error).message,
         songImport: { songInput: parsed.data.songInput }
       });
     }
@@ -189,7 +189,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        adminError: parsed.error.issues[0]?.message ?? '导入歌单失败。'
+        adminError: parsed.error.issues[0].message
       });
     }
 
@@ -219,7 +219,7 @@ export const actions: Actions = {
 
       if (!parsedSong.success) {
         return fail(400, {
-          adminError: parsedSong.error.issues[0]?.message ?? '导入歌单失败。',
+          adminError: parsedSong.error.issues[0].message,
           playlistPreview
         });
       }
@@ -242,7 +242,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '导入歌单失败。',
+        adminError: (error as Error).message,
         playlistPreview
       });
     }
@@ -259,7 +259,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        adminError: parsed.error.issues[0]?.message ?? '更新愿望状态失败。'
+        adminError: parsed.error.issues[0].message
       });
     }
 
@@ -267,7 +267,7 @@ export const actions: Actions = {
       await updateRequestStatus(parsed.data);
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '更新愿望状态失败。'
+        adminError: (error as Error).message
       });
     }
 
@@ -281,7 +281,7 @@ export const actions: Actions = {
       await resetSonglistDatabase();
     } catch (error) {
       return fail(500, {
-        adminError: error instanceof Error ? error.message : '重置数据库失败。'
+        adminError: (error as Error).message
       });
     }
 
@@ -310,7 +310,7 @@ export const actions: Actions = {
 
       if (!parsedSettings.success) {
         return fail(400, {
-          adminError: parsedSettings.error.issues[0]?.message ?? '保存配置失败。',
+          adminError: parsedSettings.error.issues[0].message,
           settingsModalOpen: true
         });
       }
@@ -335,7 +335,7 @@ export const actions: Actions = {
 
       return { adminMessage: '页面配置已更新。' };
     } catch (error) {
-      return fail(500, { adminError: error instanceof Error ? error.message : '保存配置失败。', settingsModalOpen: true });
+      return fail(500, { adminError: (error as Error).message, settingsModalOpen: true });
     }
   }
 };

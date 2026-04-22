@@ -1,3 +1,4 @@
+import { parseEnum } from '$lib/server/form-utils';
 import { getSupabaseAdmin } from '$lib/server/supabase';
 import {
   songLanguageOptions,
@@ -15,11 +16,6 @@ type SongRow = {
   status: string;
   tags: string[];
   is_public: boolean;
-};
-
-const parseEnum = <T extends string>(value: string, options: readonly T[], label: string): T => {
-  if (options.includes(value as T)) return value as T;
-  throw new Error(`Invalid ${label}: ${value}`);
 };
 
 const sortStrings = (values: Iterable<string>) =>

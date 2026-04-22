@@ -38,7 +38,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        requestError: parsed.error.issues[0]?.message ?? '解析单曲失败。',
+        requestError: parsed.error.issues[0].message,
         requestValues: rawValues
       });
     }
@@ -57,7 +57,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        requestError: error instanceof Error ? error.message : '解析单曲失败。',
+        requestError: (error as Error).message,
         requestValues: rawValues
       });
     }
@@ -71,7 +71,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        requestError: parsed.error.issues[0]?.message ?? '提交愿望失败。',
+        requestError: parsed.error.issues[0].message,
         requestValues: rawValues
       });
     }
@@ -93,7 +93,7 @@ export const actions: Actions = {
       await createSongRequest(parsed.data);
     } catch (error) {
       return fail(500, {
-        requestError: error instanceof Error ? error.message : '提交愿望失败。',
+        requestError: (error as Error).message,
         requestValues: rawValues
       });
     }

@@ -51,7 +51,13 @@ const resolveImageExtension = (file: File) => {
     return extensionFromName;
   }
 
-  return imageExtensionByMimeType[file.type] ?? 'bin';
+  const mapped = imageExtensionByMimeType[file.type];
+
+  if (!mapped) {
+    throw new Error(`不支持的图片格式：${file.type}`);
+  }
+
+  return mapped;
 };
 
 export const listSettings = async (keys: readonly PageSettingKey[]) => {
