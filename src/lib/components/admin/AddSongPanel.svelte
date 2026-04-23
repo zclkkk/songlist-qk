@@ -23,7 +23,9 @@
   const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
 </script>
 
-<div class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+<div
+  class="min-w-0 rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
+>
   <h2 class="text-lg font-semibold text-[var(--color-text)]">添加歌曲</h2>
 
   <Tabs.Root bind:value={active} class="mt-5 space-y-4">

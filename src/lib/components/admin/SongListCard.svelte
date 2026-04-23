@@ -71,7 +71,9 @@
   ] as const;
 </script>
 
-<section class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+<section
+  class="min-w-0 rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
+>
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h2 class="text-lg font-semibold text-[var(--color-text)]">歌曲列表</h2>
     <span
