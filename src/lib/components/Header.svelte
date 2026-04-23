@@ -16,6 +16,7 @@
   const toggleTheme = () => {
     isDark = !isDark;
     document.documentElement.classList.toggle('dark', isDark);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#090b10' : '#f7f8f8');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   };
 
@@ -24,7 +25,7 @@
 </script>
 
 <header
-  class="sticky top-0 z-20 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-overlay)] backdrop-blur-xl"
+  class="site-header sticky top-0 z-20 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-overlay)] backdrop-blur-xl"
 >
   <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
     <a href="/" class="flex min-w-0 items-center gap-3">
@@ -82,5 +83,13 @@
 
   .theme-toggle[aria-pressed='true'] :global(.theme-toggle-icon) {
     color: var(--color-accent);
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .site-header {
+      background-color: var(--color-surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
   }
 </style>

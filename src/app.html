@@ -3,15 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f8" />
     <script>
       (() => {
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        const applyTheme = (isDark) => {
+          document.documentElement.classList.toggle('dark', isDark);
+          themeColorMeta?.setAttribute('content', isDark ? '#090b10' : '#f7f8f8');
+        };
+
         try {
           const theme = localStorage.getItem('theme');
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-          if (theme === 'dark' || (!theme && prefersDark)) {
-            document.documentElement.classList.add('dark');
-          }
+          applyTheme(theme === 'dark' || (!theme && prefersDark));
         } catch {
           // Keep the server-rendered light theme if browser storage is unavailable.
         }
