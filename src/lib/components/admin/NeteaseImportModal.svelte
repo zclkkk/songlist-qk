@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
   import { Dialog } from 'bits-ui';
@@ -46,20 +47,7 @@
           <Dialog.Description class="dialog-description">勾选需要导入的歌曲，编辑语言和标签后提交</Dialog.Description>
         </div>
         <Dialog.Close class="dialog-close" aria-label="关闭">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
+          <Icon name="close" size={18} />
         </Dialog.Close>
       </div>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import {
     songLanguageOptions,
@@ -53,21 +54,7 @@
     <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
       <span>搜索</span>
       <div class="filter-search">
-        <svg
-          class="filter-search-icon"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </svg>
+        <Icon name="search-alt" class="filter-search-icon" />
         <input bind:value={query} class="form-field filter-search-input" placeholder="按歌名、原唱、标签搜索" />
       </div>
     </label>

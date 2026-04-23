@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '$lib/components/ui/Icon.svelte';
   import { songStatusClasses } from '$lib/status-styles';
   import { songStatusLabels, type Song } from '$lib/types';
 
@@ -59,20 +60,7 @@
     </div>
   {:else}
     <div class="song-empty">
-      <svg
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </svg>
+      <Icon name="search-alt" size={28} strokeWidth={1.5} />
       <p class="mt-3 text-sm font-medium text-[var(--color-text-secondary)]">没有匹配的歌曲</p>
       <p class="mt-1 text-xs text-[var(--color-text-muted)]">试试放宽筛选或清空关键词</p>
     </div>

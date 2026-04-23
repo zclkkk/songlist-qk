@@ -3,6 +3,7 @@
   import { enhance } from '$app/forms';
   import NeteaseImportModal from '$lib/components/admin/NeteaseImportModal.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
+  import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { requestStatusClasses, songStatusClasses } from '$lib/status-styles';
   import {
@@ -403,20 +404,7 @@
 
         <div class="mt-5 flex flex-wrap items-center gap-3">
           <label class="admin-search">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
+            <Icon name="search" />
             <input
               type="search"
               bind:value={songSearch}
@@ -558,20 +546,7 @@
                     <span class={`status-badge ${songStatusClasses[song.status]}`}>
                       {songStatusLabels[song.status]}
                     </span>
-                    <svg
-                      class="song-chevron"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
+                    <Icon name="chevron-down" class="song-chevron" />
                   </div>
                 </summary>
 
@@ -667,19 +642,7 @@
                 onclick={() => (songPage = safePage - 1)}
                 aria-label="上一页"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
+                <Icon name="chevron-left" size={14} />
               </button>
               <div class="admin-pagination-pages">
                 {#each pageNumbers as item}
@@ -704,19 +667,7 @@
                 onclick={() => (songPage = safePage + 1)}
                 aria-label="下一页"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
+                <Icon name="chevron-right" size={14} />
               </button>
             </div>
           {/if}
@@ -793,20 +744,7 @@
                     <span class={`status-badge ${requestStatusClasses[item.status]}`}>
                       {requestStatusLabels[item.status]}
                     </span>
-                    <svg
-                      class="song-chevron"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
+                    <Icon name="chevron-down" class="song-chevron" />
                   </div>
                 </summary>
 

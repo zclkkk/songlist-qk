@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '$lib/components/ui/Icon.svelte';
   import { Select } from 'bits-ui';
 
   type SelectItem = {
@@ -35,21 +36,7 @@
     <span class="select-value" data-placeholder={!selectedLabel ? '' : undefined}>
       {selectedLabel || placeholder}
     </span>
-    <svg
-      class="select-chevron"
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
+    <Icon name="chevron-down" class="select-chevron" />
   </Select.Trigger>
   <Select.Portal>
     <Select.Content class="select-content" sideOffset={6}>
@@ -58,21 +45,7 @@
           {#snippet children({ selected })}
             <span class="select-item-label">{label}</span>
             {#if selected}
-              <svg
-                class="select-item-check"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
+              <Icon name="check" class="select-item-check" />
             {/if}
           {/snippet}
         </Select.Item>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import Icon from '$lib/components/ui/Icon.svelte';
   import { onMount } from 'svelte';
 
   let { isAdmin }: { isAdmin: boolean } = $props();
@@ -47,45 +48,9 @@
         onclick={toggleTheme}
       >
         {#if mounted && isDark}
-          <svg
-            class="theme-toggle-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2" />
-            <path d="M12 20v2" />
-            <path d="m4.93 4.93 1.41 1.41" />
-            <path d="m17.66 17.66 1.41 1.41" />
-            <path d="M2 12h2" />
-            <path d="M20 12h2" />
-            <path d="m6.34 17.66-1.41 1.41" />
-            <path d="m19.07 4.93-1.41 1.41" />
-          </svg>
+          <Icon name="sun" class="theme-toggle-icon" />
         {:else}
-          <svg
-            class="theme-toggle-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-          </svg>
+          <Icon name="moon" class="theme-toggle-icon" />
         {/if}
       </button>
 
@@ -105,17 +70,17 @@
 </header>
 
 <style>
-  .theme-toggle-icon {
+  :global(.theme-toggle-icon) {
     transition:
       transform 300ms ease,
       opacity 200ms ease;
   }
 
-  .theme-toggle:hover .theme-toggle-icon {
+  .theme-toggle:hover :global(.theme-toggle-icon) {
     transform: rotate(15deg);
   }
 
-  .theme-toggle[aria-pressed='true'] .theme-toggle-icon {
+  .theme-toggle[aria-pressed='true'] :global(.theme-toggle-icon) {
     color: var(--color-accent);
   }
 </style>

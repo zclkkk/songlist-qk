@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions } from '$lib/types';
 
@@ -56,19 +57,7 @@
       {#if showCelebration}
         <div class="request-success">
           <div class="request-success-icon">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
+            <Icon name="check" size={28} strokeWidth={2.5} />
           </div>
           <h3 class="mt-4 text-xl font-semibold text-[var(--color-text)]">愿望已提交</h3>
           <p class="mt-2 text-sm text-[var(--color-text-secondary)]">{form?.requestMessage}</p>
@@ -103,23 +92,7 @@
         >
           <div class="netease-block">
             <div class="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                class="text-[var(--color-accent)]"
-              >
-                <path d="m21 16-4 4-4-4" />
-                <path d="M17 20V4" />
-                <path d="m3 8 4-4 4 4" />
-                <path d="M7 4v16" />
-              </svg>
+              <Icon name="arrow-down-up" class="text-[var(--color-accent)]" />
               一键从网易云填充
             </div>
             <p class="mt-1 text-xs text-[var(--color-text-secondary)]">粘贴单曲链接或 ID，自动填入歌名和原唱</p>
