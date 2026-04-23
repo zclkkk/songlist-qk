@@ -437,7 +437,7 @@ select {
   top: 18%;
   bottom: 18%;
   width: 1px;
-  background: var(--color-border-soft);
+  background: var(--color-border);
 }
 
 .hero-stat-value {
