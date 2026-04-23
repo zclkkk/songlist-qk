@@ -32,7 +32,7 @@
   ];
 </script>
 
-<section class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
+<section class="panel-card">
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h2 class="text-lg font-semibold text-[var(--color-text)]">愿望单</h2>
     <div class="admin-tabs-list grid w-full grid-cols-2 sm:inline-flex sm:w-auto">

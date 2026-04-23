@@ -136,6 +136,16 @@ select {
   color-scheme: dark;
 }
 
+.field-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.field-label > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
+
 .form-field,
 .form-field-muted {
   width: 100%;
@@ -357,6 +367,20 @@ select {
 
 .button-full {
   width: 100%;
+}
+
+.panel-card {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 28px;
+  background: var(--color-surface);
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+@media (min-width: 1024px) {
+  .panel-card {
+    padding: 1.75rem;
+  }
 }
 
 .hero-card {

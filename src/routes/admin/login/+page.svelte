@@ -31,7 +31,7 @@
     {/if}
 
     <form method="POST" class="mt-6 space-y-4" use:enhance={submit.enhance}>
-      <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+      <label class="field-label">
         <span>邮箱</span>
         <input
           name="email"
@@ -42,7 +42,7 @@
         />
       </label>
 
-      <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+      <label class="field-label">
         <span>密码</span>
         <input name="password" type="password" class="form-field" placeholder="请输入管理员密码" />
       </label>

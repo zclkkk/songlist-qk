@@ -51,7 +51,7 @@
   </div>
 
   <div class="mt-6 space-y-4">
-    <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+    <label class="field-label">
       <span>搜索</span>
       <div class="filter-search">
         <Icon name="search-alt" class="filter-search-icon" />
@@ -59,7 +59,7 @@
       </div>
     </label>
 
-    <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+    <label class="field-label">
       <span>语言</span>
       <Select
         bind:value={language}
@@ -67,7 +67,7 @@
       />
     </label>
 
-    <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+    <label class="field-label">
       <span>标签</span>
       <Select
         bind:value={tag}
@@ -75,7 +75,7 @@
       />
     </label>
 
-    <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+    <label class="field-label">
       <span>当前状态</span>
       <Select
         bind:value={status}

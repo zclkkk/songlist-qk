@@ -60,7 +60,7 @@
         <input type="hidden" name="playlistInput" value={preview.playlistInput} />
         <input type="hidden" name="songCount" value={preview.songs.length} />
 
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>状态</span>
           <Select name="status" value={preview.status} items={statusItems} />
         </label>

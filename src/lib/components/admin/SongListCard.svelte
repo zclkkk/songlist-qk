@@ -92,9 +92,7 @@
   ] as const;
 </script>
 
-<section
-  class="min-w-0 rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
->
+<section class="panel-card min-w-0">
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h2 class="text-lg font-semibold text-[var(--color-text)]">歌曲列表</h2>
     <span
@@ -224,17 +222,17 @@
           >
             <input type="hidden" name="id" value={song.id} />
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
+            <label class="field-label sm:col-span-2">
               <span>歌曲名</span>
               <input name="title" value={song.title} class="form-field-muted" />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>原唱</span>
               <input name="artist" value={song.artist} class="form-field-muted" />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>语言</span>
               <Select
                 name="language"
@@ -245,12 +243,12 @@
               />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>状态</span>
               <Select name="status" value={song.status} items={statusItems} triggerClass="form-field-muted" />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
+            <label class="field-label sm:col-span-2">
               <span>标签</span>
               <input name="tagsInput" value={song.tags.join(', ')} class="form-field-muted" />
             </label>

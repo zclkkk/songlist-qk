@@ -23,9 +23,7 @@
   const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
 </script>
 
-<div
-  class="min-w-0 rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
->
+<div class="panel-card min-w-0">
   <h2 class="text-lg font-semibold text-[var(--color-text)]">添加歌曲</h2>
 
   <Tabs.Root bind:value={active} class="mt-5 space-y-4">
@@ -36,29 +34,29 @@
 
     <Tabs.Content value="manual">
       <form method="POST" action="?/saveSong" class="space-y-4" use:enhance={pendingEnhance('save-new')}>
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>歌曲名</span>
           <input name="title" class="form-field" placeholder="例如：祝福" />
         </label>
 
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>原唱</span>
           <input name="artist" class="form-field" placeholder="例如：YOASOBI" />
         </label>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+          <label class="field-label">
             <span>语言</span>
             <Select name="language" required value="其他" items={languageItems} />
           </label>
 
-          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+          <label class="field-label">
             <span>状态</span>
             <Select name="status" value="ready" items={statusItems} />
           </label>
         </div>
 
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>标签（逗号分隔）</span>
           <input name="tagsInput" class="form-field" placeholder="例如：高能, 日语, 动画" />
         </label>
@@ -88,7 +86,7 @@
 
     <Tabs.Content value="netease" class="space-y-5">
       <form method="POST" action="?/previewSong" class="space-y-3" use:enhance={pendingEnhance('preview-song')}>
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>单曲链接或 ID</span>
           <input
             name="songInput"
@@ -114,7 +112,7 @@
       </div>
 
       <form method="POST" action="?/previewPlaylist" class="space-y-3" use:enhance={pendingEnhance('preview-playlist')}>
-        <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+        <label class="field-label">
           <span>歌单链接或 ID</span>
           <input
             name="playlistInput"

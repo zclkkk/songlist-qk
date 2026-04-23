@@ -81,7 +81,7 @@
         use:enhance={submit.enhance}
       >
         <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
-          <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+          <label class="field-label">
             <span>头像下方主标题</span>
             <input
               name="heroTitle"
@@ -97,7 +97,7 @@
 
         <div class="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
           <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>主播头像 (建议正方形，不超过 2MB)</span>
               {#if avatarPreview.preview}
                 <div class="mt-2 flex justify-center">
@@ -113,7 +113,7 @@
           </div>
 
           <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>背景图片 (建议 1920x1080，不超过 5MB)</span>
               {#if backgroundPreview.preview}
                 <div

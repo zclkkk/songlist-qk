@@ -120,7 +120,7 @@
           </div>
 
           <div class="grid gap-4 lg:grid-cols-3">
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>歌曲名</span>
               <input
                 name="songTitle"
@@ -130,7 +130,7 @@
               />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>原唱</span>
               <input
                 name="artist"
@@ -140,7 +140,7 @@
               />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+            <label class="field-label">
               <span>语言</span>
               <Select
                 name="language"
@@ -150,14 +150,14 @@
               />
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-3">
+            <label class="field-label lg:col-span-3">
               <span>留言</span>
               <textarea name="message" rows="3" class="form-field" placeholder="可以说说为什么想听、适合什么场合唱。"
                 >{form?.requestValues?.message ?? ''}</textarea
               >
             </label>
 
-            <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] lg:col-span-2">
+            <label class="field-label lg:col-span-2">
               <span>你的昵称（可选）</span>
               <input
                 name="requesterName"
