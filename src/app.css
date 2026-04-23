@@ -110,6 +110,7 @@ select {
   border: 1px solid var(--color-border-soft);
   border-radius: 18px;
   padding: 0.75rem 1rem;
+  font-size: 1rem;
   color: var(--color-text);
   outline: none;
   transition:
@@ -940,7 +941,7 @@ details[open] > summary .song-chevron {
   border: none;
   outline: none;
   color: var(--color-text);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .admin-search-input::placeholder {
