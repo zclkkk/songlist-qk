@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
+  import { enhance } from '$app/forms';
   import NeteaseImportModal from '$lib/components/admin/NeteaseImportModal.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import Select from '$lib/components/ui/Select.svelte';
@@ -12,6 +13,7 @@
     songStatusOptions
   } from '$lib/types';
   import { Tabs } from 'bits-ui';
+  import { untrack } from 'svelte';
 
   import type { ActionData, PageData } from './$types';
 
@@ -25,15 +27,17 @@
   let settingsModalOpen = $state(false);
   let activeTab = $state(browser && window.location.hash === '#requests' ? 'requests' : 'songs');
   let addPanelActive = $state(
-    form && ('songImport' in form || 'playlistImport' in form || 'playlistPreview' in form) ? 'netease' : 'manual'
+    untrack(() =>
+      form && ('songImport' in form || 'playlistImport' in form || 'playlistPreview' in form) ? 'netease' : 'manual'
+    )
   );
-  let requestFilter = $state<'all' | 'pending' | 'accepted' | 'rejected'>('all');
+  let requestFilter = $state<'all' | 'pending' | 'accepted' | 'refused'>('all');
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
   const requestCounts = $derived({
     all: data.dashboard.requests.length,
     pending: data.dashboard.requests.filter((r) => r.status === 'pending').length,
     accepted: data.dashboard.requests.filter((r) => r.status === 'accepted').length,
-    rejected: data.dashboard.requests.filter((r) => r.status === 'rejected').length
+    refused: data.dashboard.requests.filter((r) => r.status === 'refused').length
   });
   const filteredRequests = $derived(
     requestFilter === 'all'
@@ -92,10 +96,10 @@
         <button type="button" class="button button-ghost button-small" onclick={() => (settingsModalOpen = true)}>
           页面配置
         </button>
-        <form method="POST" action="?/resetDatabase" onsubmit={confirmReset}>
+        <form method="POST" action="?/resetDatabase" onsubmit={confirmReset} use:enhance>
           <button type="submit" class="button button-ghost button-small">重置数据库</button>
         </form>
-        <form method="POST" action="?/logout">
+        <form method="POST" action="?/logout" use:enhance>
           <button type="submit" class="button button-ghost button-small">退出登录</button>
         </form>
       </div>
@@ -147,7 +151,7 @@
           </Tabs.List>
 
           <Tabs.Content value="manual">
-            <form method="POST" action="?/saveSong" class="space-y-4">
+            <form method="POST" action="?/saveSong" class="space-y-4" use:enhance>
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>歌曲名</span>
                 <input name="title" class="form-field" placeholder="例如：祝福" />
@@ -192,7 +196,7 @@
           </Tabs.Content>
 
           <Tabs.Content value="netease" class="space-y-5">
-            <form method="POST" action="?/previewSong" class="space-y-3">
+            <form method="POST" action="?/previewSong" class="space-y-3" use:enhance>
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>单曲链接或 ID</span>
                 <input
@@ -211,7 +215,7 @@
               <div class="flex-1 border-t border-[var(--color-border-soft)]"></div>
             </div>
 
-            <form method="POST" action="?/previewPlaylist" class="space-y-3">
+            <form method="POST" action="?/previewPlaylist" class="space-y-3" use:enhance>
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>歌单链接或 ID</span>
                 <input
@@ -274,7 +278,13 @@
                 </div>
               </summary>
 
-              <form id="save-song-{song.id}" method="POST" action="?/saveSong" class="mt-5 grid gap-4 sm:grid-cols-2">
+              <form
+                id="save-song-{song.id}"
+                method="POST"
+                action="?/saveSong"
+                class="mt-5 grid gap-4 sm:grid-cols-2"
+                use:enhance
+              >
                 <input type="hidden" name="id" value={song.id} />
 
                 <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
@@ -322,7 +332,7 @@
               </form>
 
               <div class="detail-actions">
-                <form method="POST" action="?/deleteSong" onsubmit={confirmDelete}>
+                <form method="POST" action="?/deleteSong" onsubmit={confirmDelete} use:enhance>
                   <input type="hidden" name="id" value={song.id} />
                   <button type="submit" class="button button-ghost button-small">删除</button>
                 </form>
@@ -368,10 +378,10 @@
             <button
               type="button"
               class="admin-tab-trigger"
-              data-state={requestFilter === 'rejected' ? 'active' : 'inactive'}
-              onclick={() => (requestFilter = 'rejected')}
+              data-state={requestFilter === 'refused' ? 'active' : 'inactive'}
+              onclick={() => (requestFilter = 'refused')}
             >
-              已拒绝 <span class="admin-tab-count">{requestCounts.rejected}</span>
+              已拒绝 <span class="admin-tab-count">{requestCounts.refused}</span>
             </button>
           </div>
         </div>
@@ -434,6 +444,7 @@
                       method="POST"
                       action="?/updateRequestStatus"
                       class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
+                      use:enhance
                     >
                       <input type="hidden" name="id" value={item.id} />
                       <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />

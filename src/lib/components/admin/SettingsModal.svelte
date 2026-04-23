@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
   import { Dialog } from 'bits-ui';
   import { onDestroy, untrack } from 'svelte';
 
@@ -83,7 +84,7 @@
         <div class="alert alert-danger mb-5">{adminError}</div>
       {/if}
 
-      <form method="POST" action="?/saveProfile" enctype="multipart/form-data" class="space-y-5">
+      <form method="POST" action="?/saveProfile" enctype="multipart/form-data" class="space-y-5" use:enhance>
         <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>头像下方主标题</span>

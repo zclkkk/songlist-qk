@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
   import { Dialog } from 'bits-ui';
@@ -61,7 +62,7 @@
         <div class="alert alert-danger mb-5">{adminError}</div>
       {/if}
 
-      <form method="POST" action="?/importPlaylist" class="space-y-5">
+      <form method="POST" action="?/importPlaylist" class="space-y-5" use:enhance>
         <input type="hidden" name="playlistInput" value={preview.playlistInput} />
         <input type="hidden" name="songCount" value={preview.songs.length} />
 
