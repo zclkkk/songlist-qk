@@ -63,7 +63,7 @@
         {#if isAdmin}
           <a href="/admin" class="button button-primary button-small">后台管理</a>
         {:else}
-          <a href="/admin/login" class="button button-ghost button-small">管理员登录</a>
+          <a href="/admin/login" class="button button-primary button-small">后台管理</a>
         {/if}
       {/if}
     </nav>
