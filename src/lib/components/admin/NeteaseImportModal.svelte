@@ -25,6 +25,9 @@
     onClose: () => void;
   } = $props();
 
+  const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
+  const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
+
   let pending = $state(false);
 </script>
 
@@ -81,11 +84,7 @@
 
         <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
           <span>状态</span>
-          <Select
-            name="status"
-            value={preview.status}
-            items={songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }))}
-          />
+          <Select name="status" value={preview.status} items={statusItems} />
         </label>
 
         <div
@@ -130,7 +129,7 @@
                       name={`songLanguage-${index}`}
                       required
                       value={song.language}
-                      items={songLanguageOptions.map((v) => ({ value: v, label: v }))}
+                      items={languageItems}
                       triggerClass="form-field-muted min-w-28"
                     />
                   </td>

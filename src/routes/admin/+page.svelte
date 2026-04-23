@@ -81,9 +81,13 @@
   const allOnPageSelected = $derived(pagedSongIds.length > 0 && pagedSongIds.every((id) => selectedSongIds.has(id)));
   const someOnPageSelected = $derived(pagedSongIds.some((id) => selectedSongIds.has(id)));
 
+  let lastSeenSearch = '';
   $effect(() => {
-    void normalizedSearch;
-    songPage = 1;
+    if (normalizedSearch !== lastSeenSearch) {
+      lastSeenSearch = normalizedSearch;
+      songPage = 1;
+      selectedSongIds.clear();
+    }
   });
 
   const toggleSongSelected = (id: string) => {
@@ -107,15 +111,11 @@
     selectedSongIds.clear();
   };
 
-  const confirmBulk = (action: string) => () => {
+  const confirmBulk = (action: 'delete' | 'setPublic' | 'setPrivate'): boolean => {
     const count = selectedSongIds.size;
-    const label =
-      action === 'delete'
-        ? `删除 ${count} 首歌曲`
-        : action === 'setPublic'
-          ? `公开 ${count} 首歌曲`
-          : `隐藏 ${count} 首歌曲`;
-    return confirm(`确认${label}？${action === 'delete' ? '此操作不可撤销。' : ''}`);
+    const verb = action === 'delete' ? '删除' : action === 'setPublic' ? '公开' : '隐藏';
+    const suffix = action === 'delete' ? '此操作不可撤销。' : '';
+    return confirm(`确认${verb} ${count} 首歌曲？${suffix}`);
   };
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
   const requestCounts = $derived({
@@ -130,7 +130,7 @@
       : data.dashboard.requests.filter((r) => r.status === requestFilter)
   );
 
-  let lastFormRef: unknown = null;
+  let lastFormRef: ActionData | null = null;
   $effect(() => {
     if (form && form !== lastFormRef) {
       lastFormRef = form;
@@ -138,7 +138,10 @@
         toast.success(form.adminMessage);
       }
       if ('adminError' in form && form.adminError) {
-        toast.error(form.adminError);
+        const errorShownInModal =
+          ('settingsModalOpen' in form && form.settingsModalOpen) ||
+          ('playlistPreview' in form && form.playlistPreview);
+        if (!errorShownInModal) toast.error(form.adminError);
       }
     } else if (!form) {
       lastFormRef = null;
@@ -447,7 +450,7 @@
               <form
                 method="POST"
                 action="?/bulkUpdateSongs"
-                use:enhance={pendingEnhance('bulk-public', () => confirmBulk('setPublic')())}
+                use:enhance={pendingEnhance('bulk-public', () => confirmBulk('setPublic'))}
               >
                 {#each [...selectedSongIds] as id}
                   <input type="hidden" name="id" value={id} />
@@ -465,7 +468,7 @@
               <form
                 method="POST"
                 action="?/bulkUpdateSongs"
-                use:enhance={pendingEnhance('bulk-private', () => confirmBulk('setPrivate')())}
+                use:enhance={pendingEnhance('bulk-private', () => confirmBulk('setPrivate'))}
               >
                 {#each [...selectedSongIds] as id}
                   <input type="hidden" name="id" value={id} />
@@ -483,11 +486,7 @@
               <form
                 method="POST"
                 action="?/bulkUpdateSongs"
-                use:enhance={pendingEnhance('bulk-delete', () => {
-                  const ok = confirmBulk('delete')();
-                  if (!ok) return false;
-                  return true;
-                })}
+                use:enhance={pendingEnhance('bulk-delete', () => confirmBulk('delete'))}
               >
                 {#each [...selectedSongIds] as id}
                   <input type="hidden" name="id" value={id} />
