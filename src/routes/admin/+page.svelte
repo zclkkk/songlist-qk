@@ -20,17 +20,40 @@
   const decisionItems = requestDecisionOptions.map((s) => ({ value: s, label: requestStatusLabels[s] }));
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
-  let importModalDismissed = $state(false);
+  let importModalDismissed = $state(true);
+  let lastSeenPreview: unknown = null;
   let settingsModalOpen = $state(false);
   let activeTab = $state(browser && window.location.hash === '#requests' ? 'requests' : 'songs');
   let addPanelActive = $state(
     form && ('songImport' in form || 'playlistImport' in form || 'playlistPreview' in form) ? 'netease' : 'manual'
   );
+  let requestFilter = $state<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
+  const requestCounts = $derived({
+    all: data.dashboard.requests.length,
+    pending: data.dashboard.requests.filter((r) => r.status === 'pending').length,
+    accepted: data.dashboard.requests.filter((r) => r.status === 'accepted').length,
+    rejected: data.dashboard.requests.filter((r) => r.status === 'rejected').length
+  });
+  const filteredRequests = $derived(
+    requestFilter === 'all'
+      ? data.dashboard.requests
+      : data.dashboard.requests.filter((r) => r.status === requestFilter)
+  );
 
   $effect(() => {
     if (form && 'settingsModalOpen' in form && form.settingsModalOpen) {
       settingsModalOpen = true;
+    }
+  });
+
+  $effect(() => {
+    const preview = form?.playlistPreview;
+    if (preview && preview !== lastSeenPreview) {
+      lastSeenPreview = preview;
+      importModalDismissed = false;
+    } else if (!preview) {
+      lastSeenPreview = null;
     }
   });
 
@@ -96,7 +119,7 @@
     {#if form?.adminMessage}
       <div class="alert alert-success mt-5">{form.adminMessage}</div>
     {/if}
-    {#if adminError && !form?.playlistPreview}
+    {#if adminError && !form?.playlistPreview && !(form && 'settingsModalOpen' in form && form.settingsModalOpen)}
       <div class="alert alert-danger mt-5">{adminError}</div>
     {/if}
   </section>
@@ -169,12 +192,7 @@
           </Tabs.Content>
 
           <Tabs.Content value="netease" class="space-y-5">
-            <form
-              method="POST"
-              action="?/previewSong"
-              class="space-y-3"
-              onsubmit={() => (importModalDismissed = false)}
-            >
+            <form method="POST" action="?/previewSong" class="space-y-3">
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>单曲链接或 ID</span>
                 <input
@@ -193,12 +211,7 @@
               <div class="flex-1 border-t border-[var(--color-border-soft)]"></div>
             </div>
 
-            <form
-              method="POST"
-              action="?/previewPlaylist"
-              class="space-y-3"
-              onsubmit={() => (importModalDismissed = false)}
-            >
+            <form method="POST" action="?/previewPlaylist" class="space-y-3">
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>歌单链接或 ID</span>
                 <input
@@ -325,80 +338,119 @@
       <section
         class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
       >
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
           <h2 class="text-lg font-semibold text-[var(--color-text)]">愿望单</h2>
-          <span
-            class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
-          >
-            {data.dashboard.requests.length} 条
-          </span>
-        </div>
-
-        <div class="mt-5 space-y-3">
-          {#each data.dashboard.requests as item}
-            <details
-              class="group rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 transition-colors open:bg-[var(--color-surface)] hover:bg-[var(--color-surface)]"
+          <div class="admin-tabs-list">
+            <button
+              type="button"
+              class="admin-tab-trigger"
+              data-state={requestFilter === 'all' ? 'active' : 'inactive'}
+              onclick={() => (requestFilter = 'all')}
             >
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
-                <div class="min-w-0">
-                  <h3 class="truncate text-base font-semibold text-[var(--color-text)]">{item.songTitle}</h3>
-                  <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">
-                    {item.artist || '未填写'} · {item.language}
-                  </p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class={`status-badge ${requestStatusClasses[item.status]}`}>
-                    {requestStatusLabels[item.status]}
-                  </span>
-                  <svg
-                    class="song-chevron"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              </summary>
-
-              <div class="mt-5 space-y-4">
-                {#if item.message}
-                  <p class="text-sm leading-7 text-[var(--color-text-secondary)]">{item.message}</p>
-                {/if}
-                <div class="flex flex-wrap gap-3 text-xs text-[var(--color-text-muted)]">
-                  <span>提交者：{item.requesterName || '匿名'}</span>
-                  <span>时间：{new Date(item.createdAt).toLocaleString('zh-CN')}</span>
-                </div>
-
-                {#if item.status === 'pending'}
-                  <form
-                    method="POST"
-                    action="?/updateRequestStatus"
-                    class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
-                  >
-                    <input type="hidden" name="id" value={item.id} />
-                    <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />
-                    <button type="submit" class="button button-primary"> 处理愿望 </button>
-                  </form>
-                {/if}
-              </div>
-            </details>
-          {/each}
+              全部 <span class="admin-tab-count">{requestCounts.all}</span>
+            </button>
+            <button
+              type="button"
+              class="admin-tab-trigger"
+              data-state={requestFilter === 'pending' ? 'active' : 'inactive'}
+              onclick={() => (requestFilter = 'pending')}
+            >
+              待处理 <span class="admin-tab-count">{requestCounts.pending}</span>
+            </button>
+            <button
+              type="button"
+              class="admin-tab-trigger"
+              data-state={requestFilter === 'accepted' ? 'active' : 'inactive'}
+              onclick={() => (requestFilter = 'accepted')}
+            >
+              已接受 <span class="admin-tab-count">{requestCounts.accepted}</span>
+            </button>
+            <button
+              type="button"
+              class="admin-tab-trigger"
+              data-state={requestFilter === 'rejected' ? 'active' : 'inactive'}
+              onclick={() => (requestFilter = 'rejected')}
+            >
+              已拒绝 <span class="admin-tab-count">{requestCounts.rejected}</span>
+            </button>
+          </div>
         </div>
+
+        {#if filteredRequests.length === 0}
+          <div class="admin-empty mt-5">
+            {#if data.dashboard.requests.length === 0}
+              <p class="text-sm font-medium text-[var(--color-text-secondary)]">还没有观众提交愿望</p>
+              <p class="mt-1 text-xs text-[var(--color-text-muted)]">前台公开链接打开后就能收到</p>
+            {:else}
+              <p class="text-sm font-medium text-[var(--color-text-secondary)]">当前筛选下没有结果</p>
+              <p class="mt-1 text-xs text-[var(--color-text-muted)]">换一个状态试试</p>
+            {/if}
+          </div>
+        {:else}
+          <div class="mt-5 space-y-3">
+            {#each filteredRequests as item}
+              <details
+                class="group rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 transition-colors open:bg-[var(--color-surface)] hover:bg-[var(--color-surface)]"
+              >
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
+                  <div class="min-w-0">
+                    <h3 class="truncate text-base font-semibold text-[var(--color-text)]">{item.songTitle}</h3>
+                    <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">
+                      {item.artist || '未填写'} · {item.language}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class={`status-badge ${requestStatusClasses[item.status]}`}>
+                      {requestStatusLabels[item.status]}
+                    </span>
+                    <svg
+                      class="song-chevron"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+                </summary>
+
+                <div class="mt-5 space-y-4">
+                  {#if item.message}
+                    <p class="text-sm leading-7 text-[var(--color-text-secondary)]">{item.message}</p>
+                  {/if}
+                  <div class="flex flex-wrap gap-3 text-xs text-[var(--color-text-muted)]">
+                    <span>提交者：{item.requesterName || '匿名'}</span>
+                    <span>时间：{new Date(item.createdAt).toLocaleString('zh-CN')}</span>
+                  </div>
+
+                  {#if item.status === 'pending'}
+                    <form
+                      method="POST"
+                      action="?/updateRequestStatus"
+                      class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
+                    >
+                      <input type="hidden" name="id" value={item.id} />
+                      <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />
+                      <button type="submit" class="button button-primary"> 处理愿望 </button>
+                    </form>
+                  {/if}
+                </div>
+              </details>
+            {/each}
+          </div>
+        {/if}
       </section>
     </Tabs.Content>
   </Tabs.Root>
 </div>
 
-{#if settingsModalOpen}
-  <SettingsModal settings={data.dashboard.settings} {adminError} onClose={() => (settingsModalOpen = false)} />
-{/if}
+<SettingsModal settings={data.dashboard.settings} {adminError} bind:open={settingsModalOpen} />
 
 {#if form?.playlistPreview && !importModalDismissed}
   <NeteaseImportModal preview={form.playlistPreview} {adminError} onClose={() => (importModalDismissed = true)} />
