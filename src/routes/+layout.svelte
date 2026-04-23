@@ -1,14 +1,15 @@
 <script lang="ts">
   import '../app.css';
 
+  import { getCurrentYearInShanghai } from '$lib/datetime';
   import Header from '$lib/components/Header.svelte';
   import { Toaster } from 'svelte-sonner';
 
   import type { Snippet } from 'svelte';
-
   import type { LayoutData } from './$types';
 
   let { data, children }: { data: LayoutData; children: Snippet } = $props();
+  const currentYear = getCurrentYearInShanghai();
 </script>
 
 <svelte:head>
@@ -33,7 +34,7 @@
   <footer class="site-footer">
     <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 lg:px-6">
       <p class="text-xs text-[var(--color-text-muted)]">
-        © {new Date().getFullYear()} QingKong Songlist
+        © {currentYear} QingKong Songlist
       </p>
       <p class="text-xs text-[var(--color-text-muted)]">由 SvelteKit 驱动</p>
     </div>

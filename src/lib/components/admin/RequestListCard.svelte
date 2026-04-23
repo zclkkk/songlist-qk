@@ -3,6 +3,7 @@
   import { isPending, pendingEnhance } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
+  import { formatDateTimeInShanghai } from '$lib/datetime';
   import { requestStatusClasses } from '$lib/status-styles';
   import { requestDecisionOptions, requestStatusLabels, type RequestStatus, type SongRequest } from '$lib/types';
 
@@ -85,7 +86,7 @@
             {/if}
             <div class="flex flex-wrap gap-3 text-xs text-[var(--color-text-muted)]">
               <span>提交者：{item.requesterName || '匿名'}</span>
-              <span>时间：{new Date(item.createdAt).toLocaleString('zh-CN')}</span>
+              <span>时间：{formatDateTimeInShanghai(item.createdAt)}</span>
             </div>
 
             {#if item.status === 'pending'}
