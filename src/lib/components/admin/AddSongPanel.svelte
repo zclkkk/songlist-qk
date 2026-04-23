@@ -29,7 +29,7 @@
   <h2 class="text-lg font-semibold text-[var(--color-text)]">添加歌曲</h2>
 
   <Tabs.Root bind:value={active} class="mt-5 space-y-4">
-    <Tabs.List class="admin-tabs-list">
+    <Tabs.List class="admin-tabs-list inline-flex">
       <Tabs.Trigger value="manual" class="admin-tab-trigger">手动填写</Tabs.Trigger>
       <Tabs.Trigger value="netease" class="admin-tab-trigger">网易云导入</Tabs.Trigger>
     </Tabs.List>

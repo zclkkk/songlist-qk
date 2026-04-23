@@ -77,7 +77,7 @@
   <OverviewCard overview={data.dashboard.overview} onOpenSettings={() => (settingsModalOpen = true)} />
 
   <Tabs.Root bind:value={activeTab} class="space-y-5">
-    <Tabs.List class="admin-tabs-list">
+    <Tabs.List class="admin-tabs-list inline-flex">
       <Tabs.Trigger value="songs" class="admin-tab-trigger">
         歌曲 <span class="admin-tab-count">{data.dashboard.songs.length}</span>
       </Tabs.Trigger>

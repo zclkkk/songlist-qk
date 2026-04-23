@@ -716,7 +716,6 @@ select {
 }
 
 .admin-tabs-list {
-  display: inline-flex;
   gap: 0.25rem;
   padding: 0.25rem;
   border-radius: 14px;
@@ -736,6 +735,7 @@ select {
   color: var(--color-text-secondary);
   background: transparent;
   cursor: pointer;
+  white-space: nowrap;
   transition:
     background-color 150ms ease,
     color 150ms ease,

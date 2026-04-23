@@ -34,11 +34,11 @@
 <section class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7">
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h2 class="text-lg font-semibold text-[var(--color-text)]">愿望单</h2>
-    <div class="admin-tabs-list">
+    <div class="admin-tabs-list grid w-full grid-cols-2 sm:inline-flex sm:w-auto">
       {#each tabs as tab}
         <button
           type="button"
-          class="admin-tab-trigger"
+          class="admin-tab-trigger min-w-0 justify-center"
           data-state={filter === tab.key ? 'active' : 'inactive'}
           onclick={() => (filter = tab.key)}
         >
