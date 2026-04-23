@@ -24,6 +24,9 @@
   );
 
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
+  const settingsError = $derived(
+    form && 'settingsModalOpen' in form && form.settingsModalOpen ? adminError : undefined
+  );
 
   let lastFormRef: ActionData | null = null;
   $effect(() => {
@@ -94,7 +97,7 @@
   </Tabs.Root>
 </div>
 
-<SettingsModal settings={data.dashboard.settings} {adminError} bind:open={settingsModalOpen} />
+<SettingsModal settings={data.dashboard.settings} adminError={settingsError} bind:open={settingsModalOpen} />
 
 {#if form?.playlistPreview && !importModalDismissed}
   <NeteaseImportModal preview={form.playlistPreview} {adminError} onClose={() => (importModalDismissed = true)} />

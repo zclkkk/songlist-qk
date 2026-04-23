@@ -84,9 +84,12 @@
             if (isParse) parsePending = true;
             else submitPending = true;
             return async ({ update }) => {
-              await update({ reset: false });
-              if (isParse) parsePending = false;
-              else submitPending = false;
+              try {
+                await update({ reset: false });
+              } finally {
+                if (isParse) parsePending = false;
+                else submitPending = false;
+              }
             };
           }}
         >

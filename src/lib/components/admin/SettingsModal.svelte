@@ -3,7 +3,7 @@
   import { createLocalPending } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { Dialog } from 'bits-ui';
-  import { onDestroy, untrack } from 'svelte';
+  import { onDestroy } from 'svelte';
 
   import type { PageSettings } from '$lib/types';
 
@@ -47,8 +47,6 @@
   const avatarPreview = createImagePreview(() => settings.avatar);
   const backgroundPreview = createImagePreview(() => settings.background);
 
-  let heroTitleInput = $state(untrack(() => settings.heroTitle));
-
   onDestroy(() => {
     avatarPreview.clear();
     backgroundPreview.clear();
@@ -90,7 +88,7 @@
               class="form-field"
               required
               maxlength="40"
-              bind:value={heroTitleInput}
+              value={settings.heroTitle}
               placeholder="例如：青空点歌台"
             />
           </label>

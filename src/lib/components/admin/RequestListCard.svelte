@@ -60,7 +60,7 @@
     </div>
   {:else}
     <div class="mt-5 space-y-3">
-      {#each filtered as item}
+      {#each filtered as item (item.id)}
         <details
           class="group rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 transition-colors open:bg-[var(--color-surface)] hover:bg-[var(--color-surface)]"
         >

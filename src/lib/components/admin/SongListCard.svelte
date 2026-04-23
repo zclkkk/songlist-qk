@@ -27,6 +27,7 @@
   const pagedSongIds = $derived(pagedSongs.map((s) => s.id));
   const allOnPageSelected = $derived(pagedSongIds.length > 0 && pagedSongIds.every((id) => selectedIds.has(id)));
   const someOnPageSelected = $derived(pagedSongIds.some((id) => selectedIds.has(id)));
+  const songIds = $derived(new Set(songs.map((song) => song.id)));
 
   let lastSeenSearch = '';
   $effect(() => {
@@ -34,6 +35,14 @@
       lastSeenSearch = normalizedSearch;
       songPage = 1;
       selectedIds.clear();
+    }
+  });
+
+  $effect(() => {
+    for (const id of [...selectedIds]) {
+      if (!songIds.has(id)) {
+        selectedIds.delete(id);
+      }
     }
   });
 
@@ -47,7 +56,7 @@
     else pagedSongIds.forEach((id) => selectedIds.add(id));
   };
 
-  const confirmBulk = (action: 'delete' | 'setPublic' | 'setPrivate'): boolean => {
+  const confirmBulk = (action: 'delete' | 'setPublic' | 'setPrivate') => {
     const verb = action === 'delete' ? '删除' : action === 'setPublic' ? '公开' : '隐藏';
     const suffix = action === 'delete' ? '此操作不可撤销。' : '';
     return confirm(`确认${verb} ${selectedIds.size} 首歌曲？${suffix}`);
