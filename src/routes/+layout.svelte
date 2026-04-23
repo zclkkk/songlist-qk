@@ -2,6 +2,7 @@
   import '../app.css';
 
   import Header from '$lib/components/Header.svelte';
+  import { Toaster } from 'svelte-sonner';
 
   import type { Snippet } from 'svelte';
 
@@ -38,3 +39,15 @@
     </div>
   </footer>
 </div>
+
+<Toaster
+  position="top-right"
+  richColors
+  closeButton
+  toastOptions={{
+    duration: 3500,
+    classes: {
+      toast: 'qk-toast'
+    }
+  }}
+/>

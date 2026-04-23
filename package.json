@@ -33,6 +33,7 @@
     "@neteasecloudmusicapienhanced/api": "^4.32.0",
     "@supabase/supabase-js": "^2.104.0",
     "bits-ui": "^2.18.0",
+    "svelte-sonner": "^1.1.0",
     "zod": "^4.3.6"
   },
   "lint-staged": {

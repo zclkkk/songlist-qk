@@ -14,6 +14,7 @@
   } from '$lib/types';
   import { Tabs } from 'bits-ui';
   import { untrack } from 'svelte';
+  import { toast } from 'svelte-sonner';
 
   import type { ActionData, PageData } from './$types';
 
@@ -45,6 +46,21 @@
       : data.dashboard.requests.filter((r) => r.status === requestFilter)
   );
 
+  let lastFormRef: unknown = null;
+  $effect(() => {
+    if (form && form !== lastFormRef) {
+      lastFormRef = form;
+      if ('adminMessage' in form && form.adminMessage) {
+        toast.success(form.adminMessage);
+      }
+      if ('adminError' in form && form.adminError) {
+        toast.error(form.adminError);
+      }
+    } else if (!form) {
+      lastFormRef = null;
+    }
+  });
+
   $effect(() => {
     if (form && 'settingsModalOpen' in form && form.settingsModalOpen) {
       settingsModalOpen = true;
@@ -67,16 +83,12 @@
     }
   });
 
-  const confirmDelete = (event: SubmitEvent) => {
-    if (!confirm('确认删除这首歌？')) {
-      event.preventDefault();
-    }
+  const confirmDelete = ({ cancel }: { cancel: () => void }) => {
+    if (!confirm('确认删除这首歌？')) cancel();
   };
 
-  const confirmReset = (event: SubmitEvent) => {
-    if (!confirm('确认清空全部歌曲和愿望单？此操作不可撤销。')) {
-      event.preventDefault();
-    }
+  const confirmReset = ({ cancel }: { cancel: () => void }) => {
+    if (!confirm('确认清空全部歌曲和愿望单？此操作不可撤销。')) cancel();
   };
 </script>
 
@@ -96,7 +108,7 @@
         <button type="button" class="button button-ghost button-small" onclick={() => (settingsModalOpen = true)}>
           页面配置
         </button>
-        <form method="POST" action="?/resetDatabase" onsubmit={confirmReset} use:enhance>
+        <form method="POST" action="?/resetDatabase" use:enhance={confirmReset}>
           <button type="submit" class="button button-ghost button-small">重置数据库</button>
         </form>
         <form method="POST" action="?/logout" use:enhance>
@@ -119,13 +131,6 @@
         <span class="admin-stat-label">待处理愿望</span>
       </div>
     </div>
-
-    {#if form?.adminMessage}
-      <div class="alert alert-success mt-5">{form.adminMessage}</div>
-    {/if}
-    {#if adminError && !form?.playlistPreview && !(form && 'settingsModalOpen' in form && form.settingsModalOpen)}
-      <div class="alert alert-danger mt-5">{adminError}</div>
-    {/if}
   </section>
 
   <Tabs.Root bind:value={activeTab} class="space-y-5">
@@ -332,7 +337,7 @@
               </form>
 
               <div class="detail-actions">
-                <form method="POST" action="?/deleteSong" onsubmit={confirmDelete} use:enhance>
+                <form method="POST" action="?/deleteSong" use:enhance={confirmDelete}>
                   <input type="hidden" name="id" value={song.id} />
                   <button type="submit" class="button button-ghost button-small">删除</button>
                 </form>
