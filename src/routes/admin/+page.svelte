@@ -14,7 +14,10 @@
   } from '$lib/types';
   import { Tabs } from 'bits-ui';
   import { untrack } from 'svelte';
+  import { SvelteSet } from 'svelte/reactivity';
   import { toast } from 'svelte-sonner';
+
+  import type { SubmitFunction } from '@sveltejs/kit';
 
   import type { ActionData, PageData } from './$types';
 
@@ -83,12 +86,34 @@
     }
   });
 
-  const confirmDelete = ({ cancel }: { cancel: () => void }) => {
-    if (!confirm('确认删除这首歌？')) cancel();
+  const pendingActions = new SvelteSet<string>();
+  const isPending = (key: string) => pendingActions.has(key);
+
+  const pendingEnhance =
+    (key: string, before?: (input: Parameters<SubmitFunction>[0]) => boolean): SubmitFunction =>
+    (input) => {
+      if (before && before(input) === false) return;
+      pendingActions.add(key);
+      return async ({ update }) => {
+        await update();
+        pendingActions.delete(key);
+      };
+    };
+
+  const confirmDelete = ({ cancel }: Parameters<SubmitFunction>[0]) => {
+    if (!confirm('确认删除这首歌？')) {
+      cancel();
+      return false;
+    }
+    return true;
   };
 
-  const confirmReset = ({ cancel }: { cancel: () => void }) => {
-    if (!confirm('确认清空全部歌曲和愿望单？此操作不可撤销。')) cancel();
+  const confirmReset = ({ cancel }: Parameters<SubmitFunction>[0]) => {
+    if (!confirm('确认清空全部歌曲和愿望单？此操作不可撤销。')) {
+      cancel();
+      return false;
+    }
+    return true;
   };
 </script>
 
@@ -108,11 +133,25 @@
         <button type="button" class="button button-ghost button-small" onclick={() => (settingsModalOpen = true)}>
           页面配置
         </button>
-        <form method="POST" action="?/resetDatabase" use:enhance={confirmReset}>
-          <button type="submit" class="button button-ghost button-small">重置数据库</button>
+        <form method="POST" action="?/resetDatabase" use:enhance={pendingEnhance('reset', confirmReset)}>
+          <button
+            type="submit"
+            class="button button-ghost button-small"
+            disabled={isPending('reset')}
+            data-pending={isPending('reset') || undefined}
+          >
+            重置数据库
+          </button>
         </form>
-        <form method="POST" action="?/logout" use:enhance>
-          <button type="submit" class="button button-ghost button-small">退出登录</button>
+        <form method="POST" action="?/logout" use:enhance={pendingEnhance('logout')}>
+          <button
+            type="submit"
+            class="button button-ghost button-small"
+            disabled={isPending('logout')}
+            data-pending={isPending('logout') || undefined}
+          >
+            退出登录
+          </button>
         </form>
       </div>
     </div>
@@ -156,7 +195,7 @@
           </Tabs.List>
 
           <Tabs.Content value="manual">
-            <form method="POST" action="?/saveSong" class="space-y-4" use:enhance>
+            <form method="POST" action="?/saveSong" class="space-y-4" use:enhance={pendingEnhance('save-new')}>
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>歌曲名</span>
                 <input name="title" class="form-field" placeholder="例如：祝福" />
@@ -196,12 +235,19 @@
                 <span>公开展示到前台歌单</span>
               </label>
 
-              <button type="submit" class="button button-primary button-full"> 保存歌曲 </button>
+              <button
+                type="submit"
+                class="button button-primary button-full"
+                disabled={isPending('save-new')}
+                data-pending={isPending('save-new') || undefined}
+              >
+                保存歌曲
+              </button>
             </form>
           </Tabs.Content>
 
           <Tabs.Content value="netease" class="space-y-5">
-            <form method="POST" action="?/previewSong" class="space-y-3" use:enhance>
+            <form method="POST" action="?/previewSong" class="space-y-3" use:enhance={pendingEnhance('preview-song')}>
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>单曲链接或 ID</span>
                 <input
@@ -211,7 +257,14 @@
                   placeholder="https://music.163.com/#/song?id=..."
                 />
               </label>
-              <button type="submit" class="button button-secondary button-full"> 解析单曲 </button>
+              <button
+                type="submit"
+                class="button button-secondary button-full"
+                disabled={isPending('preview-song')}
+                data-pending={isPending('preview-song') || undefined}
+              >
+                解析单曲
+              </button>
             </form>
 
             <div class="relative flex items-center">
@@ -220,7 +273,12 @@
               <div class="flex-1 border-t border-[var(--color-border-soft)]"></div>
             </div>
 
-            <form method="POST" action="?/previewPlaylist" class="space-y-3" use:enhance>
+            <form
+              method="POST"
+              action="?/previewPlaylist"
+              class="space-y-3"
+              use:enhance={pendingEnhance('preview-playlist')}
+            >
               <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
                 <span>歌单链接或 ID</span>
                 <input
@@ -230,7 +288,14 @@
                   placeholder="https://music.163.com/#/playlist?id=..."
                 />
               </label>
-              <button type="submit" class="button button-secondary button-full"> 解析歌单 </button>
+              <button
+                type="submit"
+                class="button button-secondary button-full"
+                disabled={isPending('preview-playlist')}
+                data-pending={isPending('preview-playlist') || undefined}
+              >
+                解析歌单
+              </button>
             </form>
           </Tabs.Content>
         </Tabs.Root>
@@ -337,11 +402,30 @@
               </form>
 
               <div class="detail-actions">
-                <form method="POST" action="?/deleteSong" use:enhance={confirmDelete}>
+                <form
+                  method="POST"
+                  action="?/deleteSong"
+                  use:enhance={pendingEnhance(`delete-${song.id}`, confirmDelete)}
+                >
                   <input type="hidden" name="id" value={song.id} />
-                  <button type="submit" class="button button-ghost button-small">删除</button>
+                  <button
+                    type="submit"
+                    class="button button-ghost button-small"
+                    disabled={isPending(`delete-${song.id}`)}
+                    data-pending={isPending(`delete-${song.id}`) || undefined}
+                  >
+                    删除
+                  </button>
                 </form>
-                <button type="submit" form="save-song-{song.id}" class="button button-primary"> 保存修改 </button>
+                <button
+                  type="submit"
+                  form="save-song-{song.id}"
+                  class="button button-primary"
+                  disabled={isPending(`save-${song.id}`)}
+                  data-pending={isPending(`save-${song.id}`) || undefined}
+                >
+                  保存修改
+                </button>
               </div>
             </details>
           {/each}
@@ -449,11 +533,18 @@
                       method="POST"
                       action="?/updateRequestStatus"
                       class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
-                      use:enhance
+                      use:enhance={pendingEnhance(`request-${item.id}`)}
                     >
                       <input type="hidden" name="id" value={item.id} />
                       <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />
-                      <button type="submit" class="button button-primary"> 处理愿望 </button>
+                      <button
+                        type="submit"
+                        class="button button-primary"
+                        disabled={isPending(`request-${item.id}`)}
+                        data-pending={isPending(`request-${item.id}`) || undefined}
+                      >
+                        处理愿望
+                      </button>
                     </form>
                   {/if}
                 </div>

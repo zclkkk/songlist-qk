@@ -37,6 +37,9 @@
   };
 
   const showCelebration = $derived(!!form?.requestMessage && !form?.requestValues && !celebrationDismissed);
+
+  let parsePending = $state(false);
+  let submitPending = $state(false);
 </script>
 
 <section class="request-card">
@@ -87,10 +90,16 @@
           method="POST"
           action="?/submitRequest"
           class="space-y-5"
-          use:enhance={() =>
-            async ({ update }) => {
+          use:enhance={({ action }) => {
+            const isParse = action.search.includes('parseRequestSong');
+            if (isParse) parsePending = true;
+            else submitPending = true;
+            return async ({ update }) => {
               await update({ reset: false });
-            }}
+              if (isParse) parsePending = false;
+              else submitPending = false;
+            };
+          }}
         >
           <div class="netease-block">
             <div class="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
@@ -122,7 +131,15 @@
                 class="form-field"
                 placeholder="https://music.163.com/#/song?id=..."
               />
-              <button type="submit" formaction="?/parseRequestSong" class="button button-secondary"> 解析 </button>
+              <button
+                type="submit"
+                formaction="?/parseRequestSong"
+                class="button button-secondary"
+                disabled={parsePending}
+                data-pending={parsePending || undefined}
+              >
+                解析
+              </button>
             </div>
           </div>
 
@@ -175,7 +192,14 @@
             </label>
 
             <div class="flex items-end">
-              <button type="submit" class="button button-primary button-lg button-full"> 提交愿望单 </button>
+              <button
+                type="submit"
+                class="button button-primary button-lg button-full"
+                disabled={submitPending}
+                data-pending={submitPending || undefined}
+              >
+                提交愿望单
+              </button>
             </div>
           </div>
         </form>

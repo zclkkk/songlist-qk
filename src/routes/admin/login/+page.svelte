@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
+
   import type { ActionData } from './$types';
 
   let { form }: { form?: ActionData } = $props();
+
+  let pending = $state(false);
 </script>
 
 <svelte:head>
@@ -25,7 +29,17 @@
       <div class="alert alert-danger mt-6">{form.message}</div>
     {/if}
 
-    <form method="POST" class="mt-6 space-y-4">
+    <form
+      method="POST"
+      class="mt-6 space-y-4"
+      use:enhance={() => {
+        pending = true;
+        return async ({ update }) => {
+          await update();
+          pending = false;
+        };
+      }}
+    >
       <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
         <span>邮箱</span>
         <input
@@ -42,7 +56,14 @@
         <input name="password" type="password" class="form-field" placeholder="请输入管理员密码" />
       </label>
 
-      <button type="submit" class="button button-primary button-lg button-full mt-2"> 登录后台 </button>
+      <button
+        type="submit"
+        class="button button-primary button-lg button-full mt-2"
+        disabled={pending}
+        data-pending={pending || undefined}
+      >
+        登录后台
+      </button>
     </form>
   </section>
 </div>

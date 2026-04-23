@@ -24,6 +24,8 @@
     adminError?: string;
     onClose: () => void;
   } = $props();
+
+  let pending = $state(false);
 </script>
 
 <Dialog.Root
@@ -62,7 +64,18 @@
         <div class="alert alert-danger mb-5">{adminError}</div>
       {/if}
 
-      <form method="POST" action="?/importPlaylist" class="space-y-5" use:enhance>
+      <form
+        method="POST"
+        action="?/importPlaylist"
+        class="space-y-5"
+        use:enhance={() => {
+          pending = true;
+          return async ({ update }) => {
+            await update();
+            pending = false;
+          };
+        }}
+      >
         <input type="hidden" name="playlistInput" value={preview.playlistInput} />
         <input type="hidden" name="songCount" value={preview.songs.length} />
 
@@ -135,7 +148,14 @@
           </table>
         </div>
 
-        <button type="submit" class="button button-primary button-full"> 导入勾选歌曲 </button>
+        <button
+          type="submit"
+          class="button button-primary button-full"
+          disabled={pending}
+          data-pending={pending || undefined}
+        >
+          导入勾选歌曲
+        </button>
       </form>
     </Dialog.Content>
   </Dialog.Portal>

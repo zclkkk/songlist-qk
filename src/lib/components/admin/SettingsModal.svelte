@@ -51,6 +51,8 @@
     avatarPreview.clear();
     backgroundPreview.clear();
   });
+
+  let pending = $state(false);
 </script>
 
 <Dialog.Root bind:open>
@@ -84,7 +86,19 @@
         <div class="alert alert-danger mb-5">{adminError}</div>
       {/if}
 
-      <form method="POST" action="?/saveProfile" enctype="multipart/form-data" class="space-y-5" use:enhance>
+      <form
+        method="POST"
+        action="?/saveProfile"
+        enctype="multipart/form-data"
+        class="space-y-5"
+        use:enhance={() => {
+          pending = true;
+          return async ({ update }) => {
+            await update();
+            pending = false;
+          };
+        }}
+      >
         <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
             <span>头像下方主标题</span>
@@ -138,7 +152,14 @@
           </div>
         </div>
 
-        <button type="submit" class="button button-primary button-full"> 保存配置 </button>
+        <button
+          type="submit"
+          class="button button-primary button-full"
+          disabled={pending}
+          data-pending={pending || undefined}
+        >
+          保存配置
+        </button>
       </form>
     </Dialog.Content>
   </Dialog.Portal>
