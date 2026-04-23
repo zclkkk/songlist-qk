@@ -5,7 +5,9 @@
   import NeteaseImportModal from '$lib/components/admin/NeteaseImportModal.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+  import Pagination from '$lib/components/ui/Pagination.svelte';
   import Select from '$lib/components/ui/Select.svelte';
+  import { matchesSongKeyword } from '$lib/songs';
   import { requestStatusClasses, songStatusClasses } from '$lib/status-styles';
   import {
     requestDecisionOptions,
@@ -42,41 +44,10 @@
   const selectedSongIds = new SvelteSet<string>();
 
   const normalizedSearch = $derived(songSearch.trim().toLowerCase());
-  const filteredSongs = $derived(
-    normalizedSearch === ''
-      ? data.dashboard.songs
-      : data.dashboard.songs.filter(
-          (s) =>
-            s.title.toLowerCase().includes(normalizedSearch) ||
-            s.artist.toLowerCase().includes(normalizedSearch) ||
-            s.tags.some((t) => t.toLowerCase().includes(normalizedSearch))
-        )
-  );
+  const filteredSongs = $derived(data.dashboard.songs.filter((s) => matchesSongKeyword(s, songSearch)));
   const totalPages = $derived(Math.max(1, Math.ceil(filteredSongs.length / songPageSize)));
   const safePage = $derived(Math.min(songPage, totalPages));
   const pagedSongs = $derived(filteredSongs.slice((safePage - 1) * songPageSize, safePage * songPageSize));
-  const pageNumbers = $derived.by<Array<number | 'gap-left' | 'gap-right'>>(() => {
-    const total = totalPages;
-    const current = safePage;
-    const siblings = 1;
-    const boundary = 1;
-    const showAll = total <= siblings * 2 + boundary * 2 + 3;
-
-    if (showAll) return Array.from({ length: total }, (_, i) => i + 1);
-
-    const leftSibling = Math.max(current - siblings, boundary + 1);
-    const rightSibling = Math.min(current + siblings, total - boundary);
-    const showLeftGap = leftSibling > boundary + 1;
-    const showRightGap = rightSibling < total - boundary;
-
-    const out: Array<number | 'gap-left' | 'gap-right'> = [];
-    for (let i = 1; i <= boundary; i++) out.push(i);
-    if (showLeftGap) out.push('gap-left');
-    for (let i = leftSibling; i <= rightSibling; i++) out.push(i);
-    if (showRightGap) out.push('gap-right');
-    for (let i = total - boundary + 1; i <= total; i++) out.push(i);
-    return out;
-  });
   const pagedSongIds = $derived(pagedSongs.map((s) => s.id));
   const allOnPageSelected = $derived(pagedSongIds.length > 0 && pagedSongIds.every((id) => selectedSongIds.has(id)));
   const someOnPageSelected = $derived(pagedSongIds.some((id) => selectedSongIds.has(id)));
@@ -605,44 +576,9 @@
             {/each}
           </div>
 
-          {#if totalPages > 1}
-            <div class="admin-pagination mt-5">
-              <button
-                type="button"
-                class="admin-pagination-step"
-                disabled={safePage <= 1}
-                onclick={() => (songPage = safePage - 1)}
-                aria-label="上一页"
-              >
-                <Icon name="chevron-left" size={14} />
-              </button>
-              <div class="admin-pagination-pages">
-                {#each pageNumbers as item}
-                  {#if item === 'gap-left' || item === 'gap-right'}
-                    <span class="admin-pagination-gap">…</span>
-                  {:else}
-                    <button
-                      type="button"
-                      class="admin-pagination-page"
-                      data-state={item === safePage ? 'active' : 'inactive'}
-                      onclick={() => (songPage = item)}
-                    >
-                      {item}
-                    </button>
-                  {/if}
-                {/each}
-              </div>
-              <button
-                type="button"
-                class="admin-pagination-step"
-                disabled={safePage >= totalPages}
-                onclick={() => (songPage = safePage + 1)}
-                aria-label="下一页"
-              >
-                <Icon name="chevron-right" size={14} />
-              </button>
-            </div>
-          {/if}
+          <div class="mt-5">
+            <Pagination current={safePage} total={totalPages} onChange={(p) => (songPage = p)} />
+          </div>
         {/if}
       </section>
     </Tabs.Content>

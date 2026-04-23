@@ -3,7 +3,8 @@
   import Hero from '$lib/components/public/Hero.svelte';
   import RequestForm from '$lib/components/public/RequestForm.svelte';
   import SongTable from '$lib/components/public/SongTable.svelte';
-  import { type Song, type SongLanguage, type SongStatus } from '$lib/types';
+  import { matchesSongKeyword } from '$lib/songs';
+  import { type SongLanguage, type SongStatus } from '$lib/types';
 
   import type { ActionData, PageData } from './$types';
 
@@ -14,27 +15,15 @@
   let selectedTag = $state<string>('all');
   let selectedStatus = $state<'all' | SongStatus>('all');
 
-  const normalize = (value: string) => value.trim().toLowerCase();
-
-  const matchesKeyword = (song: Song, keyword: string) => {
-    if (!keyword) {
-      return true;
-    }
-
-    return [song.title, song.artist, ...song.tags].some((value) => normalize(value).includes(keyword));
-  };
-
-  const filteredSongs = $derived.by(() => {
-    const keyword = normalize(query);
-
-    return data.catalog.songs.filter((song) => {
+  const filteredSongs = $derived(
+    data.catalog.songs.filter((song) => {
       const matchesLanguage = selectedLanguage === 'all' || song.language === selectedLanguage;
       const matchesTag = selectedTag === 'all' || song.tags.includes(selectedTag);
       const matchesStatus = selectedStatus === 'all' || song.status === selectedStatus;
 
-      return matchesKeyword(song, keyword) && matchesLanguage && matchesTag && matchesStatus;
-    });
-  });
+      return matchesSongKeyword(song, query) && matchesLanguage && matchesTag && matchesStatus;
+    })
+  );
 </script>
 
 <svelte:head>
