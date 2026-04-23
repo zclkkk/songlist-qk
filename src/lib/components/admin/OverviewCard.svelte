@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { confirmBefore, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 
   import type { CatalogStats } from '$lib/types';
 
@@ -12,7 +13,7 @@
     onOpenSettings: () => void;
   } = $props();
 
-  const confirmReset = confirmBefore('确认清空全部歌曲和愿望单？此操作不可撤销。');
+  const resetConfirmation = createSubmitConfirmation();
 </script>
 
 <section class="admin-overview">
@@ -24,7 +25,19 @@
     </div>
     <div class="flex flex-wrap items-center gap-2">
       <button type="button" class="button button-ghost button-small" onclick={onOpenSettings}>页面配置</button>
-      <form method="POST" action="?/resetDatabase" use:enhance={pendingEnhance('reset', confirmReset)}>
+      <form
+        method="POST"
+        action="?/resetDatabase"
+        use:enhance={pendingEnhance(
+          'reset',
+          resetConfirmation.before({
+            title: '确认清空全部歌曲和愿望单？',
+            description: '此操作会重置歌曲、愿望单和页面配置，且不可撤销。',
+            confirmLabel: '确认重置',
+            tone: 'danger'
+          })
+        )}
+      >
         <button
           type="submit"
           class="button button-ghost button-small"
@@ -62,3 +75,12 @@
     </div>
   </div>
 </section>
+
+<ConfirmDialog
+  bind:open={resetConfirmation.open}
+  title={resetConfirmation.title}
+  description={resetConfirmation.description}
+  confirmLabel={resetConfirmation.confirmLabel}
+  tone={resetConfirmation.tone}
+  onConfirm={resetConfirmation.confirm}
+/>

@@ -2,7 +2,19 @@ import { SvelteSet } from 'svelte/reactivity';
 
 import type { SubmitFunction } from '@sveltejs/kit';
 
-export type BeforeHook = () => boolean;
+type SubmitInput = Parameters<SubmitFunction>[0];
+
+export type BeforeHook = (input: SubmitInput) => boolean;
+export type ConfirmationTone = 'default' | 'danger';
+
+type ConfirmationOptions = {
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  tone?: ConfirmationTone;
+};
+
+type ConfirmationOptionsResolver = ConfirmationOptions | (() => ConfirmationOptions);
 
 export const pendingActions = new SvelteSet<string>();
 
@@ -11,7 +23,7 @@ export const isPending = (key: string) => pendingActions.has(key);
 export const pendingEnhance =
   (key: string, before?: BeforeHook): SubmitFunction =>
   (input) => {
-    if (before && before() === false) {
+    if (before && before(input) === false) {
       input.cancel();
       return;
     }
@@ -25,10 +37,87 @@ export const pendingEnhance =
     };
   };
 
-export const confirmBefore =
-  (message: string): BeforeHook =>
-  () =>
-    confirm(message);
+export function createSubmitConfirmation() {
+  let open = $state(false);
+  let title = $state('');
+  let description = $state('');
+  let confirmLabel = $state('确认');
+  let tone = $state<ConfirmationTone>('default');
+  let pendingInput: SubmitInput | null = null;
+  let confirmedForm: HTMLFormElement | null = null;
+
+  const resolveOptions = (options: ConfirmationOptionsResolver) =>
+    typeof options === 'function' ? options() : options;
+
+  const close = () => {
+    open = false;
+    pendingInput = null;
+  };
+
+  const before = (options: ConfirmationOptionsResolver): BeforeHook => {
+    return (input) => {
+      if (confirmedForm === input.formElement) {
+        confirmedForm = null;
+        return true;
+      }
+
+      const resolved = resolveOptions(options);
+      title = resolved.title;
+      description = resolved.description ?? '';
+      confirmLabel = resolved.confirmLabel ?? '确认';
+      tone = resolved.tone ?? 'default';
+      pendingInput = input;
+      open = true;
+
+      return false;
+    };
+  };
+
+  const confirm = () => {
+    if (!pendingInput) {
+      return;
+    }
+
+    const { formElement, submitter } = pendingInput;
+
+    confirmedForm = formElement;
+    close();
+
+    if (submitter instanceof HTMLButtonElement || submitter instanceof HTMLInputElement) {
+      formElement.requestSubmit(submitter);
+      return;
+    }
+
+    formElement.requestSubmit();
+  };
+
+  return {
+    get open() {
+      return open;
+    },
+    set open(value: boolean) {
+      open = value;
+      if (!value) {
+        pendingInput = null;
+      }
+    },
+    get title() {
+      return title;
+    },
+    get description() {
+      return description;
+    },
+    get confirmLabel() {
+      return confirmLabel;
+    },
+    get tone() {
+      return tone;
+    },
+    before,
+    confirm,
+    close
+  };
+}
 
 export function createLocalPending() {
   let pending = $state(false);

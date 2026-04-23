@@ -1,7 +1,8 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { confirmBefore, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+  import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { matchesSongKeyword } from '$lib/songs';
@@ -56,18 +57,38 @@
     else pagedSongIds.forEach((id) => selectedIds.add(id));
   };
 
-  const confirmBulk = (action: 'delete' | 'setPublic' | 'setPrivate') => {
-    const verb = action === 'delete' ? '删除' : action === 'setPublic' ? '公开' : '隐藏';
-    const suffix = action === 'delete' ? '此操作不可撤销。' : '';
-    return confirm(`确认${verb} ${selectedIds.size} 首歌曲？${suffix}`);
-  };
-
-  const confirmDelete = confirmBefore('确认删除这首歌？');
+  const submitConfirmation = createSubmitConfirmation();
 
   const bulkActions = [
-    { key: 'setPublic', label: '全部公开', btnClass: 'button button-secondary button-small' },
-    { key: 'setPrivate', label: '全部隐藏', btnClass: 'button button-secondary button-small' },
-    { key: 'delete', label: '批量删除', btnClass: 'button button-ghost button-small admin-bulk-delete' }
+    {
+      key: 'setPublic',
+      label: '全部公开',
+      btnClass: 'button button-secondary button-small',
+      confirm: () => ({
+        title: `确认公开 ${selectedIds.size} 首歌曲？`,
+        confirmLabel: '确认公开'
+      })
+    },
+    {
+      key: 'setPrivate',
+      label: '全部隐藏',
+      btnClass: 'button button-secondary button-small',
+      confirm: () => ({
+        title: `确认隐藏 ${selectedIds.size} 首歌曲？`,
+        confirmLabel: '确认隐藏'
+      })
+    },
+    {
+      key: 'delete',
+      label: '批量删除',
+      btnClass: 'button button-ghost button-small admin-bulk-delete',
+      confirm: () => ({
+        title: `确认删除 ${selectedIds.size} 首歌曲？`,
+        description: '此操作不可撤销。',
+        confirmLabel: '确认删除',
+        tone: 'danger' as const
+      })
+    }
   ] as const;
 </script>
 
@@ -121,7 +142,7 @@
           <form
             method="POST"
             action="?/bulkUpdateSongs"
-            use:enhance={pendingEnhance(`bulk-${action.key}`, () => confirmBulk(action.key))}
+            use:enhance={pendingEnhance(`bulk-${action.key}`, submitConfirmation.before(action.confirm))}
           >
             {#each [...selectedIds] as id}
               <input type="hidden" name="id" value={id} />
@@ -248,7 +269,19 @@
           </form>
 
           <div class="detail-actions">
-            <form method="POST" action="?/deleteSong" use:enhance={pendingEnhance(`delete-${song.id}`, confirmDelete)}>
+            <form
+              method="POST"
+              action="?/deleteSong"
+              use:enhance={pendingEnhance(
+                `delete-${song.id}`,
+                submitConfirmation.before({
+                  title: '确认删除这首歌？',
+                  description: '删除后无法恢复。',
+                  confirmLabel: '确认删除',
+                  tone: 'danger'
+                })
+              )}
+            >
               <input type="hidden" name="id" value={song.id} />
               <button
                 type="submit"
@@ -278,3 +311,12 @@
     </div>
   {/if}
 </section>
+
+<ConfirmDialog
+  bind:open={submitConfirmation.open}
+  title={submitConfirmation.title}
+  description={submitConfirmation.description}
+  confirmLabel={submitConfirmation.confirmLabel}
+  tone={submitConfirmation.tone}
+  onConfirm={submitConfirmation.confirm}
+/>
