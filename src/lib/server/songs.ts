@@ -91,6 +91,32 @@ export const deleteSong = async (id: string) => {
   }
 };
 
+export const bulkDeleteSongs = async (ids: string[]) => {
+  if (ids.length === 0) return 0;
+  const supabase = getSupabaseAdmin();
+
+  const { error } = await supabase.from('songs').delete().in('id', ids);
+
+  if (error) {
+    throw error;
+  }
+
+  return ids.length;
+};
+
+export const bulkSetSongsPublic = async (ids: string[], isPublic: boolean) => {
+  if (ids.length === 0) return 0;
+  const supabase = getSupabaseAdmin();
+
+  const { error } = await supabase.from('songs').update({ is_public: isPublic }).in('id', ids);
+
+  if (error) {
+    throw error;
+  }
+
+  return ids.length;
+};
+
 export const importSongs = async (
   songs: Array<{
     title: string;

@@ -6,7 +6,13 @@ import { readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
 import { pageSettingsKeys, saveSetting, saveSettingImage } from '$lib/server/settings';
-import { deleteSong as removeSong, importSongs, saveSong } from '$lib/server/songs';
+import {
+  bulkDeleteSongs,
+  bulkSetSongsPublic,
+  deleteSong as removeSong,
+  importSongs,
+  saveSong
+} from '$lib/server/songs';
 import {
   pageSettingsSchema,
   playlistImportSettingsSchema,
@@ -106,6 +112,36 @@ export const actions: Actions = {
     return {
       adminMessage: '歌曲已删除。'
     };
+  },
+
+  bulkUpdateSongs: async ({ request }) => {
+    const formData = await request.formData();
+    const bulkAction = readText(formData.get('bulkAction'));
+    const ids = formData
+      .getAll('id')
+      .map((v) => readText(v))
+      .filter((v): v is string => Boolean(v));
+
+    if (ids.length === 0) {
+      return fail(400, { adminError: '请至少选择一首歌曲。' });
+    }
+
+    try {
+      if (bulkAction === 'delete') {
+        const count = await bulkDeleteSongs(ids);
+        return { adminMessage: `已删除 ${count} 首歌曲。` };
+      }
+
+      if (bulkAction === 'setPublic' || bulkAction === 'setPrivate') {
+        const makePublic = bulkAction === 'setPublic';
+        const count = await bulkSetSongsPublic(ids, makePublic);
+        return { adminMessage: `已${makePublic ? '公开' : '隐藏'} ${count} 首歌曲。` };
+      }
+
+      return fail(400, { adminError: '未知的批量操作。' });
+    } catch (error) {
+      return fail(500, { adminError: (error as Error).message });
+    }
   },
 
   previewPlaylist: async ({ request }) => {

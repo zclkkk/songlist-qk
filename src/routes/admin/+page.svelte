@@ -36,6 +36,87 @@
     )
   );
   let requestFilter = $state<'all' | 'pending' | 'accepted' | 'refused'>('all');
+  let songSearch = $state('');
+  let songPage = $state(1);
+  const songPageSize = 20;
+  const selectedSongIds = new SvelteSet<string>();
+
+  const normalizedSearch = $derived(songSearch.trim().toLowerCase());
+  const filteredSongs = $derived(
+    normalizedSearch === ''
+      ? data.dashboard.songs
+      : data.dashboard.songs.filter(
+          (s) =>
+            s.title.toLowerCase().includes(normalizedSearch) ||
+            s.artist.toLowerCase().includes(normalizedSearch) ||
+            s.tags.some((t) => t.toLowerCase().includes(normalizedSearch))
+        )
+  );
+  const totalPages = $derived(Math.max(1, Math.ceil(filteredSongs.length / songPageSize)));
+  const safePage = $derived(Math.min(songPage, totalPages));
+  const pagedSongs = $derived(filteredSongs.slice((safePage - 1) * songPageSize, safePage * songPageSize));
+  const pageNumbers = $derived.by<Array<number | 'gap-left' | 'gap-right'>>(() => {
+    const total = totalPages;
+    const current = safePage;
+    const siblings = 1;
+    const boundary = 1;
+    const showAll = total <= siblings * 2 + boundary * 2 + 3;
+
+    if (showAll) return Array.from({ length: total }, (_, i) => i + 1);
+
+    const leftSibling = Math.max(current - siblings, boundary + 1);
+    const rightSibling = Math.min(current + siblings, total - boundary);
+    const showLeftGap = leftSibling > boundary + 1;
+    const showRightGap = rightSibling < total - boundary;
+
+    const out: Array<number | 'gap-left' | 'gap-right'> = [];
+    for (let i = 1; i <= boundary; i++) out.push(i);
+    if (showLeftGap) out.push('gap-left');
+    for (let i = leftSibling; i <= rightSibling; i++) out.push(i);
+    if (showRightGap) out.push('gap-right');
+    for (let i = total - boundary + 1; i <= total; i++) out.push(i);
+    return out;
+  });
+  const pagedSongIds = $derived(pagedSongs.map((s) => s.id));
+  const allOnPageSelected = $derived(pagedSongIds.length > 0 && pagedSongIds.every((id) => selectedSongIds.has(id)));
+  const someOnPageSelected = $derived(pagedSongIds.some((id) => selectedSongIds.has(id)));
+
+  $effect(() => {
+    void normalizedSearch;
+    songPage = 1;
+  });
+
+  const toggleSongSelected = (id: string) => {
+    if (selectedSongIds.has(id)) selectedSongIds.delete(id);
+    else selectedSongIds.add(id);
+  };
+
+  const togglePageSelection = () => {
+    if (allOnPageSelected) {
+      pagedSongIds.forEach((id) => selectedSongIds.delete(id));
+    } else {
+      pagedSongIds.forEach((id) => selectedSongIds.add(id));
+    }
+  };
+
+  const selectAllFiltered = () => {
+    filteredSongs.forEach((s) => selectedSongIds.add(s.id));
+  };
+
+  const clearSelection = () => {
+    selectedSongIds.clear();
+  };
+
+  const confirmBulk = (action: string) => () => {
+    const count = selectedSongIds.size;
+    const label =
+      action === 'delete'
+        ? `删除 ${count} 首歌曲`
+        : action === 'setPublic'
+          ? `公开 ${count} 首歌曲`
+          : `隐藏 ${count} 首歌曲`;
+    return confirm(`确认${label}？${action === 'delete' ? '此操作不可撤销。' : ''}`);
+  };
   const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
   const requestCounts = $derived({
     all: data.dashboard.requests.length,
@@ -304,132 +385,343 @@
       <section
         class="rounded-[28px] border border-[var(--color-border-soft)] bg-[var(--color-surface)] p-6 shadow-sm lg:p-7"
       >
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
           <h2 class="text-lg font-semibold text-[var(--color-text)]">歌曲列表</h2>
           <span
             class="rounded-full border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-3 py-1 text-xs text-[var(--color-text-secondary)]"
           >
-            {data.dashboard.songs.length} 首
+            {#if normalizedSearch}
+              {filteredSongs.length} / {data.dashboard.songs.length} 首
+            {:else}
+              共 {data.dashboard.songs.length} 首
+            {/if}
           </span>
         </div>
 
-        <div class="mt-5 space-y-3">
-          {#each data.dashboard.songs as song}
-            <details
-              class="group rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 transition-colors open:bg-[var(--color-surface)] hover:bg-[var(--color-surface)]"
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <label class="admin-search">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
             >
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
-                <div class="min-w-0">
-                  <h3 class="truncate text-base font-semibold text-[var(--color-text)]">{song.title}</h3>
-                  <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">
-                    {song.artist} · {song.language}{#if !song.isPublic}
-                      · <span class="text-[var(--color-text-muted)]">未公开</span>
-                    {/if}
-                  </p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class={`status-badge ${songStatusClasses[song.status]}`}>
-                    {songStatusLabels[song.status]}
-                  </span>
-                  <svg
-                    class="song-chevron"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
-              </summary>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              type="search"
+              bind:value={songSearch}
+              placeholder="搜索歌名、原唱或标签"
+              class="admin-search-input"
+            />
+            {#if songSearch}
+              <button type="button" class="admin-search-clear" onclick={() => (songSearch = '')} aria-label="清空">
+                ×
+              </button>
+            {/if}
+          </label>
+        </div>
 
+        {#if selectedSongIds.size > 0}
+          <div class="admin-bulk-bar mt-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="text-sm font-medium text-[var(--color-text)]">
+                已选 {selectedSongIds.size} 首
+              </span>
+              <button type="button" class="button button-ghost button-small" onclick={clearSelection}>
+                取消选择
+              </button>
+              {#if selectedSongIds.size < filteredSongs.length}
+                <button type="button" class="button button-ghost button-small" onclick={selectAllFiltered}>
+                  全选过滤结果（{filteredSongs.length}）
+                </button>
+              {/if}
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
               <form
-                id="save-song-{song.id}"
                 method="POST"
-                action="?/saveSong"
-                class="mt-5 grid gap-4 sm:grid-cols-2"
-                use:enhance
+                action="?/bulkUpdateSongs"
+                use:enhance={pendingEnhance('bulk-public', () => confirmBulk('setPublic')())}
               >
-                <input type="hidden" name="id" value={song.id} />
-
-                <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
-                  <span>歌曲名</span>
-                  <input name="title" value={song.title} class="form-field-muted" />
-                </label>
-
-                <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
-                  <span>原唱</span>
-                  <input name="artist" value={song.artist} class="form-field-muted" />
-                </label>
-
-                <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
-                  <span>语言</span>
-                  <Select
-                    name="language"
-                    required
-                    value={song.language}
-                    items={languageItems}
-                    triggerClass="form-field-muted"
-                  />
-                </label>
-
-                <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
-                  <span>状态</span>
-                  <Select name="status" value={song.status} items={statusItems} triggerClass="form-field-muted" />
-                </label>
-
-                <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
-                  <span>标签</span>
-                  <input name="tagsInput" value={song.tags.join(', ')} class="form-field-muted" />
-                </label>
-
-                <label
-                  class="flex items-center gap-3 rounded-[14px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)] sm:col-span-2"
-                >
-                  <input
-                    name="isPublic"
-                    type="checkbox"
-                    class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
-                    checked={song.isPublic}
-                  />
-                  <span>在公开歌单展示</span>
-                </label>
-              </form>
-
-              <div class="detail-actions">
-                <form
-                  method="POST"
-                  action="?/deleteSong"
-                  use:enhance={pendingEnhance(`delete-${song.id}`, confirmDelete)}
-                >
-                  <input type="hidden" name="id" value={song.id} />
-                  <button
-                    type="submit"
-                    class="button button-ghost button-small"
-                    disabled={isPending(`delete-${song.id}`)}
-                    data-pending={isPending(`delete-${song.id}`) || undefined}
-                  >
-                    删除
-                  </button>
-                </form>
+                {#each [...selectedSongIds] as id}
+                  <input type="hidden" name="id" value={id} />
+                {/each}
+                <input type="hidden" name="bulkAction" value="setPublic" />
                 <button
                   type="submit"
-                  form="save-song-{song.id}"
-                  class="button button-primary"
-                  disabled={isPending(`save-${song.id}`)}
-                  data-pending={isPending(`save-${song.id}`) || undefined}
+                  class="button button-secondary button-small"
+                  disabled={isPending('bulk-public')}
+                  data-pending={isPending('bulk-public') || undefined}
                 >
-                  保存修改
+                  全部公开
                 </button>
+              </form>
+              <form
+                method="POST"
+                action="?/bulkUpdateSongs"
+                use:enhance={pendingEnhance('bulk-private', () => confirmBulk('setPrivate')())}
+              >
+                {#each [...selectedSongIds] as id}
+                  <input type="hidden" name="id" value={id} />
+                {/each}
+                <input type="hidden" name="bulkAction" value="setPrivate" />
+                <button
+                  type="submit"
+                  class="button button-secondary button-small"
+                  disabled={isPending('bulk-private')}
+                  data-pending={isPending('bulk-private') || undefined}
+                >
+                  全部隐藏
+                </button>
+              </form>
+              <form
+                method="POST"
+                action="?/bulkUpdateSongs"
+                use:enhance={pendingEnhance('bulk-delete', () => {
+                  const ok = confirmBulk('delete')();
+                  if (!ok) return false;
+                  return true;
+                })}
+              >
+                {#each [...selectedSongIds] as id}
+                  <input type="hidden" name="id" value={id} />
+                {/each}
+                <input type="hidden" name="bulkAction" value="delete" />
+                <button
+                  type="submit"
+                  class="button button-ghost button-small admin-bulk-delete"
+                  disabled={isPending('bulk-delete')}
+                  data-pending={isPending('bulk-delete') || undefined}
+                >
+                  批量删除
+                </button>
+              </form>
+            </div>
+          </div>
+        {/if}
+
+        {#if pagedSongs.length === 0}
+          <div class="admin-empty mt-5">
+            {#if data.dashboard.songs.length === 0}
+              <p class="text-sm font-medium text-[var(--color-text-secondary)]">还没有歌曲，先添加一首吧</p>
+            {:else}
+              <p class="text-sm font-medium text-[var(--color-text-secondary)]">没有符合条件的歌曲</p>
+              <p class="mt-1 text-xs text-[var(--color-text-muted)]">换个关键词试试</p>
+            {/if}
+          </div>
+        {:else}
+          <div class="admin-list-head mt-4">
+            <label class="admin-select-all">
+              <input
+                type="checkbox"
+                class="admin-checkbox"
+                checked={allOnPageSelected}
+                indeterminate={!allOnPageSelected && someOnPageSelected}
+                onchange={togglePageSelection}
+              />
+              <span>本页全选</span>
+            </label>
+            <span class="text-xs text-[var(--color-text-muted)]">
+              第 {safePage} / {totalPages} 页
+            </span>
+          </div>
+
+          <div class="mt-3 space-y-3">
+            {#each pagedSongs as song (song.id)}
+              <details
+                class="group rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-5 transition-colors open:bg-[var(--color-surface)] hover:bg-[var(--color-surface)]"
+              >
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4">
+                  <span class="admin-row-check">
+                    <input
+                      type="checkbox"
+                      class="admin-checkbox"
+                      checked={selectedSongIds.has(song.id)}
+                      onclick={(e) => e.stopPropagation()}
+                      onchange={() => toggleSongSelected(song.id)}
+                    />
+                  </span>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="truncate text-base font-semibold text-[var(--color-text)]">{song.title}</h3>
+                    <p class="mt-1 truncate text-sm text-[var(--color-text-secondary)]">
+                      {song.artist} · {song.language}{#if !song.isPublic}
+                        · <span class="text-[var(--color-text-muted)]">未公开</span>
+                      {/if}
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class={`status-badge ${songStatusClasses[song.status]}`}>
+                      {songStatusLabels[song.status]}
+                    </span>
+                    <svg
+                      class="song-chevron"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+                </summary>
+
+                <form
+                  id="save-song-{song.id}"
+                  method="POST"
+                  action="?/saveSong"
+                  class="mt-5 grid gap-4 sm:grid-cols-2"
+                  use:enhance={pendingEnhance(`save-${song.id}`)}
+                >
+                  <input type="hidden" name="id" value={song.id} />
+
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
+                    <span>歌曲名</span>
+                    <input name="title" value={song.title} class="form-field-muted" />
+                  </label>
+
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+                    <span>原唱</span>
+                    <input name="artist" value={song.artist} class="form-field-muted" />
+                  </label>
+
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+                    <span>语言</span>
+                    <Select
+                      name="language"
+                      required
+                      value={song.language}
+                      items={languageItems}
+                      triggerClass="form-field-muted"
+                    />
+                  </label>
+
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
+                    <span>状态</span>
+                    <Select name="status" value={song.status} items={statusItems} triggerClass="form-field-muted" />
+                  </label>
+
+                  <label class="block space-y-2 text-sm text-[var(--color-text-secondary)] sm:col-span-2">
+                    <span>标签</span>
+                    <input name="tagsInput" value={song.tags.join(', ')} class="form-field-muted" />
+                  </label>
+
+                  <label
+                    class="flex items-center gap-3 rounded-[14px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)] sm:col-span-2"
+                  >
+                    <input
+                      name="isPublic"
+                      type="checkbox"
+                      class="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+                      checked={song.isPublic}
+                    />
+                    <span>在公开歌单展示</span>
+                  </label>
+                </form>
+
+                <div class="detail-actions">
+                  <form
+                    method="POST"
+                    action="?/deleteSong"
+                    use:enhance={pendingEnhance(`delete-${song.id}`, confirmDelete)}
+                  >
+                    <input type="hidden" name="id" value={song.id} />
+                    <button
+                      type="submit"
+                      class="button button-ghost button-small"
+                      disabled={isPending(`delete-${song.id}`)}
+                      data-pending={isPending(`delete-${song.id}`) || undefined}
+                    >
+                      删除
+                    </button>
+                  </form>
+                  <button
+                    type="submit"
+                    form="save-song-{song.id}"
+                    class="button button-primary"
+                    disabled={isPending(`save-${song.id}`)}
+                    data-pending={isPending(`save-${song.id}`) || undefined}
+                  >
+                    保存修改
+                  </button>
+                </div>
+              </details>
+            {/each}
+          </div>
+
+          {#if totalPages > 1}
+            <div class="admin-pagination mt-5">
+              <button
+                type="button"
+                class="admin-pagination-step"
+                disabled={safePage <= 1}
+                onclick={() => (songPage = safePage - 1)}
+                aria-label="上一页"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <div class="admin-pagination-pages">
+                {#each pageNumbers as item}
+                  {#if item === 'gap-left' || item === 'gap-right'}
+                    <span class="admin-pagination-gap">…</span>
+                  {:else}
+                    <button
+                      type="button"
+                      class="admin-pagination-page"
+                      data-state={item === safePage ? 'active' : 'inactive'}
+                      onclick={() => (songPage = item)}
+                    >
+                      {item}
+                    </button>
+                  {/if}
+                {/each}
               </div>
-            </details>
-          {/each}
-        </div>
+              <button
+                type="button"
+                class="admin-pagination-step"
+                disabled={safePage >= totalPages}
+                onclick={() => (songPage = safePage + 1)}
+                aria-label="下一页"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+          {/if}
+        {/if}
       </section>
     </Tabs.Content>
 
