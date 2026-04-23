@@ -15,7 +15,7 @@
   <meta name="description" content="单主播 VTuber 歌单站，支持公开歌单展示、搜索筛选、愿望单提交与后台管理。" />
 </svelte:head>
 
-<div class="min-h-screen">
+<div class="flex min-h-screen flex-col">
   <div class="pointer-events-none fixed inset-0 -z-10 opacity-0 transition-opacity duration-300 dark:opacity-100">
     <div
       class="absolute top-[-18rem] left-[-14rem] h-[36rem] w-[36rem] rounded-full bg-[#2563eb]/20 blur-[120px]"
@@ -25,7 +25,16 @@
 
   <Header isAdmin={data.isAdmin} />
 
-  <main class="mx-auto max-w-7xl px-4 pt-8 pb-16 lg:px-6 lg:pt-10">
+  <main class="mx-auto w-full max-w-7xl flex-1 px-4 pt-8 pb-16 lg:px-6 lg:pt-10">
     {@render children()}
   </main>
+
+  <footer class="site-footer">
+    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 lg:px-6">
+      <p class="text-xs text-[var(--color-text-muted)]">
+        © {new Date().getFullYear()} QingKong Songlist
+      </p>
+      <p class="text-xs text-[var(--color-text-muted)]">由 SvelteKit 驱动</p>
+    </div>
+  </footer>
 </div>
