@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { createLocalPending } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
@@ -29,7 +30,7 @@
   const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
   const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
 
-  let pending = $state(false);
+  const submit = createLocalPending();
 </script>
 
 <Dialog.Root
@@ -55,18 +56,7 @@
         <div class="alert alert-danger mb-5">{adminError}</div>
       {/if}
 
-      <form
-        method="POST"
-        action="?/importPlaylist"
-        class="space-y-5"
-        use:enhance={() => {
-          pending = true;
-          return async ({ update }) => {
-            await update();
-            pending = false;
-          };
-        }}
-      >
+      <form method="POST" action="?/importPlaylist" class="space-y-5" use:enhance={submit.enhance}>
         <input type="hidden" name="playlistInput" value={preview.playlistInput} />
         <input type="hidden" name="songCount" value={preview.songs.length} />
 
@@ -138,8 +128,8 @@
         <button
           type="submit"
           class="button button-primary button-full"
-          disabled={pending}
-          data-pending={pending || undefined}
+          disabled={submit.pending}
+          data-pending={submit.pending || undefined}
         >
           导入勾选歌曲
         </button>

@@ -1,11 +1,12 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { createLocalPending } from '$lib/admin/pending.svelte';
 
   import type { ActionData } from './$types';
 
   let { form }: { form?: ActionData } = $props();
 
-  let pending = $state(false);
+  const submit = createLocalPending();
 </script>
 
 <svelte:head>
@@ -29,17 +30,7 @@
       <div class="alert alert-danger mt-6">{form.message}</div>
     {/if}
 
-    <form
-      method="POST"
-      class="mt-6 space-y-4"
-      use:enhance={() => {
-        pending = true;
-        return async ({ update }) => {
-          await update();
-          pending = false;
-        };
-      }}
-    >
+    <form method="POST" class="mt-6 space-y-4" use:enhance={submit.enhance}>
       <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
         <span>邮箱</span>
         <input
@@ -59,8 +50,8 @@
       <button
         type="submit"
         class="button button-primary button-lg button-full mt-2"
-        disabled={pending}
-        data-pending={pending || undefined}
+        disabled={submit.pending}
+        data-pending={submit.pending || undefined}
       >
         登录后台
       </button>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
+  import { confirmBefore, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
   import NeteaseImportModal from '$lib/components/admin/NeteaseImportModal.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
@@ -17,8 +18,6 @@
   import { untrack } from 'svelte';
   import { SvelteSet } from 'svelte/reactivity';
   import { toast } from 'svelte-sonner';
-
-  import type { SubmitFunction } from '@sveltejs/kit';
 
   import type { ActionData, PageData } from './$types';
 
@@ -171,35 +170,8 @@
     }
   });
 
-  const pendingActions = new SvelteSet<string>();
-  const isPending = (key: string) => pendingActions.has(key);
-
-  const pendingEnhance =
-    (key: string, before?: (input: Parameters<SubmitFunction>[0]) => boolean): SubmitFunction =>
-    (input) => {
-      if (before && before(input) === false) return;
-      pendingActions.add(key);
-      return async ({ update }) => {
-        await update();
-        pendingActions.delete(key);
-      };
-    };
-
-  const confirmDelete = ({ cancel }: Parameters<SubmitFunction>[0]) => {
-    if (!confirm('确认删除这首歌？')) {
-      cancel();
-      return false;
-    }
-    return true;
-  };
-
-  const confirmReset = ({ cancel }: Parameters<SubmitFunction>[0]) => {
-    if (!confirm('确认清空全部歌曲和愿望单？此操作不可撤销。')) {
-      cancel();
-      return false;
-    }
-    return true;
-  };
+  const confirmDelete = confirmBefore('确认删除这首歌？');
+  const confirmReset = confirmBefore('确认清空全部歌曲和愿望单？此操作不可撤销。');
 </script>
 
 <svelte:head>

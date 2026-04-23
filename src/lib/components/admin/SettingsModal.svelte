@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { createLocalPending } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { Dialog } from 'bits-ui';
   import { onDestroy, untrack } from 'svelte';
@@ -53,7 +54,7 @@
     backgroundPreview.clear();
   });
 
-  let pending = $state(false);
+  const submit = createLocalPending();
 </script>
 
 <Dialog.Root bind:open>
@@ -79,13 +80,7 @@
         action="?/saveProfile"
         enctype="multipart/form-data"
         class="space-y-5"
-        use:enhance={() => {
-          pending = true;
-          return async ({ update }) => {
-            await update();
-            pending = false;
-          };
-        }}
+        use:enhance={submit.enhance}
       >
         <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
           <label class="block space-y-2 text-sm text-[var(--color-text-secondary)]">
@@ -143,8 +138,8 @@
         <button
           type="submit"
           class="button button-primary button-full"
-          disabled={pending}
-          data-pending={pending || undefined}
+          disabled={submit.pending}
+          data-pending={submit.pending || undefined}
         >
           保存配置
         </button>
