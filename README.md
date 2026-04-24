@@ -58,3 +58,11 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ## 技术栈
 
 SvelteKit 2 · Svelte 5 · Vite 8 · Tailwind CSS 4 · Supabase · Zod 4 · `@neteasecloudmusicapienhanced/api`
+
+## 开源协议
+
+Copyright (C) 2026 zclkkk
+
+本项目采用 `GNU Affero General Public License v3.0`（`AGPL-3.0-only`）授权，详见根目录 `LICENSE`。
+
+如果你修改后将其作为网络服务对外提供，需按 AGPL 要求向该服务的用户提供对应源码。
