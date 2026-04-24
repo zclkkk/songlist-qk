@@ -17,12 +17,20 @@ npm run dev
 
 ## 环境变量
 
-| 变量                              | 说明                                                          |
-| --------------------------------- | ------------------------------------------------------------- |
-| `PUBLIC_SUPABASE_URL`             | Supabase 项目 URL                                             |
-| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable / anon key                                        |
-| `SUPABASE_SERVICE_ROLE_KEY`       | Service role key，仅服务端使用                                |
-| `AUTH_SECRET`                     | 签名 admin session cookie 的随机串，必填且不能为 `replace-me` |
+| 变量                              | 说明                                                     |
+| --------------------------------- | -------------------------------------------------------- |
+| `PUBLIC_SUPABASE_URL`             | Supabase 项目 URL                                        |
+| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable / anon key                                   |
+| `SUPABASE_SERVICE_ROLE_KEY`       | Service role key，仅服务端使用                           |
+| `AUTH_SECRET`                     | 用于签名 admin session cookie 的随机串，建议至少 32 字节 |
+
+生成 `AUTH_SECRET` 示例：
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+把输出结果填入本地 `.env` 和部署平台环境变量即可。
 
 管理员登录走 Supabase Auth。**任何能在 Supabase 登录的账号都能进后台**，请只在 Auth 中创建受信任的账号。
 
