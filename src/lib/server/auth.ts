@@ -6,7 +6,7 @@ import { getSupabaseConfig } from '$lib/server/env';
 import { createClient } from '@supabase/supabase-js';
 import type { Cookies } from '@sveltejs/kit';
 
-const sessionCookieName = 'songboard_admin_session';
+const sessionCookieName = 'songlist_admin_session';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 
 const getAuthSecret = () => {

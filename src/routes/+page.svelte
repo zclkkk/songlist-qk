@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.catalog.streamer.name} | 公开歌单</title>
+  <title>公开歌单 | QingKong Songlist</title>
 </svelte:head>
 
 <div class="space-y-8 lg:space-y-10">
