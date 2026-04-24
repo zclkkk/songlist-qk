@@ -62,7 +62,8 @@
       <div class="dialog-header">
         <div>
           <Dialog.Title class="dialog-title">页面设置</Dialog.Title>
-          <Dialog.Description class="dialog-description">修改首页主标题、头像和背景图</Dialog.Description>
+          <Dialog.Description class="dialog-description">修改首页主标题、Bilibili 链接、头像和背景图</Dialog.Description
+          >
         </div>
         <Dialog.Close class="dialog-close" aria-label="关闭">
           <Icon name="close" size={18} />
@@ -93,6 +94,24 @@
             />
           </label>
           <p class="mt-2 text-xs text-[var(--color-text-muted)]">最多 40 字，显示在首页头像下方。</p>
+        </div>
+
+        <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+          <label class="field-label">
+            <span>Bilibili 链接</span>
+            <input
+              name="bilibiliUrl"
+              type="url"
+              class="form-field"
+              required
+              maxlength="240"
+              value={settings.bilibiliUrl}
+              placeholder="https://space.bilibili.com/... 或直播间链接"
+            />
+          </label>
+          <p class="mt-2 text-xs text-[var(--color-text-muted)]">
+            首页按钮会跳转到这里，需以 http:// 或 https:// 开头。
+          </p>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">

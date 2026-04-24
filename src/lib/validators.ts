@@ -63,7 +63,14 @@ export const songPreviewSchema = z.object({
 });
 
 export const pageSettingsSchema = z.object({
-  heroTitle: z.string().trim().min(1, '标题不能为空。').max(40, '标题最多 40 字。')
+  heroTitle: z.string().trim().min(1, '标题不能为空。').max(40, '标题最多 40 字。'),
+  bilibiliUrl: z
+    .string()
+    .trim()
+    .min(1, '请填写 Bilibili 链接。')
+    .max(240, 'Bilibili 链接过长。')
+    .url('请填写有效的 Bilibili 链接。')
+    .refine((value) => /^https?:\/\//.test(value), '链接必须以 http:// 或 https:// 开头。')
 });
 
 export const requestDecisionSchema = z.object({

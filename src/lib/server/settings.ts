@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { streamerProfile } from '$lib/config';
+import { defaultBilibiliUrl, streamerProfile } from '$lib/config';
 import { getSupabaseAdmin } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
@@ -14,7 +14,8 @@ export const settingsAssetBucket = 'site-assets';
 export const pageSettingsKeys = {
   avatarPath: 'avatar_path',
   backgroundPath: 'background_path',
-  heroTitle: 'hero_title'
+  heroTitle: 'hero_title',
+  bilibiliUrl: 'bilibili_url'
 } as const;
 
 export type PageSettingKey = (typeof pageSettingsKeys)[keyof typeof pageSettingsKeys];
@@ -24,7 +25,8 @@ export const pageSettingsReadKeys = Object.values(pageSettingsKeys) as PageSetti
 export const pageSettingsDefaults: Record<PageSettingKey, string> = {
   [pageSettingsKeys.avatarPath]: '',
   [pageSettingsKeys.backgroundPath]: '',
-  [pageSettingsKeys.heroTitle]: streamerProfile.name
+  [pageSettingsKeys.heroTitle]: streamerProfile.name,
+  [pageSettingsKeys.bilibiliUrl]: defaultBilibiliUrl
 };
 
 const settingImageKinds = {
@@ -99,7 +101,8 @@ const getAssetPublicUrl = (path: string) => {
 const mapPageSettings = (settings: Record<string, string>): PageSettings => ({
   avatar: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.avatarPath)),
   background: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.backgroundPath)),
-  heroTitle: getSettingValue(settings, pageSettingsKeys.heroTitle)
+  heroTitle: getSettingValue(settings, pageSettingsKeys.heroTitle),
+  bilibiliUrl: getSettingValue(settings, pageSettingsKeys.bilibiliUrl)
 });
 
 export const getSettings = async (): Promise<PageSettings> => {

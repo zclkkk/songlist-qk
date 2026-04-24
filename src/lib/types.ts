@@ -35,10 +35,6 @@ export interface StreamerProfile {
   name: string;
   tagline: string;
   description: string;
-  platforms: Array<{
-    label: string;
-    href: string;
-  }>;
 }
 
 export interface CatalogStats {
@@ -51,6 +47,7 @@ export interface PageSettings {
   avatar: string;
   background: string;
   heroTitle: string;
+  bilibiliUrl: string;
 }
 
 export interface PublicCatalog {

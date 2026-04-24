@@ -339,10 +339,11 @@ export const actions: Actions = {
     const avatarFile = formData.get('avatar') as File | null;
     const bgFile = formData.get('background') as File | null;
     const heroTitle = readText(formData.get('heroTitle'));
+    const bilibiliUrl = readText(formData.get('bilibiliUrl'));
     const hasAvatarFile = avatarFile !== null && avatarFile.size > 0;
     const hasBackgroundFile = bgFile !== null && bgFile.size > 0;
 
-    const parsedSettings = pageSettingsSchema.safeParse({ heroTitle });
+    const parsedSettings = pageSettingsSchema.safeParse({ heroTitle, bilibiliUrl });
 
     if (!parsedSettings.success) {
       return fail(400, {
@@ -361,6 +362,7 @@ export const actions: Actions = {
 
     try {
       await saveSetting(pageSettingsKeys.heroTitle, parsedSettings.data.heroTitle);
+      await saveSetting(pageSettingsKeys.bilibiliUrl, parsedSettings.data.bilibiliUrl);
 
       if (hasAvatarFile) {
         await saveSettingImage('avatar', avatarFile);
