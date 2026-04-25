@@ -20,8 +20,8 @@ npm run dev
 | 变量                              | 说明                                                     |
 | --------------------------------- | -------------------------------------------------------- |
 | `PUBLIC_SUPABASE_URL`             | Supabase 项目 URL                                        |
-| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable / anon key                                   |
-| `SUPABASE_SERVICE_ROLE_KEY`       | Service role key，仅服务端使用                           |
+| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable key，格式为 `sb_publishable_...`             |
+| `SUPABASE_SECRET_KEY`             | Secret key，格式为 `sb_secret_...`，仅服务端使用         |
 | `AUTH_SECRET`                     | 用于签名 admin session cookie 的随机串，建议至少 32 字节 |
 
 生成 `AUTH_SECRET` 示例：

@@ -10,7 +10,7 @@ export const getSupabaseAdmin = () => {
   if (!supabaseAdmin) {
     const supabaseConfig = getSupabaseConfig();
 
-    supabaseAdmin = createClient<Database>(supabaseConfig.url, supabaseConfig.serviceRoleKey, {
+    supabaseAdmin = createClient<Database>(supabaseConfig.url, supabaseConfig.secretKey, {
       auth: {
         persistSession: false,
         autoRefreshToken: false
