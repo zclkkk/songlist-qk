@@ -36,16 +36,19 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 ## 脚本
 
-| 命令                   | 作用                    |
-| ---------------------- | ----------------------- |
-| `npm run dev`          | 启动开发服务器          |
-| `npm run build`        | 生产构建                |
-| `npm run preview`      | 预览生产构建            |
-| `npm run check`        | 类型 + Svelte 检查      |
-| `npm run format`       | Prettier 格式化整个仓库 |
-| `npm run format:check` | 只检查格式不写入        |
+| 命令                   | 作用                                       |
+| ---------------------- | ------------------------------------------ |
+| `npm run dev`          | 启动开发服务器                             |
+| `npm run build`        | 生产构建                                   |
+| `npm run preview`      | 预览生产构建                               |
+| `npm run check`        | 类型 + Svelte 检查                         |
+| `npm run db:types`     | 从 `.env` 对应 Supabase 项目生成数据库类型 |
+| `npm run format`       | Prettier 格式化整个仓库                    |
+| `npm run format:check` | 只检查格式不写入                           |
 
 提交时 husky pre-commit 会自动跑 `lint-staged`，对 staged 文件执行 `prettier --write`。`npm install` 会自动激活 hook。
+
+首次生成数据库类型前，先执行 `npx supabase login` 登录 Supabase CLI。之后 `npm run db:types` 会从 `.env` 的 `PUBLIC_SUPABASE_URL` 自动提取 project ref，并更新 `src/lib/server/database.types.ts`。
 
 ## 部署
 

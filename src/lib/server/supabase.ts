@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
-import type { Database } from '$lib/server/database';
+import type { Database } from '$lib/server/database.types';
 import { getSupabaseConfig } from '$lib/server/env';
 
 let supabaseAdmin: SupabaseClient<Database> | undefined;
