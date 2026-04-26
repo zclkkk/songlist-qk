@@ -139,7 +139,7 @@
   cursor: not-allowed;
 }
 
-.admin-pagination-page[data-state='active'] {
+.admin-pagination-page[data-selected] {
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: rgb(255 255 255);
