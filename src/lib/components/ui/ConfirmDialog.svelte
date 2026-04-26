@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ConfirmationTone } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
-  import { Dialog } from 'bits-ui';
+  import { AlertDialog } from 'bits-ui';
 
   let {
     open = $bindable(),
@@ -26,28 +26,28 @@
   );
 </script>
 
-<Dialog.Root bind:open>
-  <Dialog.Portal>
-    <Dialog.Overlay class="dialog-overlay" />
-    <Dialog.Content class="dialog-content">
+<AlertDialog.Root bind:open>
+  <AlertDialog.Portal>
+    <AlertDialog.Overlay class="dialog-overlay" />
+    <AlertDialog.Content class="dialog-content">
       <div class="dialog-header">
         <div>
-          <Dialog.Title class="dialog-title">{title}</Dialog.Title>
+          <AlertDialog.Title class="dialog-title">{title}</AlertDialog.Title>
           {#if description}
-            <Dialog.Description class="dialog-description">{description}</Dialog.Description>
+            <AlertDialog.Description class="dialog-description">{description}</AlertDialog.Description>
           {/if}
         </div>
-        <button type="button" class="dialog-close" aria-label="关闭" onclick={() => (open = false)}>
+        <AlertDialog.Cancel class="dialog-close" aria-label="关闭">
           <Icon name="close" size={18} />
-        </button>
+        </AlertDialog.Cancel>
       </div>
 
       <div class="flex flex-wrap justify-end gap-3">
-        <button type="button" class="button button-ghost button-small" onclick={() => (open = false)}>
+        <AlertDialog.Cancel class="button button-ghost button-small">
           {cancelLabel}
-        </button>
-        <button type="button" class={confirmClass} onclick={onConfirm}>{confirmLabel}</button>
+        </AlertDialog.Cancel>
+        <AlertDialog.Action type="button" class={confirmClass} onclick={onConfirm}>{confirmLabel}</AlertDialog.Action>
       </div>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+    </AlertDialog.Content>
+  </AlertDialog.Portal>
+</AlertDialog.Root>
