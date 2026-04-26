@@ -2,7 +2,7 @@
   import { enhance } from '$app/forms';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
-  import { songLanguageOptions } from '$lib/types';
+  import { songLanguageItems } from '$lib/select-options';
 
   export type RequestFormState = {
     requestMessage?: string;
@@ -146,7 +146,7 @@
                 name="language"
                 required
                 value={form?.requestValues?.language ?? '其他'}
-                items={songLanguageOptions.map((v) => ({ value: v, label: v }))}
+                items={songLanguageItems}
               />
             </label>
 

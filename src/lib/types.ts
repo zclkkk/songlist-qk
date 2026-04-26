@@ -31,12 +31,6 @@ export interface SongRequest {
   createdAt: string;
 }
 
-export interface StreamerProfile {
-  name: string;
-  tagline: string;
-  description: string;
-}
-
 export interface CatalogStats {
   totalSongs: number;
   publicSongs: number;
@@ -51,14 +45,12 @@ export interface PageSettings {
 }
 
 export interface PublicCatalog {
-  streamer: StreamerProfile;
   songs: Song[];
   tags: string[];
   settings: PageSettings;
 }
 
 export interface AdminDashboardData {
-  streamer: StreamerProfile;
   songs: Song[];
   requests: SongRequest[];
   overview: CatalogStats;

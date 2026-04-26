@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { defaultBilibiliUrl, streamerProfile } from '$lib/config';
+import { defaultBilibiliUrl } from '$lib/config';
 import { getSupabaseAdmin } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
@@ -25,7 +25,7 @@ export const pageSettingsReadKeys = Object.values(pageSettingsKeys) as PageSetti
 export const pageSettingsDefaults: Record<PageSettingKey, string> = {
   [pageSettingsKeys.avatarPath]: '',
   [pageSettingsKeys.backgroundPath]: '',
-  [pageSettingsKeys.heroTitle]: streamerProfile.name,
+  [pageSettingsKeys.heroTitle]: 'songlist-qk',
   [pageSettingsKeys.bilibiliUrl]: defaultBilibiliUrl
 };
 
@@ -44,15 +44,7 @@ const imageExtensionByMimeType: Record<string, string> = {
   'image/avif': 'avif'
 };
 
-const sanitizeExtension = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
-
 const resolveImageExtension = (file: File) => {
-  const extensionFromName = sanitizeExtension(file.name.split('.').pop() ?? '');
-
-  if (extensionFromName) {
-    return extensionFromName;
-  }
-
   const mapped = imageExtensionByMimeType[file.type];
 
   if (!mapped) {
@@ -123,7 +115,7 @@ export const saveSetting = async (key: PageSettingKey, value: string) => {
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const supabase = getSupabaseAdmin();
 
-  if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+  if (!imageExtensionByMimeType[file.type]) {
     throw new Error('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
   }
 

@@ -314,23 +314,3 @@
   background: var(--color-surface-muted);
   padding: 1rem 1.25rem;
 }
-
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-top: 1.25rem;
-}
-
-.feature-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary);
-}
-
-.feature-list svg {
-  flex-shrink: 0;
-  color: var(--color-accent);
-}

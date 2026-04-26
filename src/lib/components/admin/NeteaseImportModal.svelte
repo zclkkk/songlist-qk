@@ -3,7 +3,7 @@
   import { createLocalPending } from '$lib/admin/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
-  import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
+  import { songLanguageItems, songStatusItems } from '$lib/select-options';
   import { Dialog } from 'bits-ui';
 
   export type PlaylistPreview = {
@@ -26,9 +26,6 @@
     adminError?: string;
     onClose: () => void;
   } = $props();
-
-  const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
-  const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
 
   const submit = createLocalPending();
 </script>
@@ -62,7 +59,7 @@
 
         <label class="field-label">
           <span>状态</span>
-          <Select name="status" value={preview.status} items={statusItems} />
+          <Select name="status" value={preview.status} items={songStatusItems} />
         </label>
 
         <div
@@ -107,7 +104,7 @@
                       name={`songLanguage-${index}`}
                       required
                       value={song.language}
-                      items={languageItems}
+                      items={songLanguageItems}
                       triggerClass="form-field-muted min-w-28"
                     />
                   </td>

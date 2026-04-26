@@ -4,12 +4,11 @@
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { formatDateTimeInShanghai } from '$lib/datetime';
+  import { requestDecisionItems } from '$lib/select-options';
   import { requestStatusClasses } from '$lib/status-styles';
-  import { requestDecisionOptions, requestStatusLabels, type RequestStatus, type SongRequest } from '$lib/types';
+  import { requestStatusLabels, type RequestStatus, type SongRequest } from '$lib/types';
 
   let { requests }: { requests: SongRequest[] } = $props();
-
-  const decisionItems = requestDecisionOptions.map((s) => ({ value: s, label: requestStatusLabels[s] }));
 
   type FilterKey = 'all' | RequestStatus;
 
@@ -97,7 +96,7 @@
                 use:enhance={pendingEnhance(`request-${item.id}`)}
               >
                 <input type="hidden" name="id" value={item.id} />
-                <Select name="status" value="accepted" items={decisionItems} triggerClass="form-field-muted" />
+                <Select name="status" value="accepted" items={requestDecisionItems} triggerClass="form-field-muted" />
                 <button
                   type="submit"
                   class="button button-primary"

@@ -5,15 +5,13 @@
   import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';
   import Select from '$lib/components/ui/Select.svelte';
+  import { songLanguageItems, songStatusItems } from '$lib/select-options';
   import { matchesSongKeyword } from '$lib/songs';
   import { songStatusClasses } from '$lib/status-styles';
-  import { songLanguageOptions, songStatusLabels, songStatusOptions, type Song } from '$lib/types';
+  import { songStatusLabels, type Song } from '$lib/types';
   import { SvelteSet } from 'svelte/reactivity';
 
   let { songs }: { songs: Song[] } = $props();
-
-  const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
-  const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
 
   let songSearch = $state('');
   let songPage = $state(1);
@@ -238,14 +236,14 @@
                 name="language"
                 required
                 value={song.language}
-                items={languageItems}
+                items={songLanguageItems}
                 triggerClass="form-field-muted"
               />
             </label>
 
             <label class="field-label">
               <span>状态</span>
-              <Select name="status" value={song.status} items={statusItems} triggerClass="form-field-muted" />
+              <Select name="status" value={song.status} items={songStatusItems} triggerClass="form-field-muted" />
             </label>
 
             <label class="field-label sm:col-span-2">

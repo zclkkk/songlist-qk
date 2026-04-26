@@ -1,4 +1,3 @@
-import { streamerProfile } from '$lib/config';
 import { collectTags, listSongs } from '$lib/server/songs';
 import { countPendingRequests, listRequests } from '$lib/server/requests';
 import {
@@ -17,7 +16,6 @@ export const getPublicCatalog = async (): Promise<PublicCatalog> => {
   const settings = await getSettings();
 
   return {
-    streamer: streamerProfile,
     songs,
     tags: collectTags(songs),
     settings
@@ -28,7 +26,6 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
   const [songs, requests, settings] = await Promise.all([listSongs(), listRequests(), getSettings()]);
 
   return {
-    streamer: streamerProfile,
     songs,
     requests,
     overview: {

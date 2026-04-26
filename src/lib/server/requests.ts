@@ -1,33 +1,28 @@
-import { parseEnum } from '$lib/server/form-utils';
+import type { Database } from '$lib/server/database.types';
 import { getSupabaseAdmin } from '$lib/server/supabase';
-import {
-  requestStatusOptions,
-  songLanguageOptions,
-  type RequestDecision,
-  type SongLanguage,
-  type SongRequest
-} from '$lib/types';
+import { type RequestDecision, type RequestStatus, type SongLanguage, type SongRequest } from '$lib/types';
 
-type RequestRow = {
-  id: string;
-  song_title: string;
-  artist: string;
-  language: string;
-  message: string;
-  requester_name: string | null;
-  status: string;
-  matched_song_id: string | null;
-  created_at: string;
-};
+type RequestRow = Pick<
+  Database['public']['Tables']['requests']['Row'],
+  | 'id'
+  | 'song_title'
+  | 'artist'
+  | 'language'
+  | 'message'
+  | 'requester_name'
+  | 'status'
+  | 'matched_song_id'
+  | 'created_at'
+>;
 
 const mapRequestRow = (row: RequestRow): SongRequest => ({
   id: row.id,
   songTitle: row.song_title,
   artist: row.artist,
-  language: parseEnum(row.language, songLanguageOptions, 'song language'),
+  language: row.language as SongLanguage,
   message: row.message,
   requesterName: row.requester_name,
-  status: parseEnum(row.status, requestStatusOptions, 'request status'),
+  status: row.status as RequestStatus,
   matchedSongId: row.matched_song_id,
   createdAt: row.created_at
 });

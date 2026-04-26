@@ -1,16 +1,11 @@
-import { parseEnum } from '$lib/server/form-utils';
+import type { Database } from '$lib/server/database.types';
 import { getSupabaseAdmin } from '$lib/server/supabase';
-import { songLanguageOptions, songStatusOptions, type Song, type SongLanguage, type SongStatus } from '$lib/types';
+import { type Song, type SongLanguage, type SongStatus } from '$lib/types';
 
-type SongRow = {
-  id: string;
-  title: string;
-  artist: string;
-  language: string;
-  status: string;
-  tags: string[];
-  is_public: boolean;
-};
+type SongRow = Pick<
+  Database['public']['Tables']['songs']['Row'],
+  'id' | 'title' | 'artist' | 'language' | 'status' | 'tags' | 'is_public'
+>;
 
 const sortStrings = (values: Iterable<string>) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 
@@ -18,8 +13,8 @@ const mapSongRow = (row: SongRow): Song => ({
   id: row.id,
   title: row.title,
   artist: row.artist,
-  language: parseEnum(row.language, songLanguageOptions, 'song language'),
-  status: parseEnum(row.status, songStatusOptions, 'song status'),
+  language: row.language as SongLanguage,
+  status: row.status as SongStatus,
   tags: row.tags,
   isPublic: row.is_public
 });

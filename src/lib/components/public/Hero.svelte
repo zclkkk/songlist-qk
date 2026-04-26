@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { defaultHeroTagline } from '$lib/config';
   import type { PublicCatalog } from '$lib/types';
 
   let { catalog }: { catalog: PublicCatalog } = $props();
@@ -24,7 +25,7 @@
         <img src={catalog.settings.avatar} alt="Up主头像" class="hero-avatar-image" />
       {:else}
         <div class="hero-avatar-image hero-avatar-placeholder">
-          {catalog.streamer.name.charAt(0)}
+          {catalog.settings.heroTitle.charAt(0)}
         </div>
       {/if}
     </div>
@@ -33,11 +34,9 @@
       {catalog.settings.heroTitle}
     </h1>
 
-    {#if catalog.streamer.tagline}
-      <p class="mt-3 max-w-xl text-sm text-[var(--color-text-secondary)] lg:text-base">
-        {catalog.streamer.tagline}
-      </p>
-    {/if}
+    <p class="mt-3 max-w-xl text-sm text-[var(--color-text-secondary)] lg:text-base">
+      {defaultHeroTagline}
+    </p>
 
     <dl class="hero-stats mt-10">
       <div class="hero-stat">

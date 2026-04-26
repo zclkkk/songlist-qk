@@ -2,7 +2,7 @@
   import { enhance } from '$app/forms';
   import { isPending, pendingEnhance } from '$lib/admin/pending.svelte';
   import Select from '$lib/components/ui/Select.svelte';
-  import { songLanguageOptions, songStatusLabels, songStatusOptions } from '$lib/types';
+  import { songLanguageItems, songStatusItems } from '$lib/select-options';
   import { Tabs } from 'bits-ui';
 
   type NeteaseFormShape = {
@@ -18,9 +18,6 @@
     active?: string;
     form?: NeteaseFormShape | null;
   } = $props();
-
-  const languageItems = songLanguageOptions.map((v) => ({ value: v, label: v }));
-  const statusItems = songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }));
 </script>
 
 <div class="panel-card min-w-0">
@@ -47,12 +44,12 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <label class="field-label">
             <span>语言</span>
-            <Select name="language" required value="其他" items={languageItems} />
+            <Select name="language" required value="其他" items={songLanguageItems} />
           </label>
 
           <label class="field-label">
             <span>状态</span>
-            <Select name="status" value="ready" items={statusItems} />
+            <Select name="status" value="ready" items={songStatusItems} />
           </label>
         </div>
 

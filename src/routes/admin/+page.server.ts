@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
 import { getAdminDashboardData, resetDatabase as resetSonglistDatabase } from '$lib/server/catalog';
-import { readText } from '$lib/server/form-utils';
+import { readBoolean, readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
 import { pageSettingsKeys, saveSetting, saveSettingImage } from '$lib/server/settings';
@@ -24,8 +24,6 @@ import {
 } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
-
-const readBoolean = (value: FormDataEntryValue | null) => value === 'on';
 
 const avatarMaxBytes = 2 * 1024 * 1024;
 const backgroundMaxBytes = 5 * 1024 * 1024;

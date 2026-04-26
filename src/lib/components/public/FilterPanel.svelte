@@ -1,13 +1,8 @@
 <script lang="ts">
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
-  import {
-    songLanguageOptions,
-    songStatusLabels,
-    songStatusOptions,
-    type SongLanguage,
-    type SongStatus
-  } from '$lib/types';
+  import { allSongLanguageItems, allSongStatusItems, createTagItems } from '$lib/select-options';
+  import { type SongLanguage, type SongStatus } from '$lib/types';
 
   type Props = {
     tags: string[];
@@ -30,6 +25,7 @@
   }: Props = $props();
 
   const hasActiveFilter = $derived(query.trim() !== '' || language !== 'all' || tag !== 'all' || status !== 'all');
+  const tagItems = $derived(createTagItems(tags));
 
   const resetFilters = () => {
     query = '';
@@ -61,29 +57,17 @@
 
     <label class="field-label">
       <span>语言</span>
-      <Select
-        bind:value={language}
-        items={[{ value: 'all', label: '全部语言' }, ...songLanguageOptions.map((v) => ({ value: v, label: v }))]}
-      />
+      <Select bind:value={language} items={allSongLanguageItems} />
     </label>
 
     <label class="field-label">
       <span>标签</span>
-      <Select
-        bind:value={tag}
-        items={[{ value: 'all', label: '全部标签' }, ...tags.map((t) => ({ value: t, label: t }))]}
-      />
+      <Select bind:value={tag} items={tagItems} />
     </label>
 
     <label class="field-label">
       <span>当前状态</span>
-      <Select
-        bind:value={status}
-        items={[
-          { value: 'all', label: '全部状态' },
-          ...songStatusOptions.map((s) => ({ value: s, label: songStatusLabels[s] }))
-        ]}
-      />
+      <Select bind:value={status} items={allSongStatusItems} />
     </label>
   </div>
 

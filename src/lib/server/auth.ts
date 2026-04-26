@@ -3,14 +3,15 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { dev } from '$app/environment';
 import { env as privateEnv } from '$env/dynamic/private';
 import { getSupabaseConfig } from '$lib/server/env';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Cookies } from '@sveltejs/kit';
 
 const sessionCookieName = 'songlist_admin_session';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
+let loginClient: SupabaseClient | undefined;
 
 const getAuthSecret = () => {
-  if (!privateEnv.AUTH_SECRET || privateEnv.AUTH_SECRET === 'replace-me') {
+  if (!privateEnv.AUTH_SECRET) {
     throw new Error('AUTH_SECRET must be configured.');
   }
 
@@ -56,28 +57,38 @@ export const verifyAdminSession = (cookies: Cookies) => {
 
   const payload = raw.slice(0, lastDotIndex);
   const signature = raw.slice(lastDotIndex + 1);
-  const [subject, issuedAtRaw] = payload.split(':');
-  const issuedAt = Number(issuedAtRaw);
+  const [subject, issuedAtValue] = payload.split(':');
+  const issuedAt = Number(issuedAtValue);
+  const age = Date.now() - issuedAt;
 
-  if (subject !== 'admin' || !Number.isFinite(issuedAt)) {
-    return false;
-  }
-
-  if (Date.now() - issuedAt > sessionMaxAgeSeconds * 1000) {
+  if (subject !== 'admin' || !Number.isSafeInteger(issuedAt) || age < 0 || age > sessionMaxAgeSeconds * 1000) {
     return false;
   }
 
   const expectedSignature = signValue(payload);
-  const encoder = new TextEncoder();
-
-  const left = encoder.encode(signature);
-  const right = encoder.encode(expectedSignature);
+  const left = Buffer.from(signature, 'utf8');
+  const right = Buffer.from(expectedSignature, 'utf8');
 
   if (left.length !== right.length) {
     return false;
   }
 
   return timingSafeEqual(left, right);
+};
+
+const getLoginClient = () => {
+  if (!loginClient) {
+    const supabaseConfig = getSupabaseConfig();
+
+    loginClient = createClient(supabaseConfig.url, supabaseConfig.publishableKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false
+      }
+    });
+  }
+
+  return loginClient;
 };
 
 export const loginAdmin = async ({
@@ -96,13 +107,7 @@ export const loginAdmin = async ({
     };
   }
 
-  const supabaseConfig = getSupabaseConfig();
-  const client = createClient(supabaseConfig.url, supabaseConfig.publishableKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false
-    }
-  });
+  const client = getLoginClient();
 
   const { error } = await client.auth.signInWithPassword({
     email: normalizedEmail,

@@ -321,18 +321,6 @@ select {
   color: white;
 }
 
-.button-neutral {
-  border-color: var(--color-border-soft);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-}
-
-.button-neutral:hover {
-  border-color: var(--color-border);
-  background: var(--color-surface-muted);
-  color: var(--color-accent);
-}
-
 .button-ghost {
   border-color: var(--color-border-soft);
   background: transparent;
