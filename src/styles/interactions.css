@@ -30,6 +30,11 @@
   color: var(--color-text-muted);
 }
 
+.admin-search-input::-webkit-search-cancel-button,
+.admin-search-input::-webkit-search-decoration {
+  appearance: none;
+}
+
 .admin-search-clear {
   display: inline-flex;
   align-items: center;
