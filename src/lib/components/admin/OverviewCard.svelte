@@ -24,7 +24,6 @@
       <p class="mt-2 text-sm text-[var(--color-text-secondary)]">维护公开歌单，处理观众提交的点歌请求。</p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <button type="button" class="button button-ghost button-small" onclick={onOpenSettings}>页面配置</button>
       <form
         method="POST"
         action="?/resetDatabase"
@@ -47,6 +46,7 @@
           重置数据库
         </button>
       </form>
+      <button type="button" class="button button-ghost button-small" onclick={onOpenSettings}>页面配置</button>
       <form method="POST" action="?/logout" use:enhance={pendingEnhance('logout')}>
         <button
           type="submit"
