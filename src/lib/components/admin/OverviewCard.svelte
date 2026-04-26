@@ -40,7 +40,7 @@
       >
         <button
           type="submit"
-          class="button button-ghost button-small"
+          class="button button-danger button-small"
           disabled={isPending('reset')}
           data-pending={isPending('reset') || undefined}
         >

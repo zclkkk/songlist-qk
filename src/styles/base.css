@@ -333,6 +333,23 @@ select {
   color: var(--color-text);
 }
 
+.button-danger {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.button-danger:hover {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: white;
+  box-shadow: 0 8px 18px -8px var(--color-danger);
+}
+
+.button-danger:focus-visible {
+  box-shadow: 0 0 0 4px var(--color-danger-bg);
+}
+
 .button-icon {
   padding: 0;
   width: 2.25rem;

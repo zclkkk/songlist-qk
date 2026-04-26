@@ -79,7 +79,7 @@
     {
       key: 'delete',
       label: '批量删除',
-      btnClass: 'button button-ghost button-small admin-bulk-delete',
+      btnClass: 'button button-danger button-small',
       confirm: () => ({
         title: `确认删除 ${selectedIds.size} 首歌曲？`,
         description: '此操作不可撤销。',
@@ -281,7 +281,7 @@
               <input type="hidden" name="id" value={song.id} />
               <button
                 type="submit"
-                class="button button-ghost button-small"
+                class="button button-danger button-small"
                 disabled={isPending(`delete-${song.id}`)}
                 data-pending={isPending(`delete-${song.id}`) || undefined}
               >

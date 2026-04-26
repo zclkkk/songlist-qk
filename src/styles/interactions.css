@@ -57,11 +57,6 @@
   background: var(--color-accent-surface-bg);
 }
 
-.admin-bulk-delete {
-  color: var(--color-danger);
-  border-color: var(--color-danger-border);
-}
-
 .admin-list-head {
   display: flex;
   align-items: center;
@@ -186,6 +181,10 @@
 .button-secondary[data-pending],
 .button-ghost[data-pending] {
   --button-spinner: var(--color-text);
+}
+
+.button-danger[data-pending] {
+  --button-spinner: var(--color-danger);
 }
 
 @keyframes button-spin {

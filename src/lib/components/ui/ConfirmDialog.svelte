@@ -22,7 +22,7 @@
   } = $props();
 
   const confirmClass = $derived(
-    tone === 'danger' ? 'button button-ghost button-small admin-bulk-delete' : 'button button-primary button-small'
+    tone === 'danger' ? 'button button-danger button-small' : 'button button-primary button-small'
   );
 </script>
 
