@@ -4,20 +4,9 @@
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems } from '$lib/select-options';
 
-  export type RequestFormState = {
-    requestMessage?: string;
-    requestError?: string;
-    requestValues?: {
-      songInput?: string;
-      songTitle?: string;
-      artist?: string;
-      language?: string;
-      message?: string;
-      requesterName?: string;
-    };
-  };
+  import type { ActionData } from '../../../routes/$types';
 
-  let { form }: { form?: RequestFormState | null } = $props();
+  let { form }: { form?: ActionData | null } = $props();
 
   let celebrationDismissed = $state(false);
   let lastSubmittedMessage: string | undefined;
