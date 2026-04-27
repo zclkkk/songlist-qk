@@ -48,7 +48,7 @@ const resolveImageExtension = (file: File) => {
   const mapped = imageExtensionByMimeType[file.type];
 
   if (!mapped) {
-    throw new Error(`不支持的图片格式：${file.type}`);
+    throw new Error('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
   }
 
   return mapped;
@@ -114,10 +114,6 @@ export const saveSetting = async (key: PageSettingKey, value: string) => {
 
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const supabase = getSupabaseAdmin();
-
-  if (!imageExtensionByMimeType[file.type]) {
-    throw new Error('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
-  }
 
   const settingKey = settingImageKinds[kind];
   const existingPath = await readSettingValue(settingKey);
