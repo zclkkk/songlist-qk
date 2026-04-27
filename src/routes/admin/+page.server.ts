@@ -75,7 +75,7 @@ export const actions: Actions = {
         artist: parsed.data.artist,
         language: parsed.data.language,
         status: parsed.data.status,
-        tags: parsed.data.tagsInput,
+        tags: parsed.data.tags,
         isPublic: parsed.data.isPublic
       });
     } catch (error) {
@@ -266,7 +266,7 @@ export const actions: Actions = {
         artist: song.artist,
         language: parsedSong.data.language,
         status: parsed.data.status,
-        tags: parsedSong.data.tagsInput,
+        tags: parsedSong.data.tags,
         isPublic: true
       });
     }

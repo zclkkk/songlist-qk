@@ -9,6 +9,8 @@ const csvToTags = (value: string) =>
     .filter(Boolean)
     .slice(0, 8);
 
+const tagsInputSchema = z.string().trim().max(240, '标签内容过长。').transform(csvToTags);
+
 export const requestSchema = z.object({
   songTitle: z.string().trim().min(1, '请填写歌曲名。').max(120, '歌曲名过长。'),
   artist: z.string().trim().max(120, '原唱名称过长。'),
@@ -23,23 +25,28 @@ export const requestSchema = z.object({
     .transform((value) => value || null)
 });
 
-export const songSchema = z.object({
-  id: z
-    .string()
-    .trim()
-    .optional()
-    .transform((value) => value || undefined),
-  title: z.string().trim().min(1, '请填写歌名。').max(120, '歌名过长。'),
-  artist: z.string().trim().min(1, '请填写原唱。').max(120, '原唱名称过长。'),
-  language: z.enum(songLanguageOptions, {
-    error: '请选择有效语言。'
-  }),
-  status: z.enum(songStatusOptions, {
-    error: '请选择有效状态。'
-  }),
-  tagsInput: z.string().trim().max(240, '标签内容过长。').transform(csvToTags),
-  isPublic: z.boolean()
-});
+export const songSchema = z
+  .object({
+    id: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+    title: z.string().trim().min(1, '请填写歌名。').max(120, '歌名过长。'),
+    artist: z.string().trim().min(1, '请填写原唱。').max(120, '原唱名称过长。'),
+    language: z.enum(songLanguageOptions, {
+      error: '请选择有效语言。'
+    }),
+    status: z.enum(songStatusOptions, {
+      error: '请选择有效状态。'
+    }),
+    tagsInput: tagsInputSchema,
+    isPublic: z.boolean()
+  })
+  .transform(({ tagsInput, ...song }) => ({
+    ...song,
+    tags: tagsInput
+  }));
 
 export const playlistImportSettingsSchema = z.object({
   status: z.enum(songStatusOptions, {
@@ -47,12 +54,17 @@ export const playlistImportSettingsSchema = z.object({
   })
 });
 
-export const playlistSongImportSchema = z.object({
-  language: z.enum(songLanguageOptions, {
-    error: '请选择有效语言。'
-  }),
-  tagsInput: z.string().trim().max(240, '标签内容过长。').transform(csvToTags)
-});
+export const playlistSongImportSchema = z
+  .object({
+    language: z.enum(songLanguageOptions, {
+      error: '请选择有效语言。'
+    }),
+    tagsInput: tagsInputSchema
+  })
+  .transform(({ tagsInput, ...song }) => ({
+    ...song,
+    tags: tagsInput
+  }));
 
 export const playlistPreviewSchema = z.object({
   playlistInput: z.string().trim().min(1, '请填写网易云公开歌单链接或 ID。').max(240, '歌单链接过长。')
