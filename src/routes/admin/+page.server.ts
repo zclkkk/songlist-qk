@@ -167,7 +167,7 @@ export const actions: Actions = {
 
       return {
         adminMessage: `已解析 ${playlistSongs.length} 首歌曲，请勾选要导入的歌曲。`,
-        playlistPreview: {
+        importPreview: {
           playlistInput: parsed.data.playlistInput,
           status: 'ready',
           songs: playlistSongs.map((song) => ({
@@ -204,7 +204,7 @@ export const actions: Actions = {
 
       return {
         adminMessage: '已解析 1 首歌曲，请确认后导入。',
-        playlistPreview: {
+        importPreview: {
           playlistInput: parsed.data.songInput,
           status: 'ready',
           songs: [
@@ -248,7 +248,7 @@ export const actions: Actions = {
 
     const selectedIndexes = new Set(formData.getAll('selectedSong').map(readText));
     const selectedSongs = previewSongs.filter((_, index) => selectedIndexes.has(String(index)));
-    const playlistPreview = {
+    const importPreview = {
       playlistInput: readText(formData.get('playlistInput')),
       status: parsed.data.status,
       songs: previewSongs
@@ -257,7 +257,7 @@ export const actions: Actions = {
     if (selectedSongs.length === 0) {
       return fail(400, {
         adminError: '请选择至少一首歌。',
-        playlistPreview
+        importPreview
       });
     }
 
@@ -272,7 +272,7 @@ export const actions: Actions = {
       if (!parsedSong.success) {
         return fail(400, {
           adminError: parsedSong.error.issues[0].message,
-          playlistPreview
+          importPreview
         });
       }
 
@@ -295,7 +295,7 @@ export const actions: Actions = {
     } catch (error) {
       return fail(500, {
         adminError: getErrorMessage(error),
-        playlistPreview
+        importPreview
       });
     }
   },

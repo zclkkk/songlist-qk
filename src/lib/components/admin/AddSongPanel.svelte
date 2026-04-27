@@ -8,7 +8,7 @@
   type NeteaseFormShape = {
     songImport?: { songInput?: string };
     playlistImport?: { playlistInput?: string };
-    playlistPreview?: { playlistInput?: string };
+    importPreview?: { playlistInput?: string };
   };
 
   let {
@@ -114,7 +114,7 @@
           <input
             name="playlistInput"
             class="form-field"
-            value={form?.playlistImport?.playlistInput ?? form?.playlistPreview?.playlistInput ?? ''}
+            value={form?.playlistImport?.playlistInput ?? form?.importPreview?.playlistInput ?? ''}
             placeholder="https://music.163.com/#/playlist?id=..."
           />
         </label>

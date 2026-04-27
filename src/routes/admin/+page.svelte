@@ -21,7 +21,7 @@
   let syncedHashTab = initialActiveTab;
   let addPanelActive = $state(
     untrack(() =>
-      form && ('songImport' in form || 'playlistImport' in form || 'playlistPreview' in form) ? 'netease' : 'manual'
+      form && ('songImport' in form || 'playlistImport' in form || 'importPreview' in form) ? 'netease' : 'manual'
     )
   );
 
@@ -39,8 +39,7 @@
       }
       if ('adminError' in form && form.adminError) {
         const errorShownInModal =
-          ('settingsModalOpen' in form && form.settingsModalOpen) ||
-          ('playlistPreview' in form && form.playlistPreview);
+          ('settingsModalOpen' in form && form.settingsModalOpen) || ('importPreview' in form && form.importPreview);
         if (!errorShownInModal) toast.error(form.adminError);
       }
     } else if (!form) {
@@ -55,7 +54,7 @@
   });
 
   $effect(() => {
-    const preview = form?.playlistPreview;
+    const preview = form?.importPreview;
     if (preview && preview !== lastSeenPreview) {
       lastSeenPreview = preview;
       importModalDismissed = false;
@@ -102,6 +101,6 @@
 
 <SettingsModal settings={data.dashboard.settings} adminError={settingsError} bind:open={settingsModalOpen} />
 
-{#if form?.playlistPreview && !importModalDismissed}
-  <NeteaseImportModal preview={form.playlistPreview} {adminError} onClose={() => (importModalDismissed = true)} />
+{#if form?.importPreview && !importModalDismissed}
+  <NeteaseImportModal preview={form.importPreview} {adminError} onClose={() => (importModalDismissed = true)} />
 {/if}

@@ -6,7 +6,7 @@
   import { songLanguageItems, songStatusItems } from '$lib/select-options';
   import { Dialog } from 'bits-ui';
 
-  export type PlaylistPreview = {
+  export type ImportPreview = {
     playlistInput: string;
     status: string;
     songs: Array<{
@@ -22,7 +22,7 @@
     adminError,
     onClose
   }: {
-    preview: PlaylistPreview;
+    preview: ImportPreview;
     adminError?: string;
     onClose: () => void;
   } = $props();
