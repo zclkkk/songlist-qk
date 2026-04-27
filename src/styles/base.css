@@ -30,9 +30,6 @@
   --color-success-text: #27a644;
   --color-success-border: rgb(16 185 129 / 0.3);
   --color-success-bg: rgb(16 185 129 / 0.1);
-  --color-learning-text: var(--color-accent);
-  --color-learning-border: var(--color-accent-border-soft);
-  --color-learning-bg: var(--color-accent-bg-soft);
   --color-danger: #dc2626;
   --color-danger-border: rgb(220 38 38 / 0.3);
   --color-danger-bg: rgb(220 38 38 / 0.1);
@@ -83,9 +80,6 @@
   --color-success-text: #34d399;
   --color-success-border: rgb(52 211 153 / 0.35);
   --color-success-bg: rgb(52 211 153 / 0.12);
-  --color-learning-text: var(--color-accent);
-  --color-learning-border: var(--color-accent-border-soft);
-  --color-learning-bg: var(--color-accent-bg-soft);
   --color-danger: #f87171;
   --color-danger-border: rgb(248 113 113 / 0.35);
   --color-danger-bg: rgb(248 113 113 / 0.12);
