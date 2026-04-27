@@ -13,10 +13,12 @@
   import type { ActionData, PageData } from './$types';
 
   let { data, form }: { data: PageData; form?: ActionData } = $props();
+  const initialActiveTab = browser && window.location.hash === '#requests' ? 'requests' : 'songs';
   let importModalDismissed = $state(true);
   let lastSeenPreview: unknown = null;
   let settingsModalOpen = $state(false);
-  let activeTab = $state(browser && window.location.hash === '#requests' ? 'requests' : 'songs');
+  let activeTab = $state(initialActiveTab);
+  let syncedHashTab = initialActiveTab;
   let addPanelActive = $state(
     untrack(() =>
       form && ('songImport' in form || 'playlistImport' in form || 'playlistPreview' in form) ? 'netease' : 'manual'
@@ -63,7 +65,8 @@
   });
 
   $effect(() => {
-    if (browser) {
+    if (browser && activeTab !== syncedHashTab) {
+      syncedHashTab = activeTab;
       window.history.replaceState(null, '', `#${activeTab}`);
     }
   });
