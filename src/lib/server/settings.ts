@@ -136,7 +136,7 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
     const { error: removeError } = await supabase.storage.from(settingsAssetBucket).remove([existingPath]);
 
     if (removeError) {
-      throw removeError;
+      console.warn('删除旧设置图片失败：', removeError);
     }
   }
 
