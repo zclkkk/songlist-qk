@@ -1,17 +1,11 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { page } from '$app/state';
   import Icon from '$lib/components/ui/Icon.svelte';
-  import { onMount } from 'svelte';
 
   let { isAdmin }: { isAdmin: boolean } = $props();
 
-  let isDark = $state(false);
-  let mounted = $state(false);
-
-  onMount(() => {
-    isDark = document.documentElement.classList.contains('dark');
-    mounted = true;
-  });
+  let isDark = $state(browser && document.documentElement.classList.contains('dark'));
 
   const toggleTheme = () => {
     isDark = !isDark;
@@ -48,7 +42,7 @@
         aria-label={isDark ? '切换到亮色模式' : '切换到暗色模式'}
         onclick={toggleTheme}
       >
-        {#if mounted && isDark}
+        {#if isDark}
           <Icon name="sun" class="theme-toggle-icon" />
         {:else}
           <Icon name="moon" class="theme-toggle-icon" />
