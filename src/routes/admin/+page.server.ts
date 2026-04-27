@@ -28,12 +28,17 @@ import type { Actions, PageServerLoad } from './$types';
 
 const avatarMaxBytes = 2 * 1024 * 1024;
 const backgroundMaxBytes = 5 * 1024 * 1024;
+const maxPreviewSongCount = 5000;
 
 const readPreviewSongs = (formData: FormData) => {
   const songCount = Number(readText(formData.get('songCount')));
 
   if (!Number.isInteger(songCount) || songCount < 0) {
     return [];
+  }
+
+  if (songCount > maxPreviewSongCount) {
+    throw new Error(`单次最多导入 ${maxPreviewSongCount} 首歌曲。`);
   }
 
   return Array.from({ length: songCount }, (_, index) => ({
@@ -231,7 +236,16 @@ export const actions: Actions = {
       });
     }
 
-    const previewSongs = readPreviewSongs(formData);
+    let previewSongs: ReturnType<typeof readPreviewSongs>;
+
+    try {
+      previewSongs = readPreviewSongs(formData);
+    } catch (error) {
+      return fail(400, {
+        adminError: getErrorMessage(error)
+      });
+    }
+
     const selectedIndexes = new Set(formData.getAll('selectedSong').map(readText));
     const selectedSongs = previewSongs.filter((_, index) => selectedIndexes.has(String(index)));
     const playlistPreview = {
