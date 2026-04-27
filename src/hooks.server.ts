@@ -6,7 +6,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.isAdmin = verifyAdminSession(event.cookies);
 
   const pathname = event.url.pathname;
-  const isAdminArea = pathname.startsWith('/admin');
+  const isAdminArea = pathname === '/admin' || pathname.startsWith('/admin/');
   const isLoginPage = pathname === '/admin/login';
 
   if (isAdminArea && !isLoginPage && !event.locals.isAdmin) {
