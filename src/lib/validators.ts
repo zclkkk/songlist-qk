@@ -2,14 +2,20 @@ import { z } from 'zod';
 
 import { requestDecisionOptions, songLanguageOptions, songStatusOptions } from '$lib/types';
 
+const maxTagCount = 8;
+
 const csvToTags = (value: string) =>
   value
     .split(',')
     .map((item) => item.trim())
-    .filter(Boolean)
-    .slice(0, 8);
+    .filter(Boolean);
 
-const tagsInputSchema = z.string().trim().max(240, '标签内容过长。').transform(csvToTags);
+const tagsInputSchema = z
+  .string()
+  .trim()
+  .max(240, '标签内容过长。')
+  .transform(csvToTags)
+  .refine((tags) => tags.length <= maxTagCount, `标签最多 ${maxTagCount} 个。`);
 
 export const requestSchema = z.object({
   songTitle: z.string().trim().min(1, '请填写歌曲名。').max(120, '歌曲名过长。'),
