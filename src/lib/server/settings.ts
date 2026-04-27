@@ -72,7 +72,7 @@ export const listSettings = async (keys: readonly PageSettingKey[]) => {
 };
 
 const getSettingValue = (settings: Record<string, string>, key: PageSettingKey) =>
-  settings[key] ?? pageSettingsDefaults[key];
+  settings[key] || pageSettingsDefaults[key];
 
 const readSettingValue = async (key: PageSettingKey) => {
   const settings = await listSettings([key]);
