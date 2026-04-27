@@ -2,6 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
 import { getAdminDashboardData, resetDatabase as resetSonglistDatabase } from '$lib/server/catalog';
+import { getErrorMessage } from '$lib/server/errors';
 import { readBoolean, readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
@@ -80,7 +81,7 @@ export const actions: Actions = {
       });
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message
+        adminError: getErrorMessage(error)
       });
     }
 
@@ -103,7 +104,7 @@ export const actions: Actions = {
       await removeSong(id);
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message
+        adminError: getErrorMessage(error)
       });
     }
 
@@ -138,7 +139,7 @@ export const actions: Actions = {
 
       return fail(400, { adminError: '未知的批量操作。' });
     } catch (error) {
-      return fail(500, { adminError: (error as Error).message });
+      return fail(500, { adminError: getErrorMessage(error) });
     }
   },
 
@@ -173,7 +174,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message,
+        adminError: getErrorMessage(error),
         playlistImport: { playlistInput: parsed.data.playlistInput }
       });
     }
@@ -212,7 +213,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message,
+        adminError: getErrorMessage(error),
         songImport: { songInput: parsed.data.songInput }
       });
     }
@@ -279,7 +280,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message,
+        adminError: getErrorMessage(error),
         playlistPreview
       });
     }
@@ -304,7 +305,7 @@ export const actions: Actions = {
       await updateRequestStatus(parsed.data);
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message
+        adminError: getErrorMessage(error)
       });
     }
 
@@ -318,7 +319,7 @@ export const actions: Actions = {
       await resetSonglistDatabase();
     } catch (error) {
       return fail(500, {
-        adminError: (error as Error).message
+        adminError: getErrorMessage(error)
       });
     }
 
@@ -370,7 +371,7 @@ export const actions: Actions = {
         await saveSettingImage('background', bgFile);
       }
     } catch (error) {
-      return fail(500, { adminError: (error as Error).message, settingsModalOpen: true });
+      return fail(500, { adminError: getErrorMessage(error), settingsModalOpen: true });
     }
 
     return { adminMessage: '页面配置已更新。' };

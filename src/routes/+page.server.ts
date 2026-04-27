@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { fail } from '@sveltejs/kit';
 
 import { getPublicCatalog } from '$lib/server/catalog';
+import { getErrorMessage } from '$lib/server/errors';
 import { readText } from '$lib/server/form-utils';
 import { fetchNeteaseSong } from '$lib/server/netease';
 import { consumeRequestRateLimit } from '$lib/server/rate-limit';
@@ -58,7 +59,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        requestError: (error as Error).message,
+        requestError: getErrorMessage(error),
         requestValues: rawValues
       });
     }
@@ -94,7 +95,7 @@ export const actions: Actions = {
       await createSongRequest(parsed.data);
     } catch (error) {
       return fail(500, {
-        requestError: (error as Error).message,
+        requestError: getErrorMessage(error),
         requestValues: rawValues
       });
     }
