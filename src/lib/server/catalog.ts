@@ -12,8 +12,7 @@ import { getSupabaseAdmin } from '$lib/server/supabase';
 import { type AdminDashboardData, type PublicCatalog } from '$lib/types';
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
-  const songs = await listPublicSongs();
-  const settings = await getSettings();
+  const [songs, settings] = await Promise.all([listPublicSongs(), getSettings()]);
 
   return {
     songs,
