@@ -75,15 +75,7 @@ export const actions: Actions = {
     }
 
     try {
-      await saveSong({
-        id: parsed.data.id,
-        title: parsed.data.title,
-        artist: parsed.data.artist,
-        language: parsed.data.language,
-        status: parsed.data.status,
-        tags: parsed.data.tags,
-        isPublic: parsed.data.isPublic
-      });
+      await saveSong(parsed.data);
     } catch (error) {
       return fail(500, {
         adminError: getErrorMessage(error)
