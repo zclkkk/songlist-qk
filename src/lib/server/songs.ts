@@ -1,5 +1,7 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import type { Database } from '$lib/server/database.types';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import { type Song, type SongLanguage, type SongStatus } from '$lib/types';
 
 type SongRow = Pick<
@@ -19,9 +21,7 @@ const mapSongRow = (row: SongRow): Song => ({
   isPublic: row.is_public
 });
 
-export const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Promise<Song[]> => {
-  const supabase = getSupabaseAdmin();
-
+const fetchSongs = async (supabase: SupabaseClient<Database>, isPublic?: boolean): Promise<Song[]> => {
   let query = supabase
     .from('songs')
     .select('id, title, artist, language, status, tags, is_public')
@@ -39,6 +39,10 @@ export const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Prom
 
   return (data as SongRow[]).map(mapSongRow);
 };
+
+export const listPublicSongs = () => fetchSongs(getSupabasePublic(), true);
+
+export const listSongs = () => fetchSongs(getSupabaseAdmin());
 
 export const saveSong = async ({
   id,

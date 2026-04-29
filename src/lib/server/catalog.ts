@@ -1,4 +1,4 @@
-import { collectTags, listSongs } from '$lib/server/songs';
+import { collectTags, listPublicSongs, listSongs } from '$lib/server/songs';
 import { countPendingRequests, listRequests } from '$lib/server/requests';
 import {
   getSettings,
@@ -12,7 +12,7 @@ import { getSupabaseAdmin } from '$lib/server/supabase';
 import { type AdminDashboardData, type PublicCatalog } from '$lib/types';
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
-  const songs = await listSongs({ isPublic: true });
+  const songs = await listPublicSongs();
   const settings = await getSettings();
 
   return {

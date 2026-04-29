@@ -2,13 +2,11 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import { dev } from '$app/environment';
 import { env as privateEnv } from '$env/dynamic/private';
-import { getSupabaseConfig } from '$lib/server/env';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { getSupabasePublic } from '$lib/server/supabase';
 import type { Cookies } from '@sveltejs/kit';
 
 const sessionCookieName = 'songlist_admin_session';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
-let loginClient: SupabaseClient | undefined;
 
 const getAuthSecret = () => {
   if (!privateEnv.AUTH_SECRET) {
@@ -76,21 +74,6 @@ export const verifyAdminSession = (cookies: Cookies) => {
   return timingSafeEqual(left, right);
 };
 
-const getLoginClient = () => {
-  if (!loginClient) {
-    const supabaseConfig = getSupabaseConfig();
-
-    loginClient = createClient(supabaseConfig.url, supabaseConfig.publishableKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false
-      }
-    });
-  }
-
-  return loginClient;
-};
-
 export const loginAdmin = async ({
   email,
   password
@@ -107,7 +90,7 @@ export const loginAdmin = async ({
     };
   }
 
-  const client = getLoginClient();
+  const client = getSupabasePublic();
 
   const { error } = await client.auth.signInWithPassword({
     email: normalizedEmail,

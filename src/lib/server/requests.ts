@@ -1,5 +1,5 @@
 import type { Database } from '$lib/server/database.types';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import { type RequestDecision, type RequestStatus, type SongLanguage, type SongRequest } from '$lib/types';
 
 type RequestRow = Pick<
@@ -55,7 +55,7 @@ export const createSongRequest = async ({
   message: string;
   requesterName: string | null;
 }) => {
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabasePublic();
 
   const { error } = await supabase.from('requests').insert({
     song_title: songTitle,

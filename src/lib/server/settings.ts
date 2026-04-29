@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { defaultBilibiliUrl } from '$lib/config';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
 type SettingRow = {
@@ -55,7 +55,7 @@ const resolveImageExtension = (file: File) => {
 };
 
 export const listSettings = async (keys: readonly PageSettingKey[]) => {
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabasePublic();
   const { data, error } = await supabase.from('settings').select('key, value').in('key', keys);
 
   if (error) {
@@ -85,7 +85,7 @@ const getAssetPublicUrl = (path: string) => {
     return '';
   }
 
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabasePublic();
 
   return supabase.storage.from(settingsAssetBucket).getPublicUrl(path).data.publicUrl;
 };
