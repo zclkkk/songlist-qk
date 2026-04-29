@@ -3,10 +3,9 @@
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems } from '$lib/select-options';
+  import type { RequestFormResult } from '$lib/types';
 
-  import type { ActionData } from '../../../routes/$types';
-
-  let { form }: { form?: ActionData | null } = $props();
+  let { form }: { form?: RequestFormResult | null } = $props();
 
   let celebrationDismissed = $state(false);
   let lastSubmittedMessage: string | undefined;
