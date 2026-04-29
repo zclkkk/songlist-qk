@@ -22,3 +22,5 @@ export const getSupabaseConfig = () => {
 
   return cachedConfig;
 };
+
+export const getAuthSecret = () => requireEnv(privateEnv.AUTH_SECRET, 'AUTH_SECRET');

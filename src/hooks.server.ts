@@ -1,10 +1,11 @@
 import { redirect, type Handle, type ServerInit } from '@sveltejs/kit';
 
 import { verifyAdminSession } from '$lib/server/auth';
-import { getSupabaseConfig } from '$lib/server/env';
+import { getAuthSecret, getSupabaseConfig } from '$lib/server/env';
 
 export const init: ServerInit = () => {
   getSupabaseConfig();
+  getAuthSecret();
 };
 
 export const handle: Handle = async ({ event, resolve }) => {

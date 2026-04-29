@@ -1,20 +1,12 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import { dev } from '$app/environment';
-import { env as privateEnv } from '$env/dynamic/private';
+import { getAuthSecret } from '$lib/server/env';
 import { getSupabasePublic } from '$lib/server/supabase';
 import type { Cookies } from '@sveltejs/kit';
 
 const sessionCookieName = 'songlist_admin_session';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
-
-const getAuthSecret = () => {
-  if (!privateEnv.AUTH_SECRET) {
-    throw new Error('AUTH_SECRET must be configured.');
-  }
-
-  return privateEnv.AUTH_SECRET;
-};
 
 const signValue = (value: string) => createHmac('sha256', getAuthSecret()).update(value).digest('hex');
 
