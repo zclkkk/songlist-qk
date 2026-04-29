@@ -57,6 +57,17 @@ export interface AdminDashboardData {
   settings: PageSettings;
 }
 
+export interface ImportPreview {
+  sourceInput: string;
+  status: string;
+  songs: Array<{
+    title: string;
+    artist: string;
+    language: string;
+    tagsInput: string;
+  }>;
+}
+
 export interface RequestFormValues {
   songInput: string;
   songTitle: string;

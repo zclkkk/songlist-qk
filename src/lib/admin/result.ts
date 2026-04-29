@@ -1,4 +1,4 @@
-import type { ImportPreview } from '$lib/components/admin/NeteaseImportModal.svelte';
+import type { ImportPreview } from '$lib/types';
 
 export type AdminSuccessResult = {
   kind: 'success';

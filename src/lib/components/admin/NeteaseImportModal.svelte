@@ -4,18 +4,8 @@
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems, songStatusItems } from '$lib/select-options';
+  import type { ImportPreview } from '$lib/types';
   import { Dialog } from 'bits-ui';
-
-  export type ImportPreview = {
-    sourceInput: string;
-    status: string;
-    songs: Array<{
-      title: string;
-      artist: string;
-      language: string;
-      tagsInput: string;
-    }>;
-  };
 
   let {
     preview,
