@@ -6,54 +6,41 @@
   import RequestListCard from '$lib/components/admin/RequestListCard.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import SongListCard from '$lib/components/admin/SongListCard.svelte';
+  import { hasAdminMessage, hasImportPreview, hasToastableError, startsOnNeteasePanel } from '$lib/admin/result';
   import { watchChange } from '$lib/svelte-utils.svelte';
   import { Tabs } from 'bits-ui';
   import { untrack } from 'svelte';
   import { toast } from 'svelte-sonner';
 
-  import type { ActionData, PageData } from './$types';
+  import type { PageData } from './$types';
 
-  let { data, form }: { data: PageData; form?: ActionData } = $props();
+  let { data, form }: { data: PageData; form?: import('$lib/admin/result').AdminActionResult | null } = $props();
   const initialActiveTab = browser && window.location.hash === '#requests' ? 'requests' : 'songs';
   let importModalDismissed = $state(true);
   let settingsModalOpen = $state(false);
   let activeTab = $state(initialActiveTab);
   let syncedHashTab = initialActiveTab;
-  let addPanelActive = $state(
-    untrack(() =>
-      form && ('songImport' in form || 'playlistImport' in form || 'importPreview' in form) ? 'netease' : 'manual'
-    )
-  );
+  let addPanelActive = $state(untrack(() => (startsOnNeteasePanel(form) ? 'netease' : 'manual')));
 
-  const adminError = $derived(form && 'adminError' in form ? form.adminError : undefined);
-  const settingsError = $derived(
-    form && 'settingsModalOpen' in form && form.settingsModalOpen ? adminError : undefined
-  );
+  const settingsError = $derived(form?.kind === 'profile-error' ? form.adminError : undefined);
+  const importError = $derived(form?.kind === 'preview-import-error' ? form.adminError : undefined);
 
   watchChange(
     () => form,
     (current) => {
-      if (!current) return;
-      if ('adminMessage' in current && current.adminMessage) {
-        toast.success(current.adminMessage);
-      }
-      if ('adminError' in current && current.adminError) {
-        const errorShownInModal =
-          ('settingsModalOpen' in current && current.settingsModalOpen) ||
-          ('importPreview' in current && current.importPreview);
-        if (!errorShownInModal) toast.error(current.adminError);
-      }
+      if (hasAdminMessage(current)) toast.success(current.adminMessage);
+      if (hasToastableError(current)) toast.error(current.adminError);
     }
   );
 
   $effect(() => {
-    if (form && 'settingsModalOpen' in form && form.settingsModalOpen) {
+    if (form?.kind === 'profile-error') {
       settingsModalOpen = true;
     }
   });
 
   watchChange(
-    () => form?.importPreview ?? null,
+    () => (hasImportPreview(form) ? form.importPreview : null),
     (preview) => {
       if (preview) importModalDismissed = false;
     }
@@ -97,6 +84,10 @@
 
 <SettingsModal settings={data.dashboard.settings} adminError={settingsError} bind:open={settingsModalOpen} />
 
-{#if form?.importPreview && !importModalDismissed}
-  <NeteaseImportModal preview={form.importPreview} {adminError} onClose={() => (importModalDismissed = true)} />
+{#if hasImportPreview(form) && !importModalDismissed}
+  <NeteaseImportModal
+    preview={form.importPreview}
+    adminError={importError}
+    onClose={() => (importModalDismissed = true)}
+  />
 {/if}

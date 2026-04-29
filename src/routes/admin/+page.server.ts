@@ -70,6 +70,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
+        kind: 'error' as const,
         adminError: parsed.error.issues[0].message
       });
     }
@@ -78,11 +79,13 @@ export const actions: Actions = {
       await saveSong(parsed.data);
     } catch (error) {
       return fail(500, {
+        kind: 'error' as const,
         adminError: getErrorMessage(error)
       });
     }
 
     return {
+      kind: 'success' as const,
       adminMessage: '歌曲信息已保存。'
     };
   },
@@ -93,6 +96,7 @@ export const actions: Actions = {
 
     if (!id) {
       return fail(400, {
+        kind: 'error' as const,
         adminError: '缺少歌曲 ID。'
       });
     }
@@ -101,11 +105,13 @@ export const actions: Actions = {
       await removeSong(id);
     } catch (error) {
       return fail(500, {
+        kind: 'error' as const,
         adminError: getErrorMessage(error)
       });
     }
 
     return {
+      kind: 'success' as const,
       adminMessage: '歌曲已删除。'
     };
   },
@@ -116,24 +122,27 @@ export const actions: Actions = {
     const ids = formData.getAll('id').map(readText).filter(Boolean);
 
     if (ids.length === 0) {
-      return fail(400, { adminError: '请至少选择一首歌曲。' });
+      return fail(400, { kind: 'error' as const, adminError: '请至少选择一首歌曲。' });
     }
 
     try {
       if (bulkAction === 'delete') {
         const count = await bulkDeleteSongs(ids);
-        return { adminMessage: `已删除 ${count} 首歌曲。` };
+        return { kind: 'success' as const, adminMessage: `已删除 ${count} 首歌曲。` };
       }
 
       if (bulkAction === 'setPublic' || bulkAction === 'setPrivate') {
         const makePublic = bulkAction === 'setPublic';
         const count = await bulkSetSongsPublic(ids, makePublic);
-        return { adminMessage: `已${makePublic ? '公开' : '隐藏'} ${count} 首歌曲。` };
+        return {
+          kind: 'success' as const,
+          adminMessage: `已${makePublic ? '公开' : '隐藏'} ${count} 首歌曲。`
+        };
       }
 
-      return fail(400, { adminError: '未知的批量操作。' });
+      return fail(400, { kind: 'error' as const, adminError: '未知的批量操作。' });
     } catch (error) {
-      return fail(500, { adminError: getErrorMessage(error) });
+      return fail(500, { kind: 'error' as const, adminError: getErrorMessage(error) });
     }
   },
 
@@ -146,6 +155,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
+        kind: 'preview-parse-error' as const,
         adminError: parsed.error.issues[0].message,
         playlistImport: { playlistInput }
       });
@@ -155,6 +165,7 @@ export const actions: Actions = {
       const playlistSongs = await fetchNeteasePlaylistSongs(parsed.data.playlistInput);
 
       return {
+        kind: 'preview-ready' as const,
         adminMessage: `已解析 ${playlistSongs.length} 首歌曲，请勾选要导入的歌曲。`,
         importPreview: {
           sourceInput: parsed.data.playlistInput,
@@ -168,6 +179,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
+        kind: 'preview-parse-error' as const,
         adminError: getErrorMessage(error),
         playlistImport: { playlistInput: parsed.data.playlistInput }
       });
@@ -183,6 +195,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
+        kind: 'preview-parse-error' as const,
         adminError: parsed.error.issues[0].message,
         songImport: { songInput }
       });
@@ -192,6 +205,7 @@ export const actions: Actions = {
       const song = await fetchNeteaseSong(parsed.data.songInput);
 
       return {
+        kind: 'preview-ready' as const,
         adminMessage: '已解析 1 首歌曲，请确认后导入。',
         importPreview: {
           sourceInput: parsed.data.songInput,
@@ -207,6 +221,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
+        kind: 'preview-parse-error' as const,
         adminError: getErrorMessage(error),
         songImport: { songInput: parsed.data.songInput }
       });
@@ -221,6 +236,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
+        kind: 'error' as const,
         adminError: parsed.error.issues[0].message
       });
     }
@@ -231,6 +247,7 @@ export const actions: Actions = {
       previewSongs = readPreviewSongs(formData);
     } catch (error) {
       return fail(400, {
+        kind: 'error' as const,
         adminError: getErrorMessage(error)
       });
     }
@@ -245,6 +262,7 @@ export const actions: Actions = {
 
     if (selectedSongs.length === 0) {
       return fail(400, {
+        kind: 'preview-import-error' as const,
         adminError: '请选择至少一首歌。',
         importPreview
       });
@@ -257,6 +275,7 @@ export const actions: Actions = {
 
       if (!parsedSong.success) {
         return fail(400, {
+          kind: 'preview-import-error' as const,
           adminError: parsedSong.error.issues[0].message,
           importPreview
         });
@@ -273,10 +292,12 @@ export const actions: Actions = {
       const importedCount = await importSongs(songsToImport);
 
       return {
+        kind: 'success' as const,
         adminMessage: `已从网易云导入 ${importedCount} 首歌曲。`
       };
     } catch (error) {
       return fail(500, {
+        kind: 'preview-import-error' as const,
         adminError: getErrorMessage(error),
         importPreview
       });
@@ -294,6 +315,7 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
+        kind: 'error' as const,
         adminError: parsed.error.issues[0].message
       });
     }
@@ -302,11 +324,13 @@ export const actions: Actions = {
       await updateRequestStatus(parsed.data);
     } catch (error) {
       return fail(500, {
+        kind: 'error' as const,
         adminError: getErrorMessage(error)
       });
     }
 
     return {
+      kind: 'success' as const,
       adminMessage: '愿望状态已更新。'
     };
   },
@@ -316,11 +340,13 @@ export const actions: Actions = {
       await resetSonglistDatabase();
     } catch (error) {
       return fail(500, {
+        kind: 'error' as const,
         adminError: getErrorMessage(error)
       });
     }
 
     return {
+      kind: 'success' as const,
       adminMessage: '数据库已恢复到空白初始状态。'
     };
   },
@@ -343,17 +369,17 @@ export const actions: Actions = {
 
     if (!parsedSettings.success) {
       return fail(400, {
-        adminError: parsedSettings.error.issues[0].message,
-        settingsModalOpen: true
+        kind: 'profile-error' as const,
+        adminError: parsedSettings.error.issues[0].message
       });
     }
 
     if (hasAvatarFile && avatarFile.size > avatarMaxBytes) {
-      return fail(400, { adminError: '头像文件不能超过 2MB', settingsModalOpen: true });
+      return fail(400, { kind: 'profile-error' as const, adminError: '头像文件不能超过 2MB' });
     }
 
     if (hasBackgroundFile && bgFile.size > backgroundMaxBytes) {
-      return fail(400, { adminError: '背景文件不能超过 5MB', settingsModalOpen: true });
+      return fail(400, { kind: 'profile-error' as const, adminError: '背景文件不能超过 5MB' });
     }
 
     try {
@@ -370,9 +396,9 @@ export const actions: Actions = {
         await saveSettingImage('background', bgFile);
       }
     } catch (error) {
-      return fail(500, { adminError: getErrorMessage(error), settingsModalOpen: true });
+      return fail(500, { kind: 'profile-error' as const, adminError: getErrorMessage(error) });
     }
 
-    return { adminMessage: '页面配置已更新。' };
+    return { kind: 'success' as const, adminMessage: '页面配置已更新。' };
   }
 };

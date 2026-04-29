@@ -1,23 +1,21 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { getPlaylistInputEcho, getSongInputEcho, type AdminActionForm } from '$lib/admin/result';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems, songStatusItems } from '$lib/select-options';
   import { Tabs } from 'bits-ui';
-
-  type NeteaseFormShape = {
-    songImport?: { songInput?: string };
-    playlistImport?: { playlistInput?: string };
-    importPreview?: { sourceInput?: string };
-  };
 
   let {
     active = $bindable('manual'),
     form
   }: {
     active?: string;
-    form?: NeteaseFormShape | null;
+    form?: AdminActionForm;
   } = $props();
+
+  const songInputEcho = $derived(getSongInputEcho(form));
+  const playlistInputEcho = $derived(getPlaylistInputEcho(form));
 </script>
 
 <div class="panel-card min-w-0">
@@ -88,7 +86,7 @@
           <input
             name="songInput"
             class="form-field"
-            value={form?.songImport?.songInput ?? ''}
+            value={songInputEcho}
             placeholder="https://music.163.com/#/song?id=..."
           />
         </label>
@@ -114,7 +112,7 @@
           <input
             name="playlistInput"
             class="form-field"
-            value={form?.playlistImport?.playlistInput ?? form?.importPreview?.sourceInput ?? ''}
+            value={playlistInputEcho}
             placeholder="https://music.163.com/#/playlist?id=..."
           />
         </label>
