@@ -8,7 +8,7 @@ import {
   pageSettingsReadKeys,
   settingsAssetBucket
 } from '$lib/server/settings';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { supabaseAdmin } from '$lib/server/supabase';
 import { type AdminDashboardData, type PublicCatalog } from '$lib/types';
 
 export const getPublicCatalog = async (): Promise<PublicCatalog> => {
@@ -37,7 +37,7 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
 };
 
 export const resetDatabase = async () => {
-  const supabase = getSupabaseAdmin();
+  const supabase = supabaseAdmin;
   const settings = await listSettings(pageSettingsReadKeys);
   const assetPaths = [settings[pageSettingsKeys.avatarPath], settings[pageSettingsKeys.backgroundPath]].filter(Boolean);
 

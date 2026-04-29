@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { defaultBilibiliUrl } from '$lib/config';
 import { UserFacingError } from '$lib/server/errors';
-import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
+import { supabaseAdmin, supabasePublic } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
 type SettingRow = {
@@ -56,8 +56,7 @@ const resolveImageExtension = (file: File) => {
 };
 
 export const listSettings = async (keys: readonly PageSettingKey[]) => {
-  const supabase = getSupabasePublic();
-  const { data, error } = await supabase.from('settings').select('key, value').in('key', keys);
+  const { data, error } = await supabasePublic.from('settings').select('key, value').in('key', keys);
 
   if (error) {
     throw error;
@@ -80,9 +79,7 @@ const getAssetPublicUrl = (path: string) => {
     return '';
   }
 
-  const supabase = getSupabasePublic();
-
-  return supabase.storage.from(settingsAssetBucket).getPublicUrl(path).data.publicUrl;
+  return supabasePublic.storage.from(settingsAssetBucket).getPublicUrl(path).data.publicUrl;
 };
 
 const mapPageSettings = (settings: Record<string, string>): PageSettings => ({
@@ -100,8 +97,7 @@ export const getSettings = async (): Promise<PageSettings> => {
 
 export const saveSettings = async (entries: Partial<Record<PageSettingKey, string>>) => {
   const rows = Object.entries(entries).map(([key, value]) => ({ key, value: value ?? '' }));
-  const supabase = getSupabaseAdmin();
-  const { error } = await supabase.from('settings').upsert(rows);
+  const { error } = await supabaseAdmin.from('settings').upsert(rows);
 
   if (error) {
     throw error;
@@ -109,7 +105,7 @@ export const saveSettings = async (entries: Partial<Record<PageSettingKey, strin
 };
 
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
-  const supabase = getSupabaseAdmin();
+  const supabase = supabaseAdmin;
 
   const settingKey = settingImageKinds[kind];
   const existingPath = getSettingValue(await listSettings([settingKey]), settingKey);

@@ -1,14 +1,14 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import { dev } from '$app/environment';
-import { getAuthSecret } from '$lib/server/env';
-import { getSupabasePublic } from '$lib/server/supabase';
+import { authSecret } from '$lib/server/env';
+import { supabasePublic } from '$lib/server/supabase';
 import type { Cookies } from '@sveltejs/kit';
 
 const sessionCookieName = 'songlist_admin_session';
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 
-const signValue = (value: string) => createHmac('sha256', getAuthSecret()).update(value).digest('hex');
+const signValue = (value: string) => createHmac('sha256', authSecret).update(value).digest('hex');
 
 const buildCookieValue = () => {
   const payload = `admin:${Date.now()}`;
@@ -64,7 +64,7 @@ export const loginAdmin = async ({
   email: string;
   password: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> => {
-  const { error } = await getSupabasePublic().auth.signInWithPassword({
+  const { error } = await supabasePublic.auth.signInWithPassword({
     email: email.trim().toLowerCase(),
     password
   });

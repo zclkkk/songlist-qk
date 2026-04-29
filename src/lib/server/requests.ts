@@ -1,6 +1,6 @@
 import type { Database } from '$lib/server/database.types';
 import { UserFacingError } from '$lib/server/errors';
-import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
+import { supabaseAdmin, supabasePublic } from '$lib/server/supabase';
 import { type RequestDecision, type RequestStatus, type SongLanguage, type SongRequest } from '$lib/types';
 
 type RequestRow = Pick<
@@ -29,9 +29,7 @@ const mapRequestRow = (row: RequestRow): SongRequest => ({
 });
 
 export const listRequests = async (): Promise<SongRequest[]> => {
-  const supabase = getSupabaseAdmin();
-
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('requests')
     .select('id, song_title, artist, language, message, requester_name, status, matched_song_id, created_at')
     .order('created_at', { ascending: false });
@@ -56,9 +54,7 @@ export const createSongRequest = async ({
   message: string;
   requesterName: string | null;
 }) => {
-  const supabase = getSupabasePublic();
-
-  const { error } = await supabase.from('requests').insert({
+  const { error } = await supabasePublic.from('requests').insert({
     song_title: songTitle,
     artist,
     language,
@@ -72,7 +68,7 @@ export const createSongRequest = async ({
 };
 
 export const updateRequestStatus = async ({ id, status }: { id: string; status: RequestDecision }) => {
-  const supabase = getSupabaseAdmin();
+  const supabase = supabaseAdmin;
 
   if (status === 'accepted') {
     const { error } = await supabase.rpc('accept_song_request', {

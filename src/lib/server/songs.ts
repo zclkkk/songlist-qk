@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '$lib/server/database.types';
-import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
+import { supabaseAdmin, supabasePublic } from '$lib/server/supabase';
 import { type Song, type SongLanguage, type SongStatus } from '$lib/types';
 
 type SongRow = Pick<
@@ -40,9 +40,9 @@ const fetchSongs = async (supabase: SupabaseClient<Database>, isPublic?: boolean
   return (data as SongRow[]).map(mapSongRow);
 };
 
-export const listPublicSongs = () => fetchSongs(getSupabasePublic(), true);
+export const listPublicSongs = () => fetchSongs(supabasePublic, true);
 
-export const listSongs = () => fetchSongs(getSupabaseAdmin());
+export const listSongs = () => fetchSongs(supabaseAdmin);
 
 export const saveSong = async ({
   id,
@@ -61,7 +61,6 @@ export const saveSong = async ({
   tags: string[];
   isPublic: boolean;
 }) => {
-  const supabase = getSupabaseAdmin();
   const row = {
     title,
     artist,
@@ -72,8 +71,8 @@ export const saveSong = async ({
   };
 
   const { error } = id
-    ? await supabase.from('songs').update(row).eq('id', id)
-    : await supabase.from('songs').insert(row);
+    ? await supabaseAdmin.from('songs').update(row).eq('id', id)
+    : await supabaseAdmin.from('songs').insert(row);
 
   if (error) {
     throw error;
@@ -81,9 +80,7 @@ export const saveSong = async ({
 };
 
 export const deleteSong = async (id: string) => {
-  const supabase = getSupabaseAdmin();
-
-  const { error } = await supabase.from('songs').delete().eq('id', id);
+  const { error } = await supabaseAdmin.from('songs').delete().eq('id', id);
 
   if (error) {
     throw error;
@@ -91,9 +88,7 @@ export const deleteSong = async (id: string) => {
 };
 
 export const bulkDeleteSongs = async (ids: string[]) => {
-  const supabase = getSupabaseAdmin();
-
-  const { error, count } = await supabase.from('songs').delete({ count: 'exact' }).in('id', ids);
+  const { error, count } = await supabaseAdmin.from('songs').delete({ count: 'exact' }).in('id', ids);
 
   if (error) {
     throw error;
@@ -103,9 +98,7 @@ export const bulkDeleteSongs = async (ids: string[]) => {
 };
 
 export const bulkSetSongsPublic = async (ids: string[], isPublic: boolean) => {
-  const supabase = getSupabaseAdmin();
-
-  const { error, count } = await supabase
+  const { error, count } = await supabaseAdmin
     .from('songs')
     .update({ is_public: isPublic }, { count: 'exact' })
     .in('id', ids);
@@ -127,9 +120,7 @@ export const importSongs = async (
     isPublic: boolean;
   }>
 ) => {
-  const supabase = getSupabaseAdmin();
-
-  const { error } = await supabase.from('songs').insert(
+  const { error } = await supabaseAdmin.from('songs').insert(
     songs.map((song) => ({
       title: song.title,
       artist: song.artist,

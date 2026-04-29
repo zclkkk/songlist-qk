@@ -1,4 +1,4 @@
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { supabaseAdmin } from '$lib/server/supabase';
 
 export const consumeRequestRateLimit = async ({
   clientKey,
@@ -9,8 +9,7 @@ export const consumeRequestRateLimit = async ({
   maxRequests: number;
   windowMs: number;
 }) => {
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.rpc('consume_request_rate_limit', {
+  const { data, error } = await supabaseAdmin.rpc('consume_request_rate_limit', {
     p_client_key: clientKey,
     p_max_requests: maxRequests,
     p_window_seconds: Math.ceil(windowMs / 1000)

@@ -1,38 +1,14 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
 import type { Database } from '$lib/server/database.types';
-import { getSupabaseConfig } from '$lib/server/env';
+import { supabaseConfig } from '$lib/server/env';
 
-let supabasePublic: SupabaseClient<Database> | undefined;
-let supabaseAdmin: SupabaseClient<Database> | undefined;
+const sharedAuth = { persistSession: false, autoRefreshToken: false };
 
-export const getSupabasePublic = () => {
-  if (!supabasePublic) {
-    const supabaseConfig = getSupabaseConfig();
+export const supabasePublic = createClient<Database>(supabaseConfig.url, supabaseConfig.publishableKey, {
+  auth: sharedAuth
+});
 
-    supabasePublic = createClient<Database>(supabaseConfig.url, supabaseConfig.publishableKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false
-      }
-    });
-  }
-
-  return supabasePublic;
-};
-
-export const getSupabaseAdmin = () => {
-  if (!supabaseAdmin) {
-    const supabaseConfig = getSupabaseConfig();
-
-    supabaseAdmin = createClient<Database>(supabaseConfig.url, supabaseConfig.secretKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false
-      }
-    });
-  }
-
-  return supabaseAdmin;
-};
+export const supabaseAdmin = createClient<Database>(supabaseConfig.url, supabaseConfig.secretKey, {
+  auth: sharedAuth
+});
