@@ -6,6 +6,7 @@
   import RequestListCard from '$lib/components/admin/RequestListCard.svelte';
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import SongListCard from '$lib/components/admin/SongListCard.svelte';
+  import { watchChange } from '$lib/svelte-utils.svelte';
   import { Tabs } from 'bits-ui';
   import { untrack } from 'svelte';
   import { toast } from 'svelte-sonner';
@@ -15,7 +16,6 @@
   let { data, form }: { data: PageData; form?: ActionData } = $props();
   const initialActiveTab = browser && window.location.hash === '#requests' ? 'requests' : 'songs';
   let importModalDismissed = $state(true);
-  let lastSeenPreview: unknown = null;
   let settingsModalOpen = $state(false);
   let activeTab = $state(initialActiveTab);
   let syncedHashTab = initialActiveTab;
@@ -30,22 +30,21 @@
     form && 'settingsModalOpen' in form && form.settingsModalOpen ? adminError : undefined
   );
 
-  let lastFormRef: ActionData | null = null;
-  $effect(() => {
-    if (form && form !== lastFormRef) {
-      lastFormRef = form;
-      if ('adminMessage' in form && form.adminMessage) {
-        toast.success(form.adminMessage);
+  watchChange(
+    () => form,
+    (current) => {
+      if (!current) return;
+      if ('adminMessage' in current && current.adminMessage) {
+        toast.success(current.adminMessage);
       }
-      if ('adminError' in form && form.adminError) {
+      if ('adminError' in current && current.adminError) {
         const errorShownInModal =
-          ('settingsModalOpen' in form && form.settingsModalOpen) || ('importPreview' in form && form.importPreview);
-        if (!errorShownInModal) toast.error(form.adminError);
+          ('settingsModalOpen' in current && current.settingsModalOpen) ||
+          ('importPreview' in current && current.importPreview);
+        if (!errorShownInModal) toast.error(current.adminError);
       }
-    } else if (!form) {
-      lastFormRef = null;
     }
-  });
+  );
 
   $effect(() => {
     if (form && 'settingsModalOpen' in form && form.settingsModalOpen) {
@@ -53,15 +52,12 @@
     }
   });
 
-  $effect(() => {
-    const preview = form?.importPreview;
-    if (preview && preview !== lastSeenPreview) {
-      lastSeenPreview = preview;
-      importModalDismissed = false;
-    } else if (!preview) {
-      lastSeenPreview = null;
+  watchChange(
+    () => form?.importPreview ?? null,
+    (preview) => {
+      if (preview) importModalDismissed = false;
     }
-  });
+  );
 
   $effect(() => {
     if (browser && activeTab !== syncedHashTab) {
