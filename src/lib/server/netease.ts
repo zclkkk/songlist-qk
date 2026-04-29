@@ -1,3 +1,5 @@
+import { UserFacingError } from '$lib/server/errors';
+
 type NeteaseApi = {
   playlist_detail: (params: { id: string }) => Promise<NeteasePlaylistResponse>;
   song_detail: (params: { ids: string }) => Promise<NeteaseSongResponse>;
@@ -56,7 +58,7 @@ const extractNeteaseId = (value: string, pathName: string, errorMessage: string)
     return idFromPath;
   }
 
-  throw new Error(errorMessage);
+  throw new UserFacingError(errorMessage);
 };
 
 const extractPlaylistId = (value: string) =>
@@ -87,13 +89,13 @@ export const fetchNeteasePlaylistSongs = async (playlistInput: string) => {
   const tracks = response.body?.playlist?.tracks;
 
   if (response.body?.code !== 200 || !Array.isArray(tracks)) {
-    throw new Error('读取网易云公开歌单失败。');
+    throw new UserFacingError('读取网易云公开歌单失败。');
   }
 
   const songs = tracks.map(mapTrack).filter((song): song is NeteasePlaylistSong => song !== null);
 
   if (songs.length === 0) {
-    throw new Error('这个歌单没有可导入的歌曲。');
+    throw new UserFacingError('这个歌单没有可导入的歌曲。');
   }
 
   return songs;
@@ -106,13 +108,13 @@ export const fetchNeteaseSong = async (songInput: string) => {
   const track = response.body?.songs?.[0];
 
   if (response.body?.code !== 200 || !track) {
-    throw new Error('读取网易云单曲失败。');
+    throw new UserFacingError('读取网易云单曲失败。');
   }
 
   const song = mapTrack(track);
 
   if (!song) {
-    throw new Error('读取网易云单曲失败。');
+    throw new UserFacingError('读取网易云单曲失败。');
   }
 
   return song;

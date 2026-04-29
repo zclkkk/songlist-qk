@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
 import { getAdminDashboardData, resetDatabase as resetSonglistDatabase } from '$lib/server/catalog';
-import { getErrorMessage } from '$lib/server/errors';
+import { getErrorMessage, UserFacingError } from '$lib/server/errors';
 import { readBoolean, readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
@@ -38,7 +38,7 @@ const readPreviewSongs = (formData: FormData) => {
   }
 
   if (songCount > maxPreviewSongCount) {
-    throw new Error(`单次最多导入 ${maxPreviewSongCount} 首歌曲。`);
+    throw new UserFacingError(`单次最多导入 ${maxPreviewSongCount} 首歌曲。`);
   }
 
   return Array.from({ length: songCount }, (_, index) => ({

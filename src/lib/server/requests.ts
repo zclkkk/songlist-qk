@@ -1,4 +1,5 @@
 import type { Database } from '$lib/server/database.types';
+import { UserFacingError } from '$lib/server/errors';
 import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import { type RequestDecision, type RequestStatus, type SongLanguage, type SongRequest } from '$lib/types';
 
@@ -79,7 +80,11 @@ export const updateRequestStatus = async ({ id, status }: { id: string; status: 
     });
 
     if (error) {
-      throw new Error(error.message);
+      if (error.code === 'P0001') {
+        throw new UserFacingError(error.message);
+      }
+
+      throw error;
     }
 
     return;
@@ -96,7 +101,7 @@ export const updateRequestStatus = async ({ id, status }: { id: string; status: 
   }
 
   if (count === 0) {
-    throw new Error('这个愿望已经处理过。');
+    throw new UserFacingError('这个愿望已经处理过。');
   }
 };
 

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { defaultBilibiliUrl } from '$lib/config';
+import { UserFacingError } from '$lib/server/errors';
 import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
@@ -48,7 +49,7 @@ const resolveImageExtension = (file: File) => {
   const mapped = imageExtensionByMimeType[file.type];
 
   if (!mapped) {
-    throw new Error('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
+    throw new UserFacingError('仅支持位图格式（JPG / PNG / WebP / GIF / AVIF）。');
   }
 
   return mapped;
