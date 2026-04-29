@@ -366,8 +366,10 @@ export const actions: Actions = {
     }
 
     try {
-      await saveSetting(pageSettingsKeys.heroTitle, parsedSettings.data.heroTitle);
-      await saveSetting(pageSettingsKeys.bilibiliUrl, parsedSettings.data.bilibiliUrl);
+      await Promise.all([
+        saveSetting(pageSettingsKeys.heroTitle, parsedSettings.data.heroTitle),
+        saveSetting(pageSettingsKeys.bilibiliUrl, parsedSettings.data.bilibiliUrl)
+      ]);
 
       if (hasAvatarFile) {
         await saveSettingImage('avatar', avatarFile);
