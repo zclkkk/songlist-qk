@@ -55,11 +55,10 @@ export const verifyAdminSession = (cookies: Cookies) => {
 
   const payload = raw.slice(0, lastDotIndex);
   const signature = raw.slice(lastDotIndex + 1);
-  const expectedSignature = signValue(payload);
-  const left = Buffer.from(signature, 'utf8');
-  const right = Buffer.from(expectedSignature, 'utf8');
+  const provided = Buffer.from(signature, 'hex');
+  const expected = Buffer.from(signValue(payload), 'hex');
 
-  if (left.length !== right.length || !timingSafeEqual(left, right)) {
+  if (provided.length !== expected.length || !timingSafeEqual(provided, expected)) {
     return false;
   }
 
