@@ -75,12 +75,6 @@ export const listSettings = async (keys: readonly PageSettingKey[]) => {
 const getSettingValue = (settings: Record<string, string>, key: PageSettingKey) =>
   settings[key] || pageSettingsDefaults[key];
 
-const readSettingValue = async (key: PageSettingKey) => {
-  const settings = await listSettings([key]);
-
-  return getSettingValue(settings, key);
-};
-
 const getAssetPublicUrl = (path: string) => {
   if (!path) {
     return '';
@@ -114,13 +108,11 @@ export const saveSettings = async (entries: Partial<Record<PageSettingKey, strin
   }
 };
 
-export const saveSetting = (key: PageSettingKey, value: string) => saveSettings({ [key]: value });
-
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const supabase = getSupabaseAdmin();
 
   const settingKey = settingImageKinds[kind];
-  const existingPath = await readSettingValue(settingKey);
+  const existingPath = getSettingValue(await listSettings([settingKey]), settingKey);
   const extension = resolveImageExtension(file);
   const objectPath = `profile/${kind}-${Date.now()}-${randomUUID()}.${extension}`;
 
@@ -135,13 +127,13 @@ export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   }
 
   try {
-    await saveSetting(settingKey, objectPath);
+    await saveSettings({ [settingKey]: objectPath });
   } catch (error) {
     await supabase.storage.from(settingsAssetBucket).remove([objectPath]);
     throw error;
   }
 
-  if (existingPath && existingPath !== objectPath) {
+  if (existingPath) {
     const { error: removeError } = await supabase.storage.from(settingsAssetBucket).remove([existingPath]);
 
     if (removeError) {
