@@ -7,7 +7,7 @@
   import { Dialog } from 'bits-ui';
 
   export type ImportPreview = {
-    playlistInput: string;
+    sourceInput: string;
     status: string;
     songs: Array<{
       title: string;
@@ -54,7 +54,7 @@
       {/if}
 
       <form method="POST" action="?/importPlaylist" class="space-y-5" use:enhance={submit.enhance}>
-        <input type="hidden" name="playlistInput" value={preview.playlistInput} />
+        <input type="hidden" name="sourceInput" value={preview.sourceInput} />
         <input type="hidden" name="songCount" value={preview.songs.length} />
 
         <label class="field-label">
