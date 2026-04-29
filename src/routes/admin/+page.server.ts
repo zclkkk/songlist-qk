@@ -46,7 +46,7 @@ const readPreviewSongs = (formData: FormData) => {
     artist: readText(formData.get(`songArtist-${index}`)),
     language: readText(formData.get(`songLanguage-${index}`)),
     tagsInput: readText(formData.get(`songTagsInput-${index}`))
-  })).filter((song) => song.title && song.artist);
+  }));
 };
 
 export const load: PageServerLoad = async () => ({
@@ -253,10 +253,7 @@ export const actions: Actions = {
     const songsToImport = [];
 
     for (const song of selectedSongs) {
-      const parsedSong = playlistSongImportSchema.safeParse({
-        language: song.language,
-        tagsInput: song.tagsInput
-      });
+      const parsedSong = playlistSongImportSchema.safeParse(song);
 
       if (!parsedSong.success) {
         return fail(400, {
@@ -266,11 +263,8 @@ export const actions: Actions = {
       }
 
       songsToImport.push({
-        title: song.title,
-        artist: song.artist,
-        language: parsedSong.data.language,
+        ...parsedSong.data,
         status: parsed.data.status,
-        tags: parsedSong.data.tags,
         isPublic: true
       });
     }

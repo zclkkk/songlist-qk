@@ -62,6 +62,8 @@ export const playlistImportSettingsSchema = z.object({
 
 export const playlistSongImportSchema = z
   .object({
+    title: z.string().trim().min(1, '歌名缺失。').max(120, '歌名过长。'),
+    artist: z.string().trim().min(1, '原唱缺失。').max(120, '原唱名称过长。'),
     language: z.enum(songLanguageOptions, {
       error: '请选择有效语言。'
     }),
