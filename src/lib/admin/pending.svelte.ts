@@ -20,22 +20,36 @@ export const pendingActions = new SvelteSet<string>();
 
 export const isPending = (key: string) => pendingActions.has(key);
 
-export const pendingEnhance =
-  (key: string, before?: BeforeHook): SubmitFunction =>
+type PendingMarker = {
+  start: () => void;
+  stop: () => void;
+};
+
+const wrapPendingSubmit =
+  ({ start, stop }: PendingMarker, before?: BeforeHook): SubmitFunction =>
   (input) => {
     if (before && before(input) === false) {
       input.cancel();
       return;
     }
-    pendingActions.add(key);
+    start();
     return async ({ update }) => {
       try {
         await update();
       } finally {
-        pendingActions.delete(key);
+        stop();
       }
     };
   };
+
+export const pendingEnhance = (key: string, before?: BeforeHook): SubmitFunction =>
+  wrapPendingSubmit(
+    {
+      start: () => pendingActions.add(key),
+      stop: () => pendingActions.delete(key)
+    },
+    before
+  );
 
 export function createSubmitConfirmation() {
   let open = $state(false);
@@ -121,16 +135,14 @@ export function createSubmitConfirmation() {
 
 export function createLocalPending() {
   let pending = $state(false);
-  const enhance: SubmitFunction = () => {
-    pending = true;
-    return async ({ update }) => {
-      try {
-        await update();
-      } finally {
-        pending = false;
-      }
-    };
-  };
+  const enhance = wrapPendingSubmit({
+    start: () => {
+      pending = true;
+    },
+    stop: () => {
+      pending = false;
+    }
+  });
   return {
     get pending() {
       return pending;
