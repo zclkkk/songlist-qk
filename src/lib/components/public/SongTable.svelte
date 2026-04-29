@@ -17,7 +17,7 @@
 
   {#if songs.length > 0}
     <div class="divide-y divide-[var(--color-border-soft)]">
-      {#each songs as song}
+      {#each songs as song (song.id)}
         <article class="song-row">
           <div class="song-row-mobile">
             <div class="flex items-start justify-between gap-3">
