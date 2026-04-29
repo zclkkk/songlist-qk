@@ -3,6 +3,7 @@ import { SvelteSet } from 'svelte/reactivity';
 import type { SubmitFunction } from '@sveltejs/kit';
 
 type SubmitInput = Parameters<SubmitFunction>[0];
+type UpdateOptions = { reset?: boolean; invalidateAll?: boolean };
 
 export type BeforeHook = (input: SubmitInput) => boolean;
 export type ConfirmationTone = 'default' | 'danger';
@@ -26,7 +27,7 @@ type PendingMarker = {
 };
 
 const wrapPendingSubmit =
-  ({ start, stop }: PendingMarker, before?: BeforeHook): SubmitFunction =>
+  ({ start, stop }: PendingMarker, before?: BeforeHook, updateOptions?: UpdateOptions): SubmitFunction =>
   (input) => {
     if (before && before(input) === false) {
       input.cancel();
@@ -35,7 +36,7 @@ const wrapPendingSubmit =
     start();
     return async ({ update }) => {
       try {
-        await update();
+        await update(updateOptions);
       } finally {
         stop();
       }
@@ -133,16 +134,20 @@ export function createSubmitConfirmation() {
   };
 }
 
-export function createLocalPending() {
+export function createLocalPending(updateOptions?: UpdateOptions) {
   let pending = $state(false);
-  const enhance = wrapPendingSubmit({
-    start: () => {
-      pending = true;
+  const enhance = wrapPendingSubmit(
+    {
+      start: () => {
+        pending = true;
+      },
+      stop: () => {
+        pending = false;
+      }
     },
-    stop: () => {
-      pending = false;
-    }
-  });
+    undefined,
+    updateOptions
+  );
   return {
     get pending() {
       return pending;

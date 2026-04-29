@@ -40,8 +40,9 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        requestError: parsed.error.issues[0].message,
-        requestValues: rawValues
+        kind: 'error' as const,
+        error: parsed.error.issues[0].message,
+        values: rawValues
       });
     }
 
@@ -49,8 +50,9 @@ export const actions: Actions = {
       const song = await fetchNeteaseSong(parsed.data.songInput);
 
       return {
-        requestMessage: '已解析单曲，可补充留言后提交。',
-        requestValues: {
+        kind: 'parsed' as const,
+        message: '已解析单曲，可补充留言后提交。',
+        values: {
           ...rawValues,
           songInput: parsed.data.songInput,
           songTitle: song.title,
@@ -59,8 +61,9 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        requestError: getErrorMessage(error),
-        requestValues: rawValues
+        kind: 'error' as const,
+        error: getErrorMessage(error),
+        values: rawValues
       });
     }
   },
@@ -73,8 +76,9 @@ export const actions: Actions = {
 
     if (!parsed.success) {
       return fail(400, {
-        requestError: parsed.error.issues[0].message,
-        requestValues: rawValues
+        kind: 'error' as const,
+        error: parsed.error.issues[0].message,
+        values: rawValues
       });
     }
 
@@ -86,8 +90,9 @@ export const actions: Actions = {
       }))
     ) {
       return fail(429, {
-        requestError: '提交过于频繁，请稍后再试。',
-        requestValues: rawValues
+        kind: 'error' as const,
+        error: '提交过于频繁，请稍后再试。',
+        values: rawValues
       });
     }
 
@@ -95,13 +100,15 @@ export const actions: Actions = {
       await createSongRequest(parsed.data);
     } catch (error) {
       return fail(500, {
-        requestError: getErrorMessage(error),
-        requestValues: rawValues
+        kind: 'error' as const,
+        error: getErrorMessage(error),
+        values: rawValues
       });
     }
 
     return {
-      requestMessage: '愿望已提交，主播稍后会在后台处理。'
+      kind: 'submitted' as const,
+      message: '愿望已提交，主播稍后会在后台处理。'
     };
   }
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { createLocalPending } from '$lib/admin/pending.svelte';
+  import { createLocalPending } from '$lib/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems, songStatusItems } from '$lib/select-options';

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ConfirmationTone } from '$lib/admin/pending.svelte';
+  import type { ConfirmationTone } from '$lib/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { AlertDialog } from 'bits-ui';
 

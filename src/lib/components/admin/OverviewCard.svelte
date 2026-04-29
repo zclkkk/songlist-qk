@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/pending.svelte';
   import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 
   import type { CatalogStats } from '$lib/types';

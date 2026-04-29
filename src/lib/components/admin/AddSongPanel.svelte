@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { isPending, pendingEnhance } from '$lib/pending.svelte';
   import { getPlaylistInputEcho, getSongInputEcho, type AdminActionForm } from '$lib/admin/result';
   import Select from '$lib/components/ui/Select.svelte';
   import { songLanguageItems, songStatusItems } from '$lib/select-options';

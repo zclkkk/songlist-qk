@@ -57,18 +57,19 @@ export interface AdminDashboardData {
   settings: PageSettings;
 }
 
-export interface RequestFormResult {
-  requestMessage?: string;
-  requestError?: string;
-  requestValues?: {
-    songInput: string;
-    songTitle: string;
-    artist: string;
-    language: string;
-    message: string;
-    requesterName: string;
-  };
+export interface RequestFormValues {
+  songInput: string;
+  songTitle: string;
+  artist: string;
+  language: string;
+  message: string;
+  requesterName: string;
 }
+
+export type RequestFormResult =
+  | { kind: 'parsed'; message: string; values: RequestFormValues }
+  | { kind: 'submitted'; message: string }
+  | { kind: 'error'; error: string; values: RequestFormValues };
 
 export const songStatusLabels: Record<SongStatus, string> = {
   ready: '可唱',

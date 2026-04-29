@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { createSubmitConfirmation, isPending, pendingEnhance } from '$lib/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
   import Pagination from '$lib/components/ui/Pagination.svelte';

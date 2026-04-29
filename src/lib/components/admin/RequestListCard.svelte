@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { isPending, pendingEnhance } from '$lib/admin/pending.svelte';
+  import { isPending, pendingEnhance } from '$lib/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import { formatDateTimeInShanghai } from '$lib/datetime';

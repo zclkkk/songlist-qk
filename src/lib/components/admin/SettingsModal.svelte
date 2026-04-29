@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import { createLocalPending } from '$lib/admin/pending.svelte';
+  import { createLocalPending } from '$lib/pending.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { Dialog } from 'bits-ui';
   import { onDestroy } from 'svelte';
