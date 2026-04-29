@@ -132,6 +132,7 @@ export type Database = {
         };
         Returns: boolean;
       };
+      reset_admin_data: { Args: { p_settings: Json }; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;

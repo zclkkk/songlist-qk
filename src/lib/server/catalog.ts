@@ -37,35 +37,17 @@ export const getAdminDashboardData = async (): Promise<AdminDashboardData> => {
 };
 
 export const resetDatabase = async () => {
-  const supabase = supabaseAdmin;
   const settings = await listSettings(pageSettingsReadKeys);
   const assetPaths = [settings[pageSettingsKeys.avatarPath], settings[pageSettingsKeys.backgroundPath]].filter(Boolean);
 
-  const { error: requestsError } = await supabase.from('requests').delete().not('id', 'is', null);
+  const { error } = await supabaseAdmin.rpc('reset_admin_data', { p_settings: pageSettingsDefaults });
 
-  if (requestsError) {
-    throw requestsError;
-  }
-
-  const { error: songsError } = await supabase.from('songs').delete().not('id', 'is', null);
-
-  if (songsError) {
-    throw songsError;
-  }
-
-  const { error: settingsError } = await supabase.from('settings').upsert(
-    pageSettingsReadKeys.map((key) => ({
-      key,
-      value: pageSettingsDefaults[key]
-    }))
-  );
-
-  if (settingsError) {
-    throw settingsError;
+  if (error) {
+    throw error;
   }
 
   if (assetPaths.length > 0) {
-    const { error: assetsError } = await supabase.storage.from(settingsAssetBucket).remove(assetPaths);
+    const { error: assetsError } = await supabaseAdmin.storage.from(settingsAssetBucket).remove(assetPaths);
 
     if (assetsError) {
       throw assetsError;

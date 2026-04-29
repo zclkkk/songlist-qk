@@ -174,6 +174,25 @@ $$;
 revoke all on function public.consume_request_rate_limit(text, integer, integer) from public, anon, authenticated;
 grant execute on function public.consume_request_rate_limit(text, integer, integer) to service_role;
 
+create or replace function public.reset_admin_data(p_settings jsonb)
+returns void
+language plpgsql
+set search_path = public
+as $$
+begin
+  delete from public.requests;
+  delete from public.songs;
+
+  insert into public.settings (key, value)
+  select key, value
+  from jsonb_each_text(p_settings)
+  on conflict (key) do update set value = excluded.value;
+end;
+$$;
+
+revoke all on function public.reset_admin_data(jsonb) from public, anon, authenticated;
+grant execute on function public.reset_admin_data(jsonb) to service_role;
+
 insert into storage.buckets (id, name, public)
 values ('site-assets', 'site-assets', true)
 on conflict (id) do update
