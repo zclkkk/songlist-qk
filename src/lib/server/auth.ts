@@ -55,23 +55,21 @@ export const verifyAdminSession = (cookies: Cookies) => {
 
   const payload = raw.slice(0, lastDotIndex);
   const signature = raw.slice(lastDotIndex + 1);
-  const [subject, issuedAtValue] = payload.split(':');
-  const issuedAt = Number(issuedAtValue);
-  const age = Date.now() - issuedAt;
-
-  if (subject !== 'admin' || !Number.isSafeInteger(issuedAt) || age < 0 || age > sessionMaxAgeSeconds * 1000) {
-    return false;
-  }
-
   const expectedSignature = signValue(payload);
   const left = Buffer.from(signature, 'utf8');
   const right = Buffer.from(expectedSignature, 'utf8');
 
-  if (left.length !== right.length) {
+  if (left.length !== right.length || !timingSafeEqual(left, right)) {
     return false;
   }
 
-  return timingSafeEqual(left, right);
+  const [subject, issuedAtValue] = payload.split(':');
+
+  if (subject !== 'admin') {
+    return false;
+  }
+
+  return Date.now() - Number(issuedAtValue) <= sessionMaxAgeSeconds * 1000;
 };
 
 export const loginAdmin = async ({
