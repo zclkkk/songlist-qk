@@ -103,14 +103,17 @@ export const getSettings = async (): Promise<PageSettings> => {
   return mapPageSettings(settings);
 };
 
-export const saveSetting = async (key: PageSettingKey, value: string) => {
+export const saveSettings = async (entries: Partial<Record<PageSettingKey, string>>) => {
+  const rows = Object.entries(entries).map(([key, value]) => ({ key, value: value ?? '' }));
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase.from('settings').upsert({ key, value });
+  const { error } = await supabase.from('settings').upsert(rows);
 
   if (error) {
     throw error;
   }
 };
+
+export const saveSetting = (key: PageSettingKey, value: string) => saveSettings({ [key]: value });
 
 export const saveSettingImage = async (kind: SettingImageKind, file: File) => {
   const supabase = getSupabaseAdmin();

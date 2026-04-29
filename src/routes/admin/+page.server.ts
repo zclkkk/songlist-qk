@@ -6,7 +6,7 @@ import { getErrorMessage } from '$lib/server/errors';
 import { readBoolean, readText } from '$lib/server/form-utils';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
-import { pageSettingsKeys, saveSetting, saveSettingImage } from '$lib/server/settings';
+import { pageSettingsKeys, saveSettingImage, saveSettings } from '$lib/server/settings';
 import {
   bulkDeleteSongs,
   bulkSetSongsPublic,
@@ -357,10 +357,10 @@ export const actions: Actions = {
     }
 
     try {
-      await Promise.all([
-        saveSetting(pageSettingsKeys.heroTitle, parsedSettings.data.heroTitle),
-        saveSetting(pageSettingsKeys.bilibiliUrl, parsedSettings.data.bilibiliUrl)
-      ]);
+      await saveSettings({
+        [pageSettingsKeys.heroTitle]: parsedSettings.data.heroTitle,
+        [pageSettingsKeys.bilibiliUrl]: parsedSettings.data.bilibiliUrl
+      });
 
       if (hasAvatarFile) {
         await saveSettingImage('avatar', avatarFile);
