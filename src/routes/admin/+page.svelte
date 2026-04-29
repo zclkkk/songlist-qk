@@ -7,7 +7,6 @@
   import SettingsModal from '$lib/components/admin/SettingsModal.svelte';
   import SongListCard from '$lib/components/admin/SongListCard.svelte';
   import { hasAdminMessage, hasImportPreview, hasToastableError, startsOnNeteasePanel } from '$lib/admin/result';
-  import { watchChange } from '$lib/svelte-utils.svelte';
   import { Tabs } from 'bits-ui';
   import { untrack } from 'svelte';
   import { toast } from 'svelte-sonner';
@@ -25,13 +24,10 @@
   const settingsError = $derived(form?.kind === 'profile-error' ? form.adminError : undefined);
   const importError = $derived(form?.kind === 'preview-import-error' ? form.adminError : undefined);
 
-  watchChange(
-    () => form,
-    (current) => {
-      if (hasAdminMessage(current)) toast.success(current.adminMessage);
-      if (hasToastableError(current)) toast.error(current.adminError);
-    }
-  );
+  $effect(() => {
+    if (hasAdminMessage(form)) toast.success(form.adminMessage);
+    if (hasToastableError(form)) toast.error(form.adminError);
+  });
 
   $effect(() => {
     if (form?.kind === 'profile-error') {
@@ -39,15 +35,14 @@
     }
   });
 
-  watchChange(
-    () => (hasImportPreview(form) ? form.importPreview : null),
-    (preview) => {
-      if (preview) importModalDismissed = false;
+  $effect(() => {
+    if (hasImportPreview(form)) {
+      importModalDismissed = false;
     }
-  );
+  });
 
   $effect(() => {
-    if (browser && activeTab !== syncedHashTab) {
+    if (activeTab !== syncedHashTab) {
       syncedHashTab = activeTab;
       window.history.replaceState(null, '', `#${activeTab}`);
     }
