@@ -17,7 +17,7 @@ export const consumeRequestRateLimit = async ({
   });
 
   if (error) {
-    throw new Error(error.message);
+    throw error;
   }
 
   return data === true;
