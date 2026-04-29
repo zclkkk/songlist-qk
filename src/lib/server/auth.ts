@@ -39,14 +39,12 @@ export const verifyAdminSession = (cookies: Cookies) => {
     return false;
   }
 
-  const lastDotIndex = raw.lastIndexOf('.');
+  const [payload, signature] = raw.split('.');
 
-  if (lastDotIndex === -1) {
+  if (!payload || !signature) {
     return false;
   }
 
-  const payload = raw.slice(0, lastDotIndex);
-  const signature = raw.slice(lastDotIndex + 1);
   const provided = Buffer.from(signature, 'hex');
   const expected = Buffer.from(signValue(payload), 'hex');
 
@@ -54,13 +52,9 @@ export const verifyAdminSession = (cookies: Cookies) => {
     return false;
   }
 
-  const [subject, issuedAtValue] = payload.split(':');
+  const issuedAt = Number(payload.split(':')[1]);
 
-  if (subject !== 'admin') {
-    return false;
-  }
-
-  return Date.now() - Number(issuedAtValue) <= sessionMaxAgeSeconds * 1000;
+  return Date.now() - issuedAt <= sessionMaxAgeSeconds * 1000;
 };
 
 export const loginAdmin = async ({
@@ -70,19 +64,8 @@ export const loginAdmin = async ({
   email: string;
   password: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> => {
-  const normalizedEmail = email.trim().toLowerCase();
-
-  if (!normalizedEmail || !password) {
-    return {
-      ok: false,
-      message: '请填写邮箱和密码。'
-    };
-  }
-
-  const client = getSupabasePublic();
-
-  const { error } = await client.auth.signInWithPassword({
-    email: normalizedEmail,
+  const { error } = await getSupabasePublic().auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
     password
   });
 
@@ -93,7 +76,5 @@ export const loginAdmin = async ({
     };
   }
 
-  return {
-    ok: true
-  };
+  return { ok: true };
 };
