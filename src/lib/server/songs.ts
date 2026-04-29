@@ -94,7 +94,7 @@ export const bulkDeleteSongs = async (ids: string[]) => {
     throw error;
   }
 
-  return count ?? 0;
+  return count!;
 };
 
 export const bulkSetSongsPublic = async (ids: string[], isPublic: boolean) => {
@@ -107,7 +107,7 @@ export const bulkSetSongsPublic = async (ids: string[], isPublic: boolean) => {
     throw error;
   }
 
-  return count ?? 0;
+  return count!;
 };
 
 export const importSongs = async (
