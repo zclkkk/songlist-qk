@@ -113,10 +113,7 @@ export const actions: Actions = {
   bulkUpdateSongs: async ({ request }) => {
     const formData = await request.formData();
     const bulkAction = readText(formData.get('bulkAction'));
-    const ids = formData
-      .getAll('id')
-      .map((v) => readText(v))
-      .filter((v): v is string => Boolean(v));
+    const ids = formData.getAll('id').map(readText).filter(Boolean);
 
     if (ids.length === 0) {
       return fail(400, { adminError: '请至少选择一首歌曲。' });
