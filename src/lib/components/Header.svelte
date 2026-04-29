@@ -2,6 +2,7 @@
   import { browser } from '$app/environment';
   import { page } from '$app/state';
   import Icon from '$lib/components/ui/Icon.svelte';
+  import { applyTheme, persistTheme } from '$lib/theme';
 
   let { isAdmin }: { isAdmin: boolean } = $props();
 
@@ -9,9 +10,8 @@
 
   const toggleTheme = () => {
     isDark = !isDark;
-    document.documentElement.classList.toggle('dark', isDark);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#090b10' : '#f7f8f8');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    applyTheme(isDark);
+    persistTheme(isDark);
   };
 
   const isHome = $derived(page.url.pathname === '/');
