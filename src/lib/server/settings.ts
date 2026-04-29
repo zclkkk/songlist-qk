@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import { defaultBilibiliUrl } from '$lib/config';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import type { PageSettings } from '$lib/types';
 
 type SettingRow = {
@@ -54,8 +54,11 @@ const resolveImageExtension = (file: File) => {
   return mapped;
 };
 
-export const listSettings = async (keys: readonly PageSettingKey[]) => {
-  const supabase = getSupabaseAdmin();
+export const listSettings = async (
+  keys: readonly PageSettingKey[],
+  { useAdmin = false }: { useAdmin?: boolean } = {}
+) => {
+  const supabase = useAdmin ? getSupabaseAdmin() : getSupabasePublic();
   const { data, error } = await supabase.from('settings').select('key, value').in('key', keys);
 
   if (error) {
@@ -75,7 +78,7 @@ const getSettingValue = (settings: Record<string, string>, key: PageSettingKey) 
   settings[key] || pageSettingsDefaults[key];
 
 const readSettingValue = async (key: PageSettingKey) => {
-  const settings = await listSettings([key]);
+  const settings = await listSettings([key], { useAdmin: true });
 
   return getSettingValue(settings, key);
 };
@@ -85,7 +88,7 @@ const getAssetPublicUrl = (path: string) => {
     return '';
   }
 
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabasePublic();
 
   return supabase.storage.from(settingsAssetBucket).getPublicUrl(path).data.publicUrl;
 };
