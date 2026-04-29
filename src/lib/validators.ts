@@ -87,8 +87,14 @@ export const pageSettingsSchema = z.object({
     .trim()
     .min(1, '请填写 Bilibili 链接。')
     .max(240, 'Bilibili 链接过长。')
-    .url('请填写有效的 Bilibili 链接。')
-    .refine((value) => /^https?:\/\//.test(value), '链接必须以 http:// 或 https:// 开头。')
+    .refine((value) => {
+      try {
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }, '请填写以 http:// 或 https:// 开头的有效链接。')
 });
 
 export const requestDecisionSchema = z.object({
