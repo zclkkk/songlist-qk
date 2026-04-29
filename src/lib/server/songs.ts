@@ -1,5 +1,5 @@
 import type { Database } from '$lib/server/database.types';
-import { getSupabaseAdmin } from '$lib/server/supabase';
+import { getSupabaseAdmin, getSupabasePublic } from '$lib/server/supabase';
 import { type Song, type SongLanguage, type SongStatus } from '$lib/types';
 
 type SongRow = Pick<
@@ -20,7 +20,7 @@ const mapSongRow = (row: SongRow): Song => ({
 });
 
 export const listSongs = async ({ isPublic }: { isPublic?: boolean } = {}): Promise<Song[]> => {
-  const supabase = getSupabaseAdmin();
+  const supabase = isPublic === true ? getSupabasePublic() : getSupabaseAdmin();
 
   let query = supabase
     .from('songs')
