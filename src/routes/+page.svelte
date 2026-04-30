@@ -30,10 +30,10 @@
   <title>公开歌单 | QingKong Songlist</title>
 </svelte:head>
 
-<div class="space-y-8 lg:space-y-10">
+<div class="public-page space-y-10 lg:space-y-14">
   <Hero catalog={data.catalog} />
 
-  <section class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+  <section class="catalog-shell grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
     <FilterPanel
       tags={data.catalog.tags}
       total={data.catalog.songs.length}

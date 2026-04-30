@@ -42,6 +42,8 @@ export interface PageSettings {
   background: string;
   heroTitle: string;
   bilibiliUrl: string;
+  weiboUrl: string;
+  qqGroupUrl: string;
 }
 
 export interface PublicCatalog {

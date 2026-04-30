@@ -95,6 +95,8 @@ export const profileFormSchema = zfd
   .formData({
     heroTitle: formText,
     bilibiliUrl: formText,
+    weiboUrl: formText,
+    qqGroupUrl: formText,
     avatar: zfd.file(z.instanceof(File).optional()),
     background: zfd.file(z.instanceof(File).optional())
   })

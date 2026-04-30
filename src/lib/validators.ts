@@ -82,6 +82,22 @@ export const songPreviewSchema = z.object({
   songInput: z.string().trim().min(1, '请填写网易云单曲链接或 ID。').max(240, '单曲链接过长。')
 });
 
+const optionalHttpUrlSchema = (label: string) =>
+  z
+    .string()
+    .trim()
+    .max(240, `${label}过长。`)
+    .refine((value) => {
+      if (!value) return true;
+
+      try {
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }, `请填写以 http:// 或 https:// 开头的有效${label}。`);
+
 export const pageSettingsSchema = z.object({
   heroTitle: z.string().trim().min(1, '标题不能为空。').max(40, '标题最多 40 字。'),
   bilibiliUrl: z
@@ -96,7 +112,9 @@ export const pageSettingsSchema = z.object({
       } catch {
         return false;
       }
-    }, '请填写以 http:// 或 https:// 开头的有效链接。')
+    }, '请填写以 http:// 或 https:// 开头的有效链接。'),
+  weiboUrl: optionalHttpUrlSchema('微博链接'),
+  qqGroupUrl: optionalHttpUrlSchema('QQ群链接')
 });
 
 export const requestDecisionSchema = z.object({

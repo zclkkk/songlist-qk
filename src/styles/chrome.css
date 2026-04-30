@@ -102,8 +102,13 @@
 
 .site-footer {
   margin-top: auto;
-  border-top: 1px solid var(--color-border-soft);
-  background: var(--color-surface);
+  border-top: 1px solid rgb(208 214 224 / 0.28);
+  background: transparent;
+  backdrop-filter: blur(10px);
+}
+
+.dark .site-footer {
+  border-top-color: rgb(37 48 68 / 0.4);
 }
 
 [data-sonner-toaster][data-sonner-toaster] [data-sonner-toast] [data-close-button] {

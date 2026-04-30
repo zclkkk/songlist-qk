@@ -305,7 +305,7 @@ export const actions: Actions = {
       });
     }
 
-    const { avatar: avatarFile, background: bgFile, heroTitle, bilibiliUrl } = parsed.data;
+    const { avatar: avatarFile, background: bgFile, heroTitle, bilibiliUrl, weiboUrl, qqGroupUrl } = parsed.data;
     const hasAvatarFile = avatarFile !== undefined;
     const hasBackgroundFile = bgFile !== undefined;
 
@@ -320,7 +320,9 @@ export const actions: Actions = {
     try {
       await saveSettings({
         [pageSettingsKeys.heroTitle]: heroTitle,
-        [pageSettingsKeys.bilibiliUrl]: bilibiliUrl
+        [pageSettingsKeys.bilibiliUrl]: bilibiliUrl,
+        [pageSettingsKeys.weiboUrl]: weiboUrl,
+        [pageSettingsKeys.qqGroupUrl]: qqGroupUrl
       });
 
       if (hasAvatarFile) {

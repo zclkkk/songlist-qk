@@ -16,7 +16,7 @@
   </div>
 
   {#if songs.length > 0}
-    <div class="divide-y divide-[var(--color-border-soft)]">
+    <div class="song-table-body">
       {#each songs as song (song.id)}
         <article class="song-row">
           <div class="song-row-mobile">
