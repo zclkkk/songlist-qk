@@ -7,12 +7,20 @@
   const learningSongs = $derived(catalog.songs.filter((song) => song.status === 'learning').length);
 </script>
 
+<svelte:head>
+  {#if catalog.settings.background}
+    <link rel="preload" as="image" href={catalog.settings.background} fetchpriority="high" />
+  {/if}
+</svelte:head>
+
 <section class="hero-card">
   {#if catalog.settings.background}
     <img
       src={catalog.settings.background}
       alt=""
       aria-hidden="true"
+      fetchpriority="high"
+      decoding="async"
       class="hero-background pointer-events-none absolute inset-0 h-full w-full object-cover"
     />
   {/if}
