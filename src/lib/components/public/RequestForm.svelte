@@ -28,7 +28,7 @@
   const submitter = createLocalPending({ reset: false });
 </script>
 
-<section class="request-card">
+<section id="request-form" class="request-card">
   <div class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
     <div>
       <p class="text-xs font-semibold tracking-[0.14em] text-[var(--color-accent)] uppercase">愿望单提交</p>
@@ -73,21 +73,21 @@
             </div>
             <p class="mt-1 text-xs text-[var(--color-text-secondary)]">粘贴单曲链接或 ID，自动填入歌名和原唱</p>
 
-            <div class="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <div class="parse-row mt-3">
               <input
                 name="songInput"
                 value={formValues?.songInput ?? ''}
-                class="form-field"
+                class="form-field parse-input"
                 placeholder="https://music.163.com/#/song?id=..."
               />
               <button
                 type="submit"
                 formaction="?/parseRequestSong"
-                class="button button-secondary"
+                class="button parse-button"
                 disabled={parser.pending}
                 data-pending={parser.pending || undefined}
               >
-                解析
+                一键解析
               </button>
             </div>
           </div>

@@ -76,4 +76,9 @@
       清空筛选
     </button>
   {/if}
+
+  <a href="#request-form" class="filter-cta mt-6">
+    <span>提交想听的歌</span>
+    <Icon name="chevron-right" size={18} />
+  </a>
 </aside>
