@@ -38,15 +38,26 @@
     class:site-header-shell-sticky={isSticky}
     class="site-header-shell mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6"
   >
-    <a href="/" class="flex min-w-0 items-center gap-3">
+    <a href="/" class:site-brand-sticky={isSticky} class="site-brand flex min-w-0 items-center gap-3">
       <span
-        class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--color-accent)] text-sm font-semibold text-white shadow-sm"
+        class:site-brand-badge-sticky={isSticky}
+        class="site-brand-badge inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--color-accent)] text-sm font-semibold text-white shadow-sm"
       >
         歌
       </span>
       <span class="flex min-w-0 flex-col leading-tight">
-        <span class="text-sm font-semibold text-[var(--color-text)]">QingKong Songlist</span>
-        <span class="text-[11px] text-[var(--color-text-muted)]">单主播歌单与愿望单管理</span>
+        <span
+          class:site-brand-title-sticky={isSticky}
+          class="site-brand-title text-sm font-semibold text-[var(--color-text)]"
+        >
+          QingKong Songlist
+        </span>
+        <span
+          class:site-brand-subtitle-sticky={isSticky}
+          class="site-brand-subtitle text-[11px] text-[var(--color-text-muted)]"
+        >
+          单主播歌单与愿望单管理
+        </span>
       </span>
     </a>
 
@@ -122,6 +133,22 @@
       padding-right 220ms ease;
   }
 
+  .site-brand {
+    transition: gap 220ms ease;
+  }
+
+  .site-brand-badge,
+  .site-brand-title,
+  .site-brand-subtitle {
+    transition:
+      transform 220ms ease,
+      opacity 180ms ease,
+      font-size 220ms ease,
+      line-height 220ms ease,
+      width 220ms ease,
+      height 220ms ease;
+  }
+
   .site-header-sticky {
     padding-top: 0;
     border-bottom-color: rgb(208 214 224 / 0.32);
@@ -130,6 +157,26 @@
   .site-header-shell-sticky {
     padding-top: 0.55rem;
     padding-bottom: 0.55rem;
+  }
+
+  .site-brand-sticky {
+    gap: 0.65rem;
+  }
+
+  .site-brand-badge-sticky {
+    width: 2rem;
+    height: 2rem;
+    transform: translateY(-0.5px);
+  }
+
+  .site-brand-title-sticky {
+    font-size: 0.875rem;
+    line-height: 1.1;
+  }
+
+  .site-brand-subtitle-sticky {
+    opacity: 0.74;
+    transform: translateY(-1px);
   }
 
   :global(.dark) .site-header-sticky {

@@ -62,8 +62,7 @@
       <div class="dialog-header">
         <div>
           <Dialog.Title class="dialog-title">页面设置</Dialog.Title>
-          <Dialog.Description class="dialog-description">修改首页主标题、Bilibili 链接、头像和背景图</Dialog.Description
-          >
+          <Dialog.Description class="dialog-description">修改首页主标题、社交链接、头像和背景图</Dialog.Description>
         </div>
         <Dialog.Close class="dialog-close" aria-label="关闭">
           <Icon name="close" size={18} />
@@ -110,8 +109,40 @@
             />
           </label>
           <p class="mt-2 text-xs text-[var(--color-text-muted)]">
-            首页按钮会跳转到这里，需以 http:// 或 https:// 开头。
+            首页圆形小电视按钮会跳转到这里，需以 http:// 或 https:// 开头。
           </p>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-2">
+          <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+            <label class="field-label">
+              <span>微博链接</span>
+              <input
+                name="weiboUrl"
+                type="url"
+                class="form-field"
+                maxlength="240"
+                value={settings.weiboUrl}
+                placeholder="https://weibo.com/... 或 https://www.weibo.com/..."
+              />
+            </label>
+            <p class="mt-2 text-xs text-[var(--color-text-muted)]">可留空；填写后首页会显示微博按钮。</p>
+          </div>
+
+          <div class="rounded-[20px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] p-4">
+            <label class="field-label">
+              <span>QQ群链接</span>
+              <input
+                name="qqGroupUrl"
+                type="url"
+                class="form-field"
+                maxlength="240"
+                value={settings.qqGroupUrl}
+                placeholder="https://qm.qq.com/..."
+              />
+            </label>
+            <p class="mt-2 text-xs text-[var(--color-text-muted)]">可留空；填写后首页会显示 QQ 群按钮。</p>
+          </div>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">

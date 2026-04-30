@@ -362,10 +362,12 @@ export const actions: Actions = {
     const bgFile = formData.get('background') as File | null;
     const heroTitle = readText(formData.get('heroTitle'));
     const bilibiliUrl = readText(formData.get('bilibiliUrl'));
+    const weiboUrl = readText(formData.get('weiboUrl'));
+    const qqGroupUrl = readText(formData.get('qqGroupUrl'));
     const hasAvatarFile = avatarFile !== null && avatarFile.size > 0;
     const hasBackgroundFile = bgFile !== null && bgFile.size > 0;
 
-    const parsedSettings = pageSettingsSchema.safeParse({ heroTitle, bilibiliUrl });
+    const parsedSettings = pageSettingsSchema.safeParse({ heroTitle, bilibiliUrl, weiboUrl, qqGroupUrl });
 
     if (!parsedSettings.success) {
       return fail(400, {
@@ -385,7 +387,9 @@ export const actions: Actions = {
     try {
       await saveSettings({
         [pageSettingsKeys.heroTitle]: parsedSettings.data.heroTitle,
-        [pageSettingsKeys.bilibiliUrl]: parsedSettings.data.bilibiliUrl
+        [pageSettingsKeys.bilibiliUrl]: parsedSettings.data.bilibiliUrl,
+        [pageSettingsKeys.weiboUrl]: parsedSettings.data.weiboUrl,
+        [pageSettingsKeys.qqGroupUrl]: parsedSettings.data.qqGroupUrl
       });
 
       if (hasAvatarFile) {
