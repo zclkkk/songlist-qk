@@ -4,6 +4,12 @@ import { zfd } from 'zod-form-data';
 import { pageSettingsSchema, playlistImportSettingsSchema, requestDecisionSchema, songSchema } from '$lib/validators';
 
 const formText = z.string().default('');
+const maxPlaylistImportSongCount = 5000;
+const playlistImportSongCountMessage = `单次最多导入 ${maxPlaylistImportSongCount} 首歌曲。`;
+const playlistImportTextRows = z.array(formText).max(maxPlaylistImportSongCount, playlistImportSongCountMessage);
+const playlistImportSelectedRows = z
+  .array(zfd.numeric(z.number().int().min(0)))
+  .max(maxPlaylistImportSongCount, playlistImportSongCountMessage);
 
 export const requestFormValuesSchema = zfd.formData({
   songInput: formText,
@@ -54,11 +60,11 @@ export const playlistImportFormSchema = zfd
   .formData({
     status: formText.pipe(playlistImportSettingsSchema.shape.status),
     sourceInput: formText,
-    selectedSong: zfd.repeatableOfType(zfd.numeric(z.number().int().min(0))),
-    songTitle: zfd.repeatableOfType(formText),
-    songArtist: zfd.repeatableOfType(formText),
-    songLanguage: zfd.repeatableOfType(formText),
-    songTagsInput: zfd.repeatableOfType(formText)
+    selectedSong: zfd.repeatable(playlistImportSelectedRows),
+    songTitle: zfd.repeatable(playlistImportTextRows),
+    songArtist: zfd.repeatable(playlistImportTextRows),
+    songLanguage: zfd.repeatable(playlistImportTextRows),
+    songTagsInput: zfd.repeatable(playlistImportTextRows)
   })
   .transform(({ status, sourceInput, selectedSong, songTitle, songArtist, songLanguage, songTagsInput }) => {
     const songs = songTitle.map((title, index) => ({
