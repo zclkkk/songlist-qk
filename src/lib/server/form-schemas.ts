@@ -50,12 +50,35 @@ export const bulkUpdateSongsFormSchema = zfd
     ids: id.filter(Boolean)
   }));
 
-export const playlistImportFormSchema = zfd.formData({
-  status: formText.pipe(playlistImportSettingsSchema.shape.status),
-  sourceInput: formText,
-  songCount: zfd.numeric(z.number().int().min(0)),
-  selectedSong: zfd.repeatableOfType(z.string())
-});
+export const playlistImportFormSchema = zfd
+  .formData({
+    status: formText.pipe(playlistImportSettingsSchema.shape.status),
+    sourceInput: formText,
+    selectedSong: zfd.repeatableOfType(zfd.numeric(z.number().int().min(0))),
+    songTitle: zfd.repeatableOfType(formText),
+    songArtist: zfd.repeatableOfType(formText),
+    songLanguage: zfd.repeatableOfType(formText),
+    songTagsInput: zfd.repeatableOfType(formText)
+  })
+  .transform(({ status, sourceInput, selectedSong, songTitle, songArtist, songLanguage, songTagsInput }) => {
+    const songs = songTitle.map((title, index) => ({
+      title,
+      artist: songArtist[index],
+      language: songLanguage[index],
+      tagsInput: songTagsInput[index]
+    }));
+    const selectedIndexes = new Set(selectedSong);
+
+    return {
+      status,
+      importPreview: {
+        sourceInput,
+        status,
+        songs
+      },
+      selectedSongs: songs.filter((_, index) => selectedIndexes.has(index))
+    };
+  });
 
 export const requestDecisionFormSchema = zfd.formData({
   id: formText.pipe(requestDecisionSchema.shape.id),

@@ -45,7 +45,6 @@
 
       <form method="POST" action="?/importPlaylist" class="space-y-5" use:enhance={submit.enhance}>
         <input type="hidden" name="sourceInput" value={preview.sourceInput} />
-        <input type="hidden" name="songCount" value={preview.songs.length} />
 
         <label class="field-label">
           <span>状态</span>
@@ -84,14 +83,14 @@
                         checked
                       />
                     </div>
-                    <input type="hidden" name={`songTitle-${index}`} value={song.title} />
-                    <input type="hidden" name={`songArtist-${index}`} value={song.artist} />
+                    <input type="hidden" name="songTitle" value={song.title} />
+                    <input type="hidden" name="songArtist" value={song.artist} />
                   </td>
                   <td class="px-3 py-3 text-[var(--color-text)]">{song.title}</td>
                   <td class="px-3 py-3 text-[var(--color-text-secondary)]">{song.artist}</td>
                   <td class="px-3 py-3">
                     <Select
-                      name={`songLanguage-${index}`}
+                      name="songLanguage"
                       required
                       value={song.language}
                       items={songLanguageItems}
@@ -100,7 +99,7 @@
                   </td>
                   <td class="px-3 py-3">
                     <input
-                      name={`songTagsInput-${index}`}
+                      name="songTagsInput"
                       class="form-field-muted min-w-48"
                       value={song.tagsInput}
                       placeholder="例如：网易云导入"

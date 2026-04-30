@@ -29,20 +29,6 @@ import type { Actions, PageServerLoad } from './$types';
 
 const avatarMaxBytes = 2 * 1024 * 1024;
 const backgroundMaxBytes = 5 * 1024 * 1024;
-const maxPreviewSongCount = 5000;
-
-const readFormText = (formData: FormData, key: string) => {
-  const value = formData.get(key);
-  return typeof value === 'string' ? value : '';
-};
-
-const readPreviewSongs = (formData: FormData, songCount: number) =>
-  Array.from({ length: songCount }, (_, index) => ({
-    title: readFormText(formData, `songTitle-${index}`),
-    artist: readFormText(formData, `songArtist-${index}`),
-    language: readFormText(formData, `songLanguage-${index}`),
-    tagsInput: readFormText(formData, `songTagsInput-${index}`)
-  }));
 
 export const load: PageServerLoad = async () => ({
   dashboard: await getAdminDashboardData()
@@ -208,8 +194,7 @@ export const actions: Actions = {
   },
 
   importPlaylist: async ({ request }) => {
-    const formData = await request.formData();
-    const parsed = playlistImportFormSchema.safeParse(formData);
+    const parsed = playlistImportFormSchema.safeParse(await request.formData());
 
     if (!parsed.success) {
       return fail(400, {
@@ -218,21 +203,7 @@ export const actions: Actions = {
       });
     }
 
-    if (parsed.data.songCount > maxPreviewSongCount) {
-      return fail(400, {
-        kind: 'error' as const,
-        adminError: `单次最多导入 ${maxPreviewSongCount} 首歌曲。`
-      });
-    }
-
-    const previewSongs = readPreviewSongs(formData, parsed.data.songCount);
-    const selectedIndexes = new Set(parsed.data.selectedSong);
-    const selectedSongs = previewSongs.filter((_, index) => selectedIndexes.has(String(index)));
-    const importPreview = {
-      sourceInput: parsed.data.sourceInput,
-      status: parsed.data.status,
-      songs: previewSongs
-    };
+    const { importPreview, selectedSongs, status } = parsed.data;
 
     if (selectedSongs.length === 0) {
       return fail(400, {
@@ -257,7 +228,7 @@ export const actions: Actions = {
 
       songsToImport.push({
         ...parsedSong.data,
-        status: parsed.data.status,
+        status,
         isPublic: true
       });
     }
