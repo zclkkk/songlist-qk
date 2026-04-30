@@ -71,6 +71,11 @@
     </label>
   </div>
 
+  <a href="#request-form" class="filter-cta mt-6">
+    <span>提交想听的歌</span>
+    <Icon name="chevron-right" size={18} />
+  </a>
+
   {#if hasActiveFilter}
     <button type="button" class="button button-ghost button-small mt-5 w-full" onclick={resetFilters}>
       清空筛选

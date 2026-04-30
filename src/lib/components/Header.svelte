@@ -7,6 +7,12 @@
   let { isAdmin }: { isAdmin: boolean } = $props();
 
   let isDark = $state(browser && document.documentElement.classList.contains('dark'));
+  let isSticky = $state(false);
+
+  const updateStickyState = () => {
+    if (!browser) return;
+    isSticky = window.scrollY > 0;
+  };
 
   const toggleTheme = () => {
     isDark = !isDark;
@@ -16,12 +22,22 @@
 
   const isHome = $derived(page.url.pathname === '/');
   const isAdminPage = $derived(page.url.pathname.startsWith('/admin'));
+
+  $effect(() => {
+    updateStickyState();
+  });
 </script>
 
+<svelte:window onscroll={updateStickyState} />
+
 <header
-  class="site-header sticky top-0 z-20 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-overlay)] backdrop-blur-xl"
+  class:site-header-sticky={isSticky}
+  class="site-header sticky top-0 z-20 border-b border-transparent bg-transparent backdrop-blur-xl"
 >
-  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
+  <div
+    class:site-header-shell-sticky={isSticky}
+    class="site-header-shell mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6"
+  >
     <a href="/" class="flex min-w-0 items-center gap-3">
       <span
         class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--color-accent)] text-sm font-semibold text-white shadow-sm"
@@ -43,9 +59,9 @@
         onclick={toggleTheme}
       >
         {#if isDark}
-          <Icon name="sun" class="theme-toggle-icon" />
+          <Icon name="sun" size={20} class="theme-toggle-icon" />
         {:else}
-          <Icon name="moon" class="theme-toggle-icon" />
+          <Icon name="moon" size={20} class="theme-toggle-icon" />
         {/if}
       </button>
 
@@ -79,9 +95,58 @@
     color: var(--color-accent);
   }
 
+  .theme-toggle {
+    border-color: transparent;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .theme-toggle:hover {
+    border-color: transparent;
+  }
+
+  .site-header {
+    transition:
+      padding-top 220ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease;
+    padding-top: 0.4rem;
+  }
+
+  .site-header-shell {
+    transition:
+      max-width 220ms ease,
+      padding-top 220ms ease,
+      padding-bottom 220ms ease,
+      padding-left 220ms ease,
+      padding-right 220ms ease;
+  }
+
+  .site-header-sticky {
+    padding-top: 0;
+    border-bottom-color: rgb(208 214 224 / 0.32);
+  }
+
+  .site-header-shell-sticky {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
+  :global(.dark) .site-header-sticky {
+    border-bottom-color: rgb(37 48 68 / 0.4);
+  }
+
+  @media (min-width: 1024px) {
+    .site-header-shell-sticky {
+      max-width: min(86rem, calc(100vw - 1rem));
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+  }
+
   @supports (-webkit-touch-callout: none) {
     .site-header {
-      background-color: var(--color-surface);
+      background-color: transparent;
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }

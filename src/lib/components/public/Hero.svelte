@@ -16,8 +16,6 @@
       class="hero-background pointer-events-none absolute inset-0 h-full w-full object-cover"
     />
   {/if}
-  <div class="hero-overlay pointer-events-none absolute inset-0"></div>
-  <div class="hero-glow pointer-events-none absolute" aria-hidden="true"></div>
 
   <div class="relative flex flex-col items-center px-6 py-12 text-center lg:px-12 lg:py-16">
     <div class="hero-avatar-ring">
