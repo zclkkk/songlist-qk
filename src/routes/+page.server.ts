@@ -3,8 +3,8 @@ import { createHash } from 'node:crypto';
 import { fail } from '@sveltejs/kit';
 
 import { getPublicCatalog } from '$lib/server/catalog';
-import { getErrorMessage } from '$lib/server/errors';
-import { readText } from '$lib/server/form-utils';
+import { getErrorMessage, getValidationMessage } from '$lib/server/errors';
+import { requestFormValuesSchema } from '$lib/server/form-schemas';
 import { fetchNeteaseSong } from '$lib/server/netease';
 import { consumeRequestRateLimit } from '$lib/server/rate-limit';
 import { createSongRequest } from '$lib/server/requests';
@@ -15,15 +15,6 @@ import type { Actions, PageServerLoad } from './$types';
 const requestWindowMs = 10 * 60 * 1000;
 const maxRequestsPerWindow = 5;
 
-const readRequestValues = (formData: FormData) => ({
-  songInput: readText(formData.get('songInput')),
-  songTitle: readText(formData.get('songTitle')),
-  artist: readText(formData.get('artist')),
-  language: readText(formData.get('language')),
-  message: readText(formData.get('message')),
-  requesterName: readText(formData.get('requesterName'))
-});
-
 const createRateLimitKey = (clientId: string) => createHash('sha256').update(clientId).digest('hex');
 
 export const load: PageServerLoad = async () => ({
@@ -33,15 +24,13 @@ export const load: PageServerLoad = async () => ({
 export const actions: Actions = {
   parseRequestSong: async ({ request }) => {
     const formData = await request.formData();
-    const rawValues = readRequestValues(formData);
-    const parsed = songPreviewSchema.safeParse({
-      songInput: rawValues.songInput
-    });
+    const rawValues = requestFormValuesSchema.parse(formData);
+    const parsed = songPreviewSchema.safeParse(rawValues);
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        error: parsed.error.issues[0].message,
+        error: getValidationMessage(parsed.error),
         values: rawValues
       });
     }
@@ -70,14 +59,14 @@ export const actions: Actions = {
 
   submitRequest: async ({ request, getClientAddress }) => {
     const formData = await request.formData();
-    const rawValues = readRequestValues(formData);
+    const rawValues = requestFormValuesSchema.parse(formData);
 
     const parsed = requestSchema.safeParse(rawValues);
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        error: parsed.error.issues[0].message,
+        error: getValidationMessage(parsed.error),
         values: rawValues
       });
     }

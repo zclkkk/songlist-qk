@@ -2,8 +2,17 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import { clearAdminSession } from '$lib/server/auth';
 import { getAdminDashboardData, resetDatabase as resetSonglistDatabase } from '$lib/server/catalog';
-import { getErrorMessage, UserFacingError } from '$lib/server/errors';
-import { readBoolean, readText } from '$lib/server/form-utils';
+import { getErrorMessage, getValidationMessage } from '$lib/server/errors';
+import {
+  bulkUpdateSongsFormSchema,
+  deleteSongFormSchema,
+  playlistImportFormSchema,
+  playlistPreviewFormValuesSchema,
+  profileFormSchema,
+  requestDecisionFormSchema,
+  songFormSchema,
+  songPreviewFormValuesSchema
+} from '$lib/server/form-schemas';
 import { fetchNeteasePlaylistSongs, fetchNeteaseSong } from '$lib/server/netease';
 import { updateRequestStatus } from '$lib/server/requests';
 import { pageSettingsKeys, saveSettingImage, saveSettings } from '$lib/server/settings';
@@ -14,15 +23,7 @@ import {
   importSongs,
   saveSong
 } from '$lib/server/songs';
-import {
-  pageSettingsSchema,
-  playlistImportSettingsSchema,
-  playlistPreviewSchema,
-  playlistSongImportSchema,
-  requestDecisionSchema,
-  songPreviewSchema,
-  songSchema
-} from '$lib/validators';
+import { playlistPreviewSchema, playlistSongImportSchema, songPreviewSchema } from '$lib/validators';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -30,24 +31,18 @@ const avatarMaxBytes = 2 * 1024 * 1024;
 const backgroundMaxBytes = 5 * 1024 * 1024;
 const maxPreviewSongCount = 5000;
 
-const readPreviewSongs = (formData: FormData) => {
-  const songCount = Number(readText(formData.get('songCount')));
-
-  if (!Number.isInteger(songCount) || songCount < 0) {
-    return [];
-  }
-
-  if (songCount > maxPreviewSongCount) {
-    throw new UserFacingError(`单次最多导入 ${maxPreviewSongCount} 首歌曲。`);
-  }
-
-  return Array.from({ length: songCount }, (_, index) => ({
-    title: readText(formData.get(`songTitle-${index}`)),
-    artist: readText(formData.get(`songArtist-${index}`)),
-    language: readText(formData.get(`songLanguage-${index}`)),
-    tagsInput: readText(formData.get(`songTagsInput-${index}`))
-  }));
+const readFormText = (formData: FormData, key: string) => {
+  const value = formData.get(key);
+  return typeof value === 'string' ? value : '';
 };
+
+const readPreviewSongs = (formData: FormData, songCount: number) =>
+  Array.from({ length: songCount }, (_, index) => ({
+    title: readFormText(formData, `songTitle-${index}`),
+    artist: readFormText(formData, `songArtist-${index}`),
+    language: readFormText(formData, `songLanguage-${index}`),
+    tagsInput: readFormText(formData, `songTagsInput-${index}`)
+  }));
 
 export const load: PageServerLoad = async () => ({
   dashboard: await getAdminDashboardData()
@@ -55,23 +50,12 @@ export const load: PageServerLoad = async () => ({
 
 export const actions: Actions = {
   saveSong: async ({ request }) => {
-    const formData = await request.formData();
-    const rawValues = {
-      id: readText(formData.get('id')),
-      title: readText(formData.get('title')),
-      artist: readText(formData.get('artist')),
-      language: readText(formData.get('language')),
-      status: readText(formData.get('status')),
-      tagsInput: readText(formData.get('tagsInput')),
-      isPublic: readBoolean(formData.get('isPublic'))
-    };
-
-    const parsed = songSchema.safeParse(rawValues);
+    const parsed = songFormSchema.safeParse(await request.formData());
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        adminError: parsed.error.issues[0].message
+        adminError: getValidationMessage(parsed.error)
       });
     }
 
@@ -91,18 +75,17 @@ export const actions: Actions = {
   },
 
   deleteSong: async ({ request }) => {
-    const formData = await request.formData();
-    const id = readText(formData.get('id'));
+    const parsed = deleteSongFormSchema.safeParse(await request.formData());
 
-    if (!id) {
+    if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        adminError: '缺少歌曲 ID。'
+        adminError: getValidationMessage(parsed.error)
       });
     }
 
     try {
-      await removeSong(id);
+      await removeSong(parsed.data.id);
     } catch (error) {
       return fail(500, {
         kind: 'error' as const,
@@ -117,9 +100,13 @@ export const actions: Actions = {
   },
 
   bulkUpdateSongs: async ({ request }) => {
-    const formData = await request.formData();
-    const bulkAction = readText(formData.get('bulkAction'));
-    const ids = formData.getAll('id').map(readText).filter(Boolean);
+    const parsed = bulkUpdateSongsFormSchema.safeParse(await request.formData());
+
+    if (!parsed.success) {
+      return fail(400, { kind: 'error' as const, adminError: getValidationMessage(parsed.error) });
+    }
+
+    const { bulkAction, ids } = parsed.data;
 
     if (ids.length === 0) {
       return fail(400, { kind: 'error' as const, adminError: '请至少选择一首歌曲。' });
@@ -131,16 +118,12 @@ export const actions: Actions = {
         return { kind: 'success' as const, adminMessage: `已删除 ${count} 首歌曲。` };
       }
 
-      if (bulkAction === 'setPublic' || bulkAction === 'setPrivate') {
-        const makePublic = bulkAction === 'setPublic';
-        const count = await bulkSetSongsPublic(ids, makePublic);
-        return {
-          kind: 'success' as const,
-          adminMessage: `已${makePublic ? '公开' : '隐藏'} ${count} 首歌曲。`
-        };
-      }
-
-      return fail(400, { kind: 'error' as const, adminError: '未知的批量操作。' });
+      const makePublic = bulkAction === 'setPublic';
+      const count = await bulkSetSongsPublic(ids, makePublic);
+      return {
+        kind: 'success' as const,
+        adminMessage: `已${makePublic ? '公开' : '隐藏'} ${count} 首歌曲。`
+      };
     } catch (error) {
       return fail(500, { kind: 'error' as const, adminError: getErrorMessage(error) });
     }
@@ -148,16 +131,14 @@ export const actions: Actions = {
 
   previewPlaylist: async ({ request }) => {
     const formData = await request.formData();
-    const playlistInput = readText(formData.get('playlistInput'));
-    const parsed = playlistPreviewSchema.safeParse({
-      playlistInput
-    });
+    const values = playlistPreviewFormValuesSchema.parse(formData);
+    const parsed = playlistPreviewSchema.safeParse(values);
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'preview-parse-error' as const,
-        adminError: parsed.error.issues[0].message,
-        playlistImport: { playlistInput }
+        adminError: getValidationMessage(parsed.error),
+        playlistImport: values
       });
     }
 
@@ -181,23 +162,21 @@ export const actions: Actions = {
       return fail(500, {
         kind: 'preview-parse-error' as const,
         adminError: getErrorMessage(error),
-        playlistImport: { playlistInput: parsed.data.playlistInput }
+        playlistImport: values
       });
     }
   },
 
   previewSong: async ({ request }) => {
     const formData = await request.formData();
-    const songInput = readText(formData.get('songInput'));
-    const parsed = songPreviewSchema.safeParse({
-      songInput
-    });
+    const values = songPreviewFormValuesSchema.parse(formData);
+    const parsed = songPreviewSchema.safeParse(values);
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'preview-parse-error' as const,
-        adminError: parsed.error.issues[0].message,
-        songImport: { songInput }
+        adminError: getValidationMessage(parsed.error),
+        songImport: values
       });
     }
 
@@ -223,39 +202,34 @@ export const actions: Actions = {
       return fail(500, {
         kind: 'preview-parse-error' as const,
         adminError: getErrorMessage(error),
-        songImport: { songInput: parsed.data.songInput }
+        songImport: values
       });
     }
   },
 
   importPlaylist: async ({ request }) => {
     const formData = await request.formData();
-    const parsed = playlistImportSettingsSchema.safeParse({
-      status: readText(formData.get('status'))
-    });
+    const parsed = playlistImportFormSchema.safeParse(formData);
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        adminError: parsed.error.issues[0].message
+        adminError: getValidationMessage(parsed.error)
       });
     }
 
-    let previewSongs: ReturnType<typeof readPreviewSongs>;
-
-    try {
-      previewSongs = readPreviewSongs(formData);
-    } catch (error) {
+    if (parsed.data.songCount > maxPreviewSongCount) {
       return fail(400, {
         kind: 'error' as const,
-        adminError: getErrorMessage(error)
+        adminError: `单次最多导入 ${maxPreviewSongCount} 首歌曲。`
       });
     }
 
-    const selectedIndexes = new Set(formData.getAll('selectedSong').map(readText));
+    const previewSongs = readPreviewSongs(formData, parsed.data.songCount);
+    const selectedIndexes = new Set(parsed.data.selectedSong);
     const selectedSongs = previewSongs.filter((_, index) => selectedIndexes.has(String(index)));
     const importPreview = {
-      sourceInput: readText(formData.get('sourceInput')),
+      sourceInput: parsed.data.sourceInput,
       status: parsed.data.status,
       songs: previewSongs
     };
@@ -276,7 +250,7 @@ export const actions: Actions = {
       if (!parsedSong.success) {
         return fail(400, {
           kind: 'preview-import-error' as const,
-          adminError: parsedSong.error.issues[0].message,
+          adminError: getValidationMessage(parsedSong.error),
           importPreview
         });
       }
@@ -305,18 +279,12 @@ export const actions: Actions = {
   },
 
   updateRequestStatus: async ({ request }) => {
-    const formData = await request.formData();
-    const rawValues = {
-      id: readText(formData.get('id')),
-      status: readText(formData.get('status'))
-    };
-
-    const parsed = requestDecisionSchema.safeParse(rawValues);
+    const parsed = requestDecisionFormSchema.safeParse(await request.formData());
 
     if (!parsed.success) {
       return fail(400, {
         kind: 'error' as const,
-        adminError: parsed.error.issues[0].message
+        adminError: getValidationMessage(parsed.error)
       });
     }
 
@@ -357,22 +325,18 @@ export const actions: Actions = {
   },
 
   saveProfile: async ({ request }) => {
-    const formData = await request.formData();
-    const avatarFile = formData.get('avatar') as File | null;
-    const bgFile = formData.get('background') as File | null;
-    const heroTitle = readText(formData.get('heroTitle'));
-    const bilibiliUrl = readText(formData.get('bilibiliUrl'));
-    const hasAvatarFile = avatarFile !== null && avatarFile.size > 0;
-    const hasBackgroundFile = bgFile !== null && bgFile.size > 0;
+    const parsed = profileFormSchema.safeParse(await request.formData());
 
-    const parsedSettings = pageSettingsSchema.safeParse({ heroTitle, bilibiliUrl });
-
-    if (!parsedSettings.success) {
+    if (!parsed.success) {
       return fail(400, {
         kind: 'profile-error' as const,
-        adminError: parsedSettings.error.issues[0].message
+        adminError: getValidationMessage(parsed.error)
       });
     }
+
+    const { avatar: avatarFile, background: bgFile, heroTitle, bilibiliUrl } = parsed.data;
+    const hasAvatarFile = avatarFile !== undefined;
+    const hasBackgroundFile = bgFile !== undefined;
 
     if (hasAvatarFile && avatarFile.size > avatarMaxBytes) {
       return fail(400, { kind: 'profile-error' as const, adminError: '头像文件不能超过 2MB' });
@@ -384,8 +348,8 @@ export const actions: Actions = {
 
     try {
       await saveSettings({
-        [pageSettingsKeys.heroTitle]: parsedSettings.data.heroTitle,
-        [pageSettingsKeys.bilibiliUrl]: parsedSettings.data.bilibiliUrl
+        [pageSettingsKeys.heroTitle]: heroTitle,
+        [pageSettingsKeys.bilibiliUrl]: bilibiliUrl
       });
 
       if (hasAvatarFile) {

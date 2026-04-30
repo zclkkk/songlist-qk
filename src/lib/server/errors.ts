@@ -1,3 +1,5 @@
+import type { ZodError } from 'zod';
+
 export class UserFacingError extends Error {
   constructor(message: string) {
     super(message);
@@ -15,3 +17,5 @@ export const getErrorMessage = (error: unknown): string => {
   console.error(error);
   return fallbackMessage;
 };
+
+export const getValidationMessage = (error: ZodError) => error.issues[0].message;

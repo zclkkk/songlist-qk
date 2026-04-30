@@ -37,7 +37,8 @@
     "@supabase/supabase-js": "^2.104.0",
     "bits-ui": "^2.18.0",
     "svelte-sonner": "^1.1.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "zod-form-data": "^3.0.1"
   },
   "lint-staged": {
     "*.{js,ts,svelte,css,html,json,md}": "prettier --write"
