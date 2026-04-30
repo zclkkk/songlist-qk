@@ -99,7 +99,7 @@ create table if not exists public.settings (
 alter table public.settings drop constraint if exists settings_key_check;
 alter table public.settings
   add constraint settings_key_check
-  check (key in ('avatar_path', 'background_path', 'hero_title', 'bilibili_url'));
+  check (key in ('avatar_path', 'background_path', 'hero_title', 'bilibili_url', 'weibo_url', 'qq_group_url'));
 
 alter table public.settings enable row level security;
 
@@ -107,14 +107,16 @@ drop policy if exists "public settings are readable" on public.settings;
 create policy "public settings are readable"
   on public.settings
   for select
-  using (key in ('avatar_path', 'background_path', 'hero_title', 'bilibili_url'));
+  using (key in ('avatar_path', 'background_path', 'hero_title', 'bilibili_url', 'weibo_url', 'qq_group_url'));
 
 insert into public.settings (key, value)
 values
   ('avatar_path', ''),
   ('background_path', ''),
   ('hero_title', 'songlist-qk'),
-  ('bilibili_url', 'https://www.bilibili.com/')
+  ('bilibili_url', 'https://www.bilibili.com/'),
+  ('weibo_url', ''),
+  ('qq_group_url', '')
 on conflict (key) do nothing;
 
 create table if not exists public.request_rate_limits (

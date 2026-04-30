@@ -16,7 +16,9 @@ export const pageSettingsKeys = {
   avatarPath: 'avatar_path',
   backgroundPath: 'background_path',
   heroTitle: 'hero_title',
-  bilibiliUrl: 'bilibili_url'
+  bilibiliUrl: 'bilibili_url',
+  weiboUrl: 'weibo_url',
+  qqGroupUrl: 'qq_group_url'
 } as const;
 
 export type PageSettingKey = (typeof pageSettingsKeys)[keyof typeof pageSettingsKeys];
@@ -27,7 +29,9 @@ export const pageSettingsDefaults: Record<PageSettingKey, string> = {
   [pageSettingsKeys.avatarPath]: '',
   [pageSettingsKeys.backgroundPath]: '',
   [pageSettingsKeys.heroTitle]: 'songlist-qk',
-  [pageSettingsKeys.bilibiliUrl]: defaultBilibiliUrl
+  [pageSettingsKeys.bilibiliUrl]: defaultBilibiliUrl,
+  [pageSettingsKeys.weiboUrl]: '',
+  [pageSettingsKeys.qqGroupUrl]: ''
 };
 
 const settingImageKinds = {
@@ -86,7 +90,9 @@ const mapPageSettings = (settings: Record<string, string>): PageSettings => ({
   avatar: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.avatarPath)),
   background: getAssetPublicUrl(getSettingValue(settings, pageSettingsKeys.backgroundPath)),
   heroTitle: getSettingValue(settings, pageSettingsKeys.heroTitle),
-  bilibiliUrl: getSettingValue(settings, pageSettingsKeys.bilibiliUrl)
+  bilibiliUrl: getSettingValue(settings, pageSettingsKeys.bilibiliUrl),
+  weiboUrl: getSettingValue(settings, pageSettingsKeys.weiboUrl),
+  qqGroupUrl: getSettingValue(settings, pageSettingsKeys.qqGroupUrl)
 });
 
 export const getSettings = async (): Promise<PageSettings> => {

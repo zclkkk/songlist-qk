@@ -91,19 +91,12 @@ export const requestDecisionFormSchema = zfd.formData({
   status: formText.pipe(requestDecisionSchema.shape.status)
 });
 
-export const profileFormSchema = zfd
-  .formData({
-    heroTitle: formText,
-    bilibiliUrl: formText,
+export const profileFormSchema = zfd.formData(
+  pageSettingsSchema.extend({
     avatar: zfd.file(z.instanceof(File).optional()),
     background: zfd.file(z.instanceof(File).optional())
   })
-  .pipe(
-    pageSettingsSchema.extend({
-      avatar: z.instanceof(File).optional(),
-      background: z.instanceof(File).optional()
-    })
-  );
+);
 
 export const loginFormSchema = zfd.formData({
   email: formText,
