@@ -62,10 +62,8 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 SvelteKit 2 · Svelte 5 · Vite 8 · Tailwind CSS 4 · Supabase · Zod 4 · `@neteasecloudmusicapienhanced/api`
 
-## 开源协议
+## 许可证
 
-Copyright (C) 2026 zclkkk
+本项目采用 `Parity Public License 7.0.0` 授权，详见根目录 `LICENSE`。
 
-本项目采用 `GNU Affero General Public License v3.0`（`AGPL-3.0-only`）授权，详见根目录 `LICENSE`。
-
-如果你修改后将其作为网络服务对外提供，需按 AGPL 要求向该服务的用户提供对应源码。
+如果你使用本软件开发、运行或分析其他软件，则相关软件也需要按照协议要求开放共享。
