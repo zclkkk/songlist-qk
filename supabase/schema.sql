@@ -73,6 +73,26 @@ $$;
 revoke all on function public.accept_song_request(uuid) from public, anon, authenticated;
 grant execute on function public.accept_song_request(uuid) to service_role;
 
+create or replace function public.create_song_request(
+  p_song_title text,
+  p_artist text,
+  p_language text,
+  p_message text,
+  p_requester_name text
+)
+returns void
+language plpgsql
+set search_path = public
+as $$
+begin
+  insert into public.requests (song_title, artist, language, message, requester_name)
+  values (p_song_title, p_artist, p_language, p_message, nullif(p_requester_name, ''));
+end;
+$$;
+
+revoke all on function public.create_song_request(text, text, text, text, text) from public, anon, authenticated;
+grant execute on function public.create_song_request(text, text, text, text, text) to service_role;
+
 alter table public.songs enable row level security;
 alter table public.requests enable row level security;
 
@@ -81,15 +101,6 @@ create policy "public songs are readable"
   on public.songs
   for select
   using (is_public = true);
-
-drop policy if exists "public can create requests" on public.requests;
-create policy "public can create requests"
-  on public.requests
-  for insert
-  with check (
-    status = 'pending'
-    and matched_song_id is null
-  );
 
 create table if not exists public.settings (
   key text primary key,

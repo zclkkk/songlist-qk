@@ -132,6 +132,16 @@ export type Database = {
         };
         Returns: boolean;
       };
+      create_song_request: {
+        Args: {
+          p_artist: string;
+          p_language: string;
+          p_message: string;
+          p_requester_name: string;
+          p_song_title: string;
+        };
+        Returns: undefined;
+      };
       reset_admin_data: { Args: { p_settings: Json }; Returns: undefined };
     };
     Enums: {

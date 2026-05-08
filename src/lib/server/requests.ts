@@ -1,6 +1,6 @@
 import type { Database } from '$lib/server/database.types';
 import { UserFacingError } from '$lib/server/errors';
-import { supabaseAdmin, supabasePublic } from '$lib/server/supabase';
+import { supabaseAdmin } from '$lib/server/supabase';
 import { type RequestDecision, type RequestStatus, type SongLanguage, type SongRequest } from '$lib/types';
 
 type RequestRow = Pick<
@@ -54,12 +54,12 @@ export const createSongRequest = async ({
   message: string;
   requesterName: string | null;
 }) => {
-  const { error } = await supabasePublic.from('requests').insert({
-    song_title: songTitle,
-    artist,
-    language,
-    message,
-    requester_name: requesterName
+  const { error } = await supabaseAdmin.rpc('create_song_request', {
+    p_song_title: songTitle,
+    p_artist: artist,
+    p_language: language,
+    p_message: message,
+    p_requester_name: requesterName ?? ''
   });
 
   if (error) {
