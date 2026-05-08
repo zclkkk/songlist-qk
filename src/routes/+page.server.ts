@@ -15,15 +15,23 @@ import type { Actions, PageServerLoad } from './$types';
 
 const requestWindowMs = 10 * 60 * 1000;
 const maxRequestsPerWindow = 5;
+const rateLimitMessage = '提交过于频繁，请稍后再试。';
 
 const createRateLimitKey = (clientId: string) => createHash('sha256').update(clientId).digest('hex');
+
+const consumePublicActionRateLimit = (clientAddress: string) =>
+  consumeRequestRateLimit({
+    clientKey: createRateLimitKey(clientAddress),
+    maxRequests: maxRequestsPerWindow,
+    windowMs: requestWindowMs
+  });
 
 export const load: PageServerLoad = async () => ({
   catalog: await getPublicCatalog()
 });
 
 export const actions: Actions = {
-  parseRequestSong: async ({ request }) => {
+  parseRequestSong: async ({ request, getClientAddress }) => {
     const formData = await request.formData();
     const rawValues = requestFormValuesSchema.parse(formData);
     const parsed = songPreviewSchema.safeParse(rawValues);
@@ -32,6 +40,14 @@ export const actions: Actions = {
       return fail(400, {
         kind: 'error' as const,
         error: getValidationMessage(parsed.error),
+        values: rawValues
+      });
+    }
+
+    if (!(await consumePublicActionRateLimit(getClientAddress()))) {
+      return fail(429, {
+        kind: 'error' as const,
+        error: rateLimitMessage,
         values: rawValues
       });
     }
@@ -73,16 +89,10 @@ export const actions: Actions = {
       });
     }
 
-    if (
-      !(await consumeRequestRateLimit({
-        clientKey: createRateLimitKey(getClientAddress()),
-        maxRequests: maxRequestsPerWindow,
-        windowMs: requestWindowMs
-      }))
-    ) {
+    if (!(await consumePublicActionRateLimit(getClientAddress()))) {
       return fail(429, {
         kind: 'error' as const,
-        error: '提交过于频繁，请稍后再试。',
+        error: rateLimitMessage,
         values: rawValues
       });
     }
