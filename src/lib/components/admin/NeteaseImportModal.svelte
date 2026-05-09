@@ -32,7 +32,7 @@
       <div class="dialog-header">
         <div>
           <Dialog.Title class="dialog-title">网易云歌单导入</Dialog.Title>
-          <Dialog.Description class="dialog-description">勾选需要导入的歌曲，编辑语言和标签后提交</Dialog.Description>
+          <Dialog.Description class="dialog-description">勾选需要导入的歌曲，核对语言和标签后提交</Dialog.Description>
         </div>
         <Dialog.Close class="dialog-close" aria-label="关闭">
           <Icon name="close" size={18} />
@@ -52,9 +52,10 @@
         </label>
 
         <div
-          class="rounded-[18px] border border-[var(--color-border-soft)] bg-[var(--color-surface-muted)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
+          class="rounded-[18px] border border-[var(--color-accent-surface-border)] bg-[var(--color-accent-surface-bg)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
         >
-          {preview.songs.length} 首待确认
+          <p class="font-medium text-[var(--color-text)]">{preview.songs.length} 首待确认</p>
+          <p class="mt-1 text-xs">语言为自动推断结果，导入前请手动核对。</p>
         </div>
 
         <div class="max-h-[56vh] overflow-auto rounded-[18px] border border-[var(--color-border-soft)]">
